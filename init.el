@@ -6,6 +6,7 @@
 (load "~/.emacs.d/haskell-mode/haskell-site-file")
 (add-to-list 'load-path "/Users/crispywalrus/.emacs.d/local")
 (add-to-list 'load-path "/Users/crispywalrus/.emacs.d/jdee/lisp")
+(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/git-emacs")
 (add-to-list 'load-path "/Users/crispywalrus/.emacs.d/markdown-mode")
 (load-file "/Users/crispywalrus/.emacs.d/cedet/common/cedet.el")
 
@@ -115,5 +116,7 @@
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
 (require 'org-install)
+
+(require 'git-emacs-autoloads)
 
 (server-start)
