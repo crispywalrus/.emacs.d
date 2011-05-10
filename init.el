@@ -1,23 +1,30 @@
+;; -*- mode: emacs-lisp; -*-
 ;;
-
-(setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
-(setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
+;; crispy's init.el
 
 (load "~/.emacs.d/nxhtml/autostart.el")
 (load "~/.emacs.d/haskell-mode/haskell-site-file")
+(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/local")
+(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/jdee/lisp")
+(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/markdown-mode")
+(load-file "/Users/crispywalrus/.emacs.d/cedet/common/cedet.el")
 
+
+(add-to-list 'exec-path "/opt/local/bin")
+(add-to-list 'exec-path "/opt/local/libexec/gnubin")
+(setenv "PATH" (concat "/opt/local/libexec/gnubin:/opt/local/bin" (getenv "PATH")))
+
+;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
+;; pop out compilation and grep windows.
+(setq-default indent-tabs-mode nil)
 (setq inhibit-startup-screen t)
 (put 'narrow-to-region 'disabled nil)
 (scroll-bar-mode nil)
 (tool-bar-mode -1)
+(setq special-display-buffer-names '("*compilation*" "*grep*" "*Find*"))
+(setq-default debug-on-error nil)
 
-(add-to-list 'exec-path "/opt/local/bin")
-(setenv "PATH" (concat "/opt/local/bin:" (getenv "PATH")))
-
-;; my generic normal setup
-
-(setq-default indent-tabs-mode nil)
-
+;; start code 
 (defun fix-format-buffer ()
   "indent, untabify and remove trailing whitespace for a buffer"
   (interactive)
@@ -26,8 +33,6 @@
     (intend-region (point-min) (point-max))
     (untabify (point-min) (point-max))))
 
-(setq special-display-buffer-names '("*compilation*" "*grep*" "*Find*"))
-
 ;; the native os x version of emacs reports "ns" as the name of the
 ;; windowing system. X on os x (and everywhere else i've tested)
 ;; reports x.
@@ -35,11 +40,7 @@
       (custom-set-faces
        '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#ffffff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundery "apple" :family "Monaco")))))
       )
-
-(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/local")
-(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/jdee/lisp")
-
-(load-file "/Users/crispywalrus/.emacs.d/cedet/common/cedet.el")
+;; end code 
 
 ;; extend cc-mode to understand java annotations
 (require 'java-mode-indent-annotations)
@@ -68,12 +69,15 @@
 
 (add-hook 'java-mode-hook 'crispy-java-mode-hook)
 
+(setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
+(setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
+
 ;; Enable EDE (Project Management) features
 (global-ede-mode 1)
 
 ;; Enable EDE for a pre-existing C++ project
 ;; (ede-cpp-root-project "NAME" :file "~/myproject/Makefile")
-
+(ede-cpp-root-project "grapherd" :file "~/Development/crispy/grapherd/Makefile")
 
 ;; Enabling Semantic (code-parsing, smart completion) features
 ;; Select one of the following:
@@ -87,7 +91,7 @@
 
 ;; * This enables even more coding tools such as intellisense mode
 ;;   decoration mode, and stickyfunc mode (plus regular code helpers)
-;; (semantic-load-enable-gaudy-code-helpers)
+'' (semantic-load-enable-gaudy-code-helpers)
 
 ;; * This enables the use of Exuberent ctags if you have it installed.
 ;;   If you use C++ templates or boost, you should NOT enable it.
@@ -99,7 +103,7 @@
 ;; (semantic-load-enable-secondary-exuberent-ctags-support)
 
 ;; Enable SRecode (Template management) minor-mode.
-;; (global-srecode-minor-mode 1)
+(global-srecode-minor-mode 1)
 
 
 (require 'groovy-mode)
@@ -107,12 +111,9 @@
 
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
-(setq-default debug-on-error nil)
-
-;; (require 'markdown-mode)
-;; (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+(require 'org-install)
 
 (server-start)
