@@ -14,6 +14,10 @@
 (add-to-list 'exec-path "/opt/local/bin")
 (setenv "PATH" (concat "/opt/local/bin:" (getenv "PATH")))
 
+;; my generic normal setup
+
+(setq-default indent-tabs-mode nil)
+
 (defun fix-format-buffer ()
   "indent, untabify and remove trailing whitespace for a buffer"
   (interactive)
@@ -58,7 +62,7 @@
   (progn
     (c-set-style "bsd")
     (setq c-basic-offset 4)
-    (c-toggle-auto-state 1)
+    ;; (c-toggle-auto-newline 1)
     (c-set-offset 'substatement-open 0)
     (java-mode-indent-annotations-setup)))
 
@@ -97,9 +101,6 @@
 ;; Enable SRecode (Template management) minor-mode.
 ;; (global-srecode-minor-mode 1)
 
-;; my generic normal setup
-
-(setq-default indent-tabs-mode nil)
 
 (require 'groovy-mode)
 (add-to-list 'auto-mode-alist '("\\.groovy$" . groovy-mode))
@@ -114,3 +115,4 @@
 ;; (require 'markdown-mode)
 ;; (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 
+(server-start)
