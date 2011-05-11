@@ -13,7 +13,7 @@
 
 (add-to-list 'exec-path "/opt/local/bin")
 (add-to-list 'exec-path "/opt/local/libexec/gnubin")
-(setenv "PATH" (concat "/opt/local/libexec/gnubin:/opt/local/bin" (getenv "PATH")))
+(setenv "PATH" (concat "/opt/local/libexec/gnubin:/opt/local/bin:" (getenv "PATH")))
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
 ;; pop out compilation and grep windows.
