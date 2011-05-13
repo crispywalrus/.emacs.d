@@ -4,3 +4,6 @@
 [submodule "markdown-mode"]
 	path = markdown-mode
 	url = git://jblevins.org/git/markdown-mode.git
+[submodule "org-mode"]
+	path = org-mode
+	url = git://orgmode.org/org-mode.git
