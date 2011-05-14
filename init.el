@@ -8,6 +8,7 @@
 (add-to-list 'load-path "/Users/crispywalrus/.emacs.d/jdee/lisp")
 (add-to-list 'load-path "/Users/crispywalrus/.emacs.d/git-emacs")
 (add-to-list 'load-path "/Users/crispywalrus/.emacs.d/markdown-mode")
+(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/org-mode/lisp")
 (load-file "/Users/crispywalrus/.emacs.d/cedet/common/cedet.el")
 
 
