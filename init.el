@@ -12,9 +12,11 @@
 (load-file "/Users/crispywalrus/.emacs.d/cedet/common/cedet.el")
 
 
-(add-to-list 'exec-path "/opt/local/bin")
-(add-to-list 'exec-path "/opt/local/libexec/gnubin")
-(setenv "PATH" (concat "/opt/local/libexec/gnubin:/opt/local/bin:" (getenv "PATH")))
+;; (add-to-list 'exec-path "/opt/local/bin")
+(add-to-list 'exec-path "/usr/local/bin")
+;; (add-to-list 'exec-path "/opt/local/libexec/gnubin")
+;; (setenv "PATH" (concat "/opt/local/libexec/gnubin:/opt/local/bin:" (getenv "PATH")))
+(setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
 ;; pop out compilation and grep windows.
@@ -121,3 +123,7 @@
 (require 'git-emacs-autoloads)
 
 (server-start)
+
+(require 'ido)
+
+(require 'markdown-mode)
