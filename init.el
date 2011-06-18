@@ -9,6 +9,7 @@
 (add-to-list 'load-path "/Users/crispywalrus/.emacs.d/git-emacs")
 (add-to-list 'load-path "/Users/crispywalrus/.emacs.d/markdown-mode")
 (add-to-list 'load-path "/Users/crispywalrus/.emacs.d/org-mode/lisp")
+(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/html5-el")
 (load-file "/Users/crispywalrus/.emacs.d/cedet/common/cedet.el")
 
 
@@ -127,3 +128,8 @@
 (require 'ido)
 
 (require 'markdown-mode)
+
+(eval-after-load "rng-loc"
+    '(add-to-list 'rng-schema-locating-files "~/.emacs.d/html5-el/schemas.xml"))
+
+(require 'whattf-dt)
