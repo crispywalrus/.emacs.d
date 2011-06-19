@@ -2,21 +2,19 @@
 ;;
 ;; crispy's init.el
 
-(load "~/.emacs.d/nxhtml/autostart.el")
-(load "~/.emacs.d/haskell-mode/haskell-site-file")
-(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/local")
-(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/jdee/lisp")
-(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/git-emacs")
-(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/markdown-mode")
-(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/org-mode/lisp")
-(add-to-list 'load-path "/Users/crispywalrus/.emacs.d/html5-el")
-(load-file "/Users/crispywalrus/.emacs.d/cedet/common/cedet.el")
+(load (expand-file-name "~/.emacs.d/nxhtml/autostart.el"))
+(load (expand-file-name "~/.emacs.d/haskell-mode/haskell-site-file"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/jdee/lisp"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/git-emacs"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/markdown-mode"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/org-mode/lisp"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/html5-el"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/virtualenv.el"))
+(load-file (expand-file-name "~/.emacs.d/cedet/common/cedet.el"))
 
-
-;; (add-to-list 'exec-path "/opt/local/bin")
+;; these are set for OS X and brew
 (add-to-list 'exec-path "/usr/local/bin")
-;; (add-to-list 'exec-path "/opt/local/libexec/gnubin")
-;; (setenv "PATH" (concat "/opt/local/libexec/gnubin:/opt/local/bin:" (getenv "PATH")))
 (setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
@@ -133,3 +131,15 @@
     '(add-to-list 'rng-schema-locating-files "~/.emacs.d/html5-el/schemas.xml"))
 
 (require 'whattf-dt)
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(virtualenv-root "~/Development/crispy/pyEnvs"))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#ffffff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundery "apple" :family "Monaco")))))
