@@ -127,6 +127,8 @@
 
 (require 'markdown-mode)
 
+(require 'virtualenv)
+
 (eval-after-load "rng-loc"
     '(add-to-list 'rng-schema-locating-files "~/.emacs.d/html5-el/schemas.xml"))
 
