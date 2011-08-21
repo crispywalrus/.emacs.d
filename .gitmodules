@@ -13,3 +13,6 @@
 [submodule "virtualenv.el"]
 	path = virtualenv.el
 	url = https://github.com/aculich/virtualenv.el.git
+[submodule "emacs"]
+	path = emacs
+	url = https://github.com/harto/emacs.git
