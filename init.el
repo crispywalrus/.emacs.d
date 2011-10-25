@@ -2,7 +2,7 @@
 ;;
 ;; crispy's init.el
 
-(load (expand-file-name "~/.emacs.d/nxhtml/autostart.el"))
+;; (load (expand-file-name "~/.emacs.d/nxhtml/autostart.el"))
 (load (expand-file-name "~/.emacs.d/haskell-mode/haskell-site-file"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/jdee/lisp"))
@@ -11,6 +11,9 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/org-mode/lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/html5-el"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/virtualenv.el"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/gist-el"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/color-theme"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/emacs-color-theme-solarized"))
 (load-file (expand-file-name "~/.emacs.d/cedet/common/cedet.el"))
 
 ;; these are set for OS X and brew
@@ -74,6 +77,7 @@
 
 (setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
 (setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
+(setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
 
 ;; Enable EDE (Project Management) features
 (global-ede-mode 1)
@@ -132,6 +136,8 @@
 (eval-after-load "rng-loc"
     '(add-to-list 'rng-schema-locating-files "~/.emacs.d/html5-el/schemas.xml"))
 
+(require 'gist)
+
 (require 'whattf-dt)
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
@@ -145,3 +151,6 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#ffffff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundery "apple" :family "Monaco")))))
+(require 'color-theme)
+(require 'color-theme-solarized)
+;; (color-theme-solarized-dark)
