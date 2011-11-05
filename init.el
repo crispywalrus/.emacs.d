@@ -14,6 +14,8 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/gist-el"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/color-theme"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/emacs-color-theme-solarized"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/mongo-el"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/jenkins-watch"))
 (load-file (expand-file-name "~/.emacs.d/cedet/common/cedet.el"))
 
 ;; these are set for OS X and brew
@@ -154,3 +156,7 @@
 (require 'color-theme)
 (require 'color-theme-solarized)
 ;; (color-theme-solarized-dark)
+
+(require 'mongo)
+(require 'bson)
+(require 'jenkins-watch)

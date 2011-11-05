@@ -25,3 +25,9 @@
 [submodule "ensime"]
 	path = ensime
 	url = git://github.com/aemoncannon/ensime.git
+[submodule "mongo-el"]
+	path = mongo-el
+	url = git@github.com:crispywalrus/mongo-el.git
+[submodule "jenkins-watch"]
+	path = jenkins-watch
+	url = git@github.com:crispywalrus/jenkins-watch.git
