@@ -16,6 +16,7 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/emacs-color-theme-solarized"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/mongo-el"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/jenkins-watch"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/scala"))
 (load-file (expand-file-name "~/.emacs.d/cedet/common/cedet.el"))
 
 ;; these are set for OS X and brew
@@ -160,3 +161,6 @@
 (require 'mongo)
 (require 'bson)
 (require 'jenkins-watch)
+
+(require 'scala-mode-auto)
+
