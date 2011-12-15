@@ -87,7 +87,7 @@
 
 ;; Enable EDE for a pre-existing C++ project
 ;; (ede-cpp-root-project "NAME" :file "~/myproject/Makefile")
-(ede-cpp-root-project "grapherd" :file "~/Development/crispy/grapherd/Makefile")
+;; (ede-cpp-root-project "grapherd" :file "~/Development/crispy/grapherd/Makefile")
 
 ;; Enabling Semantic (code-parsing, smart completion) features
 ;; Select one of the following:
@@ -147,6 +147,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(scala-interpreter "/Applications/typesafe-stack/bin/scala")
  '(virtualenv-root "~/Development/crispy/pyEnvs"))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
