@@ -3,7 +3,6 @@
 ;; crispy's init.el
 
 ;; (load (expand-file-name "~/.emacs.d/nxhtml/autostart.el"))
-(load (expand-file-name "~/.emacs.d/haskell-mode/haskell-site-file"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/jdee/lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/git-emacs"))
@@ -12,8 +11,6 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/html5-el"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/virtualenv.el"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/gist-el"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/color-theme"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/emacs-color-theme-solarized"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/mongo-el"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/jenkins-watch"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/scala"))
@@ -155,9 +152,6 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#ffffff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundery "apple" :family "Monaco")))))
-(require 'color-theme)
-(require 'color-theme-solarized)
-;; (color-theme-solarized-dark)
 
 (require 'mongo)
 (require 'bson)
