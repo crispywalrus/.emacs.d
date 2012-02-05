@@ -79,6 +79,10 @@
 (setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
 
+(require 'scala-mode-auto)
+
+(setq auto-mode-alist  (cons '("\\.sbt$" . scala-mode) auto-mode-alist))
+
 ;; Enable EDE (Project Management) features
 (global-ede-mode 1)
 
@@ -157,5 +161,5 @@
 (require 'bson)
 (require 'jenkins-watch)
 
-(require 'scala-mode-auto)
+
 
