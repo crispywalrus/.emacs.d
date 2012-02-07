@@ -11,8 +11,6 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/html5-el"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/virtualenv.el"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/gist-el"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/mongo-el"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/jenkins-watch"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/scala"))
 (load-file (expand-file-name "~/.emacs.d/cedet/common/cedet.el"))
 
@@ -48,6 +46,8 @@
       )
 ;; end code 
 
+(require 'protobuf-mode)
+
 ;; extend cc-mode to understand java annotations
 (require 'java-mode-indent-annotations)
 
@@ -78,6 +78,7 @@
 (setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
 (setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
+(setq auto-mode-alist  (cons '("\\.proto$" . protobuf-mode) auto-mode-alist))
 
 (require 'scala-mode-auto)
 
@@ -157,9 +158,7 @@
   ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#ffffff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundery "apple" :family "Monaco")))))
 
-(require 'mongo)
-(require 'bson)
-(require 'jenkins-watch)
+
 
 
 
