@@ -78,6 +78,7 @@
 (setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
 (setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
+(setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.proto$" . protobuf-mode) auto-mode-alist))
 
 (require 'scala-mode-auto)
