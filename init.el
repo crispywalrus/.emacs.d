@@ -12,6 +12,7 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/virtualenv.el"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/gist-el"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/scala"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/coffee-mode"))
 (load-file (expand-file-name "~/.emacs.d/cedet/common/cedet.el"))
 
 ;; these are set for OS X and brew
@@ -143,6 +144,10 @@
     '(add-to-list 'rng-schema-locating-files "~/.emacs.d/html5-el/schemas.xml"))
 
 (require 'gist)
+
+(require 'eredis)
+
+(require 'coffee-mode)
 
 (require 'whattf-dt)
 (custom-set-variables
