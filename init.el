@@ -3,17 +3,7 @@
 ;; crispy's init.el
 
 ;; (load (expand-file-name "~/.emacs.d/nxhtml/autostart.el"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/jdee/lisp"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/git-emacs"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/markdown-mode"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/org-mode/lisp"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/html5-el"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/virtualenv.el"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/gist-el"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/scala"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/coffee-mode"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/ensime/elisp"))
+;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/jdee/lisp"))
 (load-file (expand-file-name "~/.emacs.d/cedet/common/cedet.el"))
 
 ;; these are set for OS X and brew
@@ -48,6 +38,9 @@
       )
 ;; end code 
 
+;; local is my version of vendor.
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
+
 (require 'protobuf-mode)
 
 ;; extend cc-mode to understand java annotations
@@ -57,7 +50,7 @@
 ;; (require 'google-c-style)
 
 ;; actionscript editing 
-(require 'actionscript-mode)
+;; (require 'actionscript-mode)
 ;; (require 'ecmascript-mode)
 
 (require 'mustache-mode)
@@ -79,10 +72,11 @@
 
 (setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
 (setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
-(setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
-(setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.proto$" . protobuf-mode) auto-mode-alist))
 
+;; scala mode plus ensime for ehanced scalating!
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/scala"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/ensime/elisp"))
 (require 'scala-mode-auto)
 (require 'ensime)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
@@ -122,37 +116,43 @@
 ;; Enable SRecode (Template management) minor-mode.
 (global-srecode-minor-mode 1)
 
+;; use emacs as the system editor
+(server-start)
 
 (require 'groovy-mode)
 (add-to-list 'auto-mode-alist '("\\.groovy$" . groovy-mode))
 
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
-
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/org-mode/lisp"))
 (require 'org-install)
 
-(require 'git-emacs-autoloads)
-
-(server-start)
+;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/git-emacs"))
+;; (require 'git-emacs-autoloads)
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/magit"))
+(require 'magit)
 
 (require 'ido)
 
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/markdown-mode"))
 (require 'markdown-mode)
+(setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
+(setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist))
 
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/virtualenv.el"))
 (require 'virtualenv)
 
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/html5-el"))
 (eval-after-load "rng-loc"
     '(add-to-list 'rng-schema-locating-files "~/.emacs.d/html5-el/schemas.xml"))
+(require 'whattf-dt)
 
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/gist-el"))
 (require 'gist)
 
 (require 'eredis)
 
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/coffee-mode"))
 (require 'coffee-mode)
 
-(require 'whattf-dt)
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.

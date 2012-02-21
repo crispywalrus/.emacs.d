@@ -28,3 +28,6 @@
 [submodule "magit"]
 	path = magit
 	url = https://github.com/magit/magit.git
+[submodule "mongo-el"]
+	path = mongo-el
+	url = git@github.com:crispywalrus/mongo-el.git
