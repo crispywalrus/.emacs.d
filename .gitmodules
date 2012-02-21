@@ -31,3 +31,6 @@
 [submodule "mongo-el"]
 	path = mongo-el
 	url = git@github.com:crispywalrus/mongo-el.git
+[submodule "malabar-mode"]
+	path = malabar-mode
+	url = https://github.com/buzztaiki/malabar-mode.git
