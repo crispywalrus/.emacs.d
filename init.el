@@ -13,6 +13,7 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/gist-el"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/scala"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/coffee-mode"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/ensime/elisp"))
 (load-file (expand-file-name "~/.emacs.d/cedet/common/cedet.el"))
 
 ;; these are set for OS X and brew
@@ -83,6 +84,8 @@
 (setq auto-mode-alist  (cons '("\\.proto$" . protobuf-mode) auto-mode-alist))
 
 (require 'scala-mode-auto)
+(require 'ensime)
+(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 (setq auto-mode-alist  (cons '("\\.sbt$" . scala-mode) auto-mode-alist))
 
