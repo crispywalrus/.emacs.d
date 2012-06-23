@@ -3,7 +3,7 @@
 ;; crispy's init.el
 
 ;; (load (expand-file-name "~/.emacs.d/nxhtml/autostart.el"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/jdee/lisp"))
+;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/jdee/lisp"))
 
 ;; these are set for OS X and brew
 (add-to-list 'exec-path "/usr/local/bin")
