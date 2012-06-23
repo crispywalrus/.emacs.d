@@ -3,31 +3,44 @@
 ;; crispy's init.el
 
 ;; (load (expand-file-name "~/.emacs.d/nxhtml/autostart.el"))
-;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/jdee/lisp"))
-(load-file (expand-file-name "~/.emacs.d/cedet/common/cedet.el"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/jdee/lisp"))
 
 ;; these are set for OS X and brew
 (add-to-list 'exec-path "/usr/local/bin")
-(setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
+(add-to-list 'exec-path "/usr/local/sbin")
+(setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH") ":/usr/local/sbin"))
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
 ;; pop out compilation and grep windows.
 (setq-default indent-tabs-mode nil)
 (setq inhibit-startup-screen t)
 (put 'narrow-to-region 'disabled nil)
-(scroll-bar-mode nil)
+(scroll-bar-mode -1)
 (tool-bar-mode -1)
 (setq special-display-buffer-names '("*compilation*" "*grep*" "*Find*"))
 (setq-default debug-on-error nil)
+
+(defun fix-code-horror ( text replace min max )
+    (while (search-forward from nil t)
+      (replace-match to nil t)))
 
 ;; start code 
 (defun fix-format-buffer ()
   "indent, untabify and remove trailing whitespace for a buffer"
   (interactive)
   (save-excursion 
+    (c-set-style "crispy")
     (delete-trailing-whitespace)
-    (intend-region (point-min) (point-max))
-    (untabify (point-min) (point-max))))
+    (indent-region (point-min) (point-max))
+    (untabify (point-min) (point-max))
+    ;; (fix-code-horror "( " "(")
+    ;; (fix-code-horror "( " "(")
+    ;; (fix-code-horror " )" ")")
+    ;; (fix-code-horror " +" "+")
+    ;; (fix-code-horror "+ " "+")
+    ;; (fix-code-horror " ," ",")
+    ;; (fix-code-horror ", " ",")))
+))
 
 ;; the native os x version of emacs reports "ns" as the name of the
 ;; windowing system. X on os x (and everywhere else i've tested)
@@ -60,15 +73,24 @@
 ;; (defun crispy-c-mode-common-hook ()
 ;;   (google-set-c-style))
 ;; (add-hook 'c-mode-common-hook 'crispy-c-mode-common-hook)
+
 (defun crispy-java-mode-hook ()
   (progn
     (c-set-style "bsd")
     (setq c-basic-offset 4)
     ;; (c-toggle-auto-newline 1)
-    (c-set-offset 'substatement-open 0)
-    (java-mode-indent-annotations-setup)))
+     (c-set-offset 'substatement-open 0)
+     (java-mode-indent-annotations-setup)))
 
 (add-hook 'java-mode-hook 'crispy-java-mode-hook)
+
+(defun fix-format-buffer ()
+  "indent, untabify and remove trailing whitespace for a buffer"
+  (interactive)
+  (save-excursion 
+    (delete-trailing-whitespace)
+    (indent-region (point-min) (point-max))
+    (untabify (point-min) (point-max))))
 
 (setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
 (setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
@@ -86,35 +108,8 @@
 ;; Enable EDE (Project Management) features
 (global-ede-mode 1)
 
-;; Enable EDE for a pre-existing C++ project
-;; (ede-cpp-root-project "NAME" :file "~/myproject/Makefile")
-;; (ede-cpp-root-project "grapherd" :file "~/Development/crispy/grapherd/Makefile")
-
-;; Enabling Semantic (code-parsing, smart completion) features
-;; Select one of the following:
-
-;; * This enables the database and idle reparse engines
-(semantic-load-enable-minimum-features)
-
-;; * This enables some tools useful for coding, such as summary mode
-;;   imenu support, and the semantic navigator
-(semantic-load-enable-code-helpers)
-
-;; * This enables even more coding tools such as intellisense mode
-;;   decoration mode, and stickyfunc mode (plus regular code helpers)
-'' (semantic-load-enable-gaudy-code-helpers)
-
-;; * This enables the use of Exuberent ctags if you have it installed.
-;;   If you use C++ templates or boost, you should NOT enable it.
-;; (semantic-load-enable-all-exuberent-ctags-support)
-;;   Or, use one of these two types of support.
-;;   Add support for new languges only via ctags.
-;; (semantic-load-enable-primary-exuberent-ctags-support)
-;;   Add support for using ctags as a backup parser.
-;; (semantic-load-enable-secondary-exuberent-ctags-support)
-
-;; Enable SRecode (Template management) minor-mode.
-(global-srecode-minor-mode 1)
+;; (require 'semantic)
+(semantic-mode 1)
 
 ;; use emacs as the system editor
 (server-start)
@@ -124,11 +119,6 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/org-mode/lisp"))
 (require 'org-install)
-
-;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/git-emacs"))
-;; (require 'git-emacs-autoloads)
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/magit"))
-(require 'magit)
 
 (require 'ido)
 
@@ -158,6 +148,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(jenkins-api-url "http://f1tst-linbld100.f1tst.rl.com/jenkins/")
  '(scala-interpreter "/Applications/typesafe-stack/bin/scala")
  '(virtualenv-root "~/Development/crispy/pyEnvs"))
 
