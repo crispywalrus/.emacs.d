@@ -38,3 +38,6 @@
 [submodule "find-file-in-project"]
 	path = find-file-in-project
 	url = git://github.com/technomancy/find-file-in-project
+[submodule "egg"]
+	path = egg
+	url = https://github.com/byplayer/egg.git
