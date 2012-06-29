@@ -2,13 +2,32 @@
 ;;
 ;; crispy's init.el
 
-;; (load (expand-file-name "~/.emacs.d/nxhtml/autostart.el"))
-;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/jdee/lisp"))
+(setq brew-prefix "/usr/local")
+(setq seperator ":")
 
-;; these are set for OS X and brew
-(add-to-list 'exec-path "/usr/local/bin")
-(add-to-list 'exec-path "/usr/local/sbin")
-(setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH") ":/usr/local/sbin"))
+(defun chomp (str) 
+  "Remove trailing carriage returns/new lines from STR like perl chomp"
+  (if
+      (and
+       (stringp str)
+       (string-match "\r?\n$" str))
+      (replace-match "" t nil str)
+    str))
+
+;; these are set for OS X with brew
+(setenv "PATH" (concat
+                (concat brew-prefix "/bin" seperator)
+                (getenv "PATH") 
+                (concat seperator brew-prefix "/sbin")))
+
+
+(add-to-list 'exec-path (concat brew-prefix "/sbin"))
+(add-to-list 'exec-path (concat brew-prefix "/bin"))
+
+(add-to-list 'exec-path (concat
+                         (chomp
+                          (shell-command-to-string "brew --prefix coreutils"))
+                         "/libexec/gnubin"))
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
 ;; pop out compilation and grep windows.
@@ -142,6 +161,9 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/coffee-mode"))
 (require 'coffee-mode)
+
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/egg"))
+(require 'egg)
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.

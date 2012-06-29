@@ -4,3 +4,4 @@ tramp
 url
 *.elc
 .latest-build
+ede-projects.el
