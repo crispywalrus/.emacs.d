@@ -82,8 +82,7 @@
     (c-set-style "bsd")
     (setq c-basic-offset 4)
     ;; (c-toggle-auto-newline 1)
-     (c-set-offset 'substatement-open 0)
-     (java-mode-indent-annotations-setup)))
+     (c-set-offset 'substatement-open 0)))
 
 (add-hook 'java-mode-hook 'crispy-java-mode-hook)
 
