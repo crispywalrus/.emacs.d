@@ -2,32 +2,47 @@
 ;;
 ;; crispy's init.el
 
+;; system specific
+;; these are set for OS X with brew
 (setq brew-prefix "/usr/local")
 (setq seperator ":")
 
-(defun chomp (str) 
-  "Remove trailing carriage returns/new lines from STR like perl chomp"
-  (if
-      (and
-       (stringp str)
-       (string-match "\r?\n$" str))
-      (replace-match "" t nil str)
-    str))
-
-;; these are set for OS X with brew
 (setenv "PATH" (concat
                 (concat brew-prefix "/bin" seperator)
                 (getenv "PATH") 
                 (concat seperator brew-prefix "/sbin")))
 
-
 (add-to-list 'exec-path (concat brew-prefix "/sbin"))
 (add-to-list 'exec-path (concat brew-prefix "/bin"))
 
-(add-to-list 'exec-path (concat
-                         (chomp
-                          (shell-command-to-string "brew --prefix coreutils"))
-                         "/libexec/gnubin"))
+;; start code 
+(defun crispy-remove-regexp (reg str)
+  (if
+      (and
+       (stringp str)
+       (string-match reg str))
+      (replace-match "" t nil str)
+    str))
+  
+(defun chomp (str) 
+  "Remove trailing crlf from STR like perl chomp"
+  (crispy-remove-regexp ("\r?\n$" str)))
+
+(defun fix-format-buffer ()
+  "indent, untabify and remove trailing whitespace for a buffer"
+  (interactive)
+  (save-excursion 
+    (delete-trailing-whitespace)
+    (indent-region (point-min) (point-max))
+    (untabify (point-min) (point-max))
+    (replace-string "( " "(" nil (point-min) (point-max))
+    (replace-string " (" "(" nil (point-min) (point-max))
+    (replace-string " )" ")" nil (point-min) (point-max))
+    (replace-string " +" "+" nil (point-min) (point-max))
+    (replace-string "+ " "+" nil (point-min) (point-max))
+    (replace-string " ," "," nil (point-min) (point-max))
+    (replace-string ", " "," nil (point-min) (point-max))))
+;; end code 
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
 ;; pop out compilation and grep windows.
@@ -39,44 +54,13 @@
 (setq special-display-buffer-names '("*compilation*" "*grep*" "*Find*"))
 (setq-default debug-on-error nil)
 
-(defun fix-code-horror ( text replace min max )
-    (while (search-forward from nil t)
-      (replace-match to nil t)))
-
-;; start code 
-(defun fix-format-buffer ()
-  "indent, untabify and remove trailing whitespace for a buffer"
-  (interactive)
-  (save-excursion 
-    (c-set-style "crispy")
-    (delete-trailing-whitespace)
-    (indent-region (point-min) (point-max))
-    (untabify (point-min) (point-max))
-    ;; (fix-code-horror "( " "(")
-    ;; (fix-code-horror "( " "(")
-    ;; (fix-code-horror " )" ")")
-    ;; (fix-code-horror " +" "+")
-    ;; (fix-code-horror "+ " "+")
-    ;; (fix-code-horror " ," ",")
-    ;; (fix-code-horror ", " ",")))
-))
-
-;; the native os x version of emacs reports "ns" as the name of the
-;; windowing system. X on os x (and everywhere else i've tested)
-;; reports x.
-(if (eq window-system 'ns)
-      (custom-set-faces
-       '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#ffffff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundery "apple" :family "Monaco")))))
-      )
-;; end code 
-
 ;; local is my version of vendor.
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
 
 (require 'protobuf-mode)
 
 ;; extend cc-mode to understand java annotations
-(require 'java-mode-indent-annotations)
+;; (require 'java-mode-indent-annotations)
 
 ;; indenting etc. the google way
 ;; (require 'google-c-style)
@@ -103,14 +87,6 @@
 
 (add-hook 'java-mode-hook 'crispy-java-mode-hook)
 
-(defun fix-format-buffer ()
-  "indent, untabify and remove trailing whitespace for a buffer"
-  (interactive)
-  (save-excursion 
-    (delete-trailing-whitespace)
-    (indent-region (point-min) (point-max))
-    (untabify (point-min) (point-max))))
-
 (setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
 (setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.proto$" . protobuf-mode) auto-mode-alist))
@@ -133,6 +109,7 @@
 ;; use emacs as the system editor
 (server-start)
 
+;; groovy coding configuration
 (require 'groovy-mode)
 (add-to-list 'auto-mode-alist '("\\.groovy$" . groovy-mode))
 
@@ -159,9 +136,18 @@
 
 (require 'eredis)
 
+;; coffeescript coding
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/coffee-mode"))
 (require 'coffee-mode)
 
+(add-to-list 'exec-path (concat (chomp (shell-command-to-string "brew --prefix coreutils")) "/libexec/gnubin"))
+
+(setq erlang-root-dir (chomp (shell-command-to-string "brew --prefix erlang")))
+(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.6.7/emacs"))
+(add-to-list 'exec-path (concat erlang-root-dir "/bin"))
+(require 'erlang-start)
+
+;; git enhancements
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/egg"))
 (require 'egg)
 
@@ -181,3 +167,5 @@
   ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#ffffff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundery "apple" :family "Monaco")))))
 
+(add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/emacs-color-theme-solarized"))
+(load-theme 'solarized-dark t)
