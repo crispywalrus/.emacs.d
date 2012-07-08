@@ -4,25 +4,27 @@
 
 (defvar mvn-command-history nil  "Maven command history variable")
 
+(add-to-list 'compilation-error-regexp-alist 'maven)
+
+(add-to-list 'compilation-error-regexp-alist-alist
+       '(maven "\\[ERROR\\] \\(.+?\\):\\[\\([0-9]+\\),\\([0-9]+\\)\\].*"
+           1 2 3))
+
 (defun mvnfast() 
   (interactive)
-  (let ((fn (buffer-file-name)))
-    (let ((dir (file-name-directory fn)))
-      (while (and (not (file-exists-p (concat dir "/pom.xml")))
-                  (not (equal dir (file-truename (concat dir "/..")))))
-        (setq dir (file-truename (concat dir "/.."))))
-      (if (not (file-exists-p (concat dir "/pom.xml")))
-          (message "No pom.xml found")
-        (compile
-         (concat "mvn -f " dir "/pom.xml install -Dmaven.test.skip=true"))))))
-
-(define-key java-mode-map "\C-c\C-x5" 'mvnfast)
+  (let ((dir default-directory))
+    (while (and (not (file-exists-p (concat dir "/pom.xml")))
+                (not (equal dir (file-truename (concat dir "/..")))))
+      (setq dir (file-truename (concat dir "/.."))))
+    (if (not (file-exists-p (concat dir "/pom.xml")))
+        (message "No pom.xml found")
+      (compile
+       (concat "mvn -f " dir "/pom.xml install -Dmaven.test.skip=true")))))
 
 (defun mvn(&optional args)
   "Runs maven in the current project. Starting at the directoy where the file being vsisited resides, a search is   made for pom.xml recsurively. A maven command is made from the first directory where the pom.xml file is found is then displayed  in the minibuffer. The command can be edited as needed and then executed. Errors are navigate to as in any other compile mode"
   (interactive)
-  (let ((fn (buffer-file-name)))
-    (let ((dir (file-name-directory fn)))
+  (let ((dir default-directory))
       (while (and (not (file-exists-p (concat dir "/pom.xml")))
                   (not (equal dir (file-truename (concat dir "/..")))))
         (setq dir (file-truename (concat dir "/.."))))
@@ -31,6 +33,10 @@
         (compile
          (read-from-minibuffer "Command: "
                                (concat "mvn -f " dir "/pom.xml install -Dmaven.test.skip=true")
-                               nil nil 'mvn-command-history))))))
+                               nil nil 'mvn-command-history)))))
+
+(define-key java-mode-map "\C-c\C-x5" 'mvnfast)
 
 ;; String pattern for locating errors in maven output. This assumes a Windows drive letter at the beginning(add-to-list 'compilation-error-regexp-alist '("^\\([a-zA-Z]:.*\\):\\[\\([0-9]+\\),\\([0-9]+\\)\\]" 1 2 3))
+
+(provide 'maven)

@@ -1,10 +1,14 @@
 (progn
-  (cd "~/.emacs.d/src")
-  (normal-top-level-add-subdirs-to-load-path)) ;;add all subdirectories of ~/.emacs.d/src to load path
+  (cd "~/.emacs.d/scala")
+  ;;add all subdirectories of ~/.emacs.d/scala to load path
+  (normal-top-level-add-subdirs-to-load-path))
 
-(setq exec-path (append exec-path (list "/home/seth/.opt/scala/bin" ))) ;;change to location of scala bin!!! necessary for comint.
+;; necessary for comint.
+(setq exec-path (append exec-path (list (expand-file-name "~/.opt/scala/bin"))))
+
 (require 'scala-mode-auto)
 (require 'ensime)
+
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 (eval-after-load "scala-mode" 
@@ -27,5 +31,7 @@
     (switch-to-buffer-other-window
      (get-buffer-create (ensime-sbt-build-buffer-name)))
     (switch-to-buffer-other-window c))) 
+
 (setq exec-path
-      (append exec-path (list "~/.opt/scala/bin"))) ;;REPLACE THIS with the directory of your scalac executable!
+      ;;REPLACE THIS with the directory of your scalac executable!
+      (append exec-path (list "~/.opt/scala/bin")))

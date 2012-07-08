@@ -82,7 +82,8 @@
     (c-set-style "bsd")
     (setq c-basic-offset 4)
     ;; (c-toggle-auto-newline 1)
-     (c-set-offset 'substatement-open 0)))
+    (c-set-offset 'substatement-open 0)
+    (c-set-offset 'annotation-var-cont 0)))
 
 (add-hook 'java-mode-hook 'crispy-java-mode-hook)
 
@@ -98,6 +99,10 @@
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 (setq auto-mode-alist  (cons '("\\.sbt$" . scala-mode) auto-mode-alist))
+
+;; make maven work (such as it is)
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/crispy"))
+(require 'maven)
 
 ;; Enable EDE (Project Management) features
 (global-ede-mode 1)
