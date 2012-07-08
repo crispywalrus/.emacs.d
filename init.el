@@ -117,7 +117,6 @@
 (require 'groovy-mode)
 (add-to-list 'auto-mode-alist '("\\.groovy$" . groovy-mode))
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/org-mode/lisp"))
 (require 'org-install)
 
 (require 'ido)
