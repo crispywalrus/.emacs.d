@@ -154,6 +154,9 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/egg"))
 (require 'egg)
 
+(add-to-list 'load-path (expand-file-name "~/.emecs.d/find-file-in-project"))
+(require 'find-file-in-project)
+
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
