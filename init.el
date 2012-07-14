@@ -57,18 +57,6 @@
 ;; local is my version of vendor.
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
 
-(require 'protobuf-mode)
-
-;; extend cc-mode to understand java annotations
-;; (require 'java-mode-indent-annotations)
-
-;; indenting etc. the google way
-;; (require 'google-c-style)
-
-;; actionscript editing 
-;; (require 'actionscript-mode)
-;; (require 'ecmascript-mode)
-
 (require 'mustache-mode)
 
 ;; programming language hook functions. all dependent packages should
@@ -87,8 +75,10 @@
 
 (add-hook 'java-mode-hook 'crispy-java-mode-hook)
 
-(setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
-(setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
+;; (setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
+;; (setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
+
+(require 'protobuf-mode)
 (setq auto-mode-alist  (cons '("\\.proto$" . protobuf-mode) auto-mode-alist))
 
 ;; scala mode plus ensime for ehanced scalating!
@@ -154,7 +144,7 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/egg"))
 (require 'egg)
 
-(add-to-list 'load-path (expand-file-name "~/.emecs.d/find-file-in-project"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/find-file-in-project"))
 (require 'find-file-in-project)
 
 (custom-set-variables
@@ -175,3 +165,9 @@
 
 (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/emacs-color-theme-solarized"))
 (load-theme 'solarized-dark t)
+
+(require 'package)
+
+(add-to-list 'package-archives '("marmalade" .
+                                 "http://marmalade-repo.org/packages/"))
+(package-initialize)
