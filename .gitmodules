@@ -7,9 +7,6 @@
 [submodule "virtualenv.el"]
 	path = virtualenv.el
 	url = https://github.com/aculich/virtualenv.el.git
-[submodule "gist-el"]
-	path = gist-el
-	url = https://github.com/defunkt/gist.el.git
 [submodule "emacs-color-theme-solarized"]
 	path = emacs-color-theme-solarized
 	url = https://github.com/sellout/emacs-color-theme-solarized.git

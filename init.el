@@ -124,8 +124,6 @@
     '(add-to-list 'rng-schema-locating-files "~/.emacs.d/html5-el/schemas.xml"))
 (require 'whattf-dt)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/gist-el"))
-(require 'gist)
 
 (require 'eredis)
 
@@ -148,19 +146,19 @@
 (require 'find-file-in-project)
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(jenkins-api-url "http://f1tst-linbld100.f1tst.rl.com/jenkins/")
- '(scala-interpreter "/Applications/typesafe-stack/bin/scala")
+ '(scala-interpreter "/usr/local/bin/scala")
  '(virtualenv-root "~/Development/crispy/pyEnvs"))
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#ffffff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundery "apple" :family "Monaco")))))
 
 (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/emacs-color-theme-solarized"))
