@@ -77,6 +77,7 @@
    ((equal info "test") ensime-db-ui-test-handler)
    ((ensime-db-value-p info) ensime-db-ui-value-handler)
    ((ensime-db-backtrace-p info) ensime-db-ui-backtrace-handler)
+   ((plist-get info :bytecode) ensime-ui-method-bytecode-handler)
    (t (error
        (format "Can't find ui handler for: %s" info)))
    ))
@@ -166,6 +167,9 @@
 	  ;; Set cursor to point to the new item
 	  (setq ensime-ui-nav-history-cursor 0))
 
+	(dolist (ov (overlays-in (point-min) (point-max)))
+	  (delete-overlay ov))
+
 	(let ((handler (ensime-ui-nav-handler-for-info info)))
 	  (setq ensime-ui-nav-handler handler)
 
@@ -187,8 +191,10 @@
 	  (setq ensime-buffer-connection connection)
 
 	  ;; Call handler's init routine...
-	  (funcall (plist-get handler :init) info))
-	(setq buffer-read-only t))
+	  (funcall (plist-get handler :init) info)
+
+	  (setq buffer-read-only (not (plist-get handler :writable)))
+	  ))
 
       (if preserve-point
 	  (goto-char start-point)

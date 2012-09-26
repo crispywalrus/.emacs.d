@@ -415,6 +415,10 @@ Do not show 'Writing..' message."
         (add-hook 'ensime-source-buffer-loaded-hook
                   'ensime-sem-high-refresh-hook t)
 
+        (add-hook 'ensime-source-buffer-loaded-hook
+                  'ensime-typecheck-current-file)
+
+
         (when ensime-tooltip-hints
           (add-hook 'tooltip-functions 'ensime-tooltip-handler)
           (make-local-variable 'track-mouse)
@@ -441,6 +445,9 @@ Do not show 'Writing..' message."
 
       (remove-hook 'ensime-source-buffer-loaded-hook
                    'ensime-sem-high-refresh-hook)
+
+      (remove-hook 'ensime-source-buffer-loaded-hook
+                   'ensime-typecheck-current-file)
 
       (remove-hook 'tooltip-functions 'ensime-tooltip-handler)
       (make-local-variable 'track-mouse)
@@ -497,15 +504,15 @@ Do not show 'Writing..' message."
     (let* ((point (posn-point (event-end event)))
            (ident (tooltip-identifier-from-point point))
            (note-overlays (ensime-overlays-at point))
-	   (val-at-pt (ensime-db-value-for-name-at-point point)))
+	   (val-at-pt (ensime-rpc-debug-to-string
+		       (ensime-db-location-at-point point))))
 
 
       (cond
 
        ;; If debugger is active and we can get the value of the symbol
        ;; at the point, show it in the tooltip.
-       (val-at-pt (ensime-tooltip-show-message (ensime-db-value-short-name
-						val-at-pt)) t)
+       (val-at-pt (ensime-tooltip-show-message val-at-pt) t)
 
        ;; If error or warning overlays exist,
        ;; show that message..
@@ -673,8 +680,7 @@ Analyzer will be restarted. All source will be recompiled."
 
 
 (defvar ensime-inferior-server-args nil
-  "A buffer local variable in the inferior proccess.
-See `ensime-start'.")
+  "A buffer local variable in the inferior proccess. See `ensime-start'.")
 
 (defun ensime-inferior-server-args (process)
   "Return the initial process arguments.
@@ -760,8 +766,8 @@ If not, message the user."
 
 (defun ensime-temp-file-name (name)
   "Return the path of a temp file with filename 'name'."
-  (concat (file-name-as-directory (ensime-temp-directory))
-	  name))
+  (expand-file-name
+   (concat (file-name-as-directory (ensime-temp-directory)) name)))
 
 (defun ensime-temp-directory ()
   "Return the directory name of the system's temporary file dump."
@@ -2032,7 +2038,8 @@ This idiom is preferred over `lexical-let'."
 	   (ensime-clear-notes 'java))
 
 	  ((:debug-event evt)
-	   (ensime-db-handle-event evt))
+	   (ensime-db-handle-event evt)
+	   (ensime-event-sig :debug-event evt))
 
 	  ((:channel-send id msg)
 	   (ensime-channel-send (or (ensime-find-channel id)
@@ -2931,8 +2938,45 @@ any buffer visiting the given file."
 	    (end (cadr range)))
 	(ensime-set-selection start end)))))
 
+(defun ensime-inspect-bytecode ()
+  "Show the bytecode for the current method."
+  (interactive)
+  (let ((bc (ensime-rpc-method-bytecode buffer-file-name (current-line))))
+    (if (not bc)
+	(message "Could not find bytecode.")
+      (progn
+	(ensime-ui-show-nav-buffer "*ensime-method-bytecode-buffer*" bc t)
+	))))
+
+(defvar ensime-ui-method-bytecode-handler
+  (list
+   :init (lambda (info)
+	   (ensime-ui-insert-method-bytecode info))
+   :update (lambda (info))
+   :help-text "Press q to quit."
+   :writable nil
+   :keymap `()
+   ))
+
+(defun ensime-ui-insert-method-bytecode (val)
+  (destructuring-bind
+      (&key class-name name bytecode &allow-other-keys) val
+    (insert class-name)
+    (insert "\n")
+    (insert name)
+    (insert "\n\n")
+    (dolist (op bytecode)
+      (ensime-insert-with-face (car op) 'font-lock-constant-face)
+      (insert " ")
+      (ensime-insert-with-face (cadr op) 'font-lock-variable-name-face)
+      (insert "\n")
+      )))
 
 ;; Basic RPC calls
+
+(defun ensime-rpc-method-bytecode (file line)
+  (ensime-eval
+   `(swank:method-bytecode ,file ,line)))
 
 (defun ensime-rpc-debug-active-vm ()
   (ensime-eval
@@ -2946,25 +2990,21 @@ any buffer visiting the given file."
   (ensime-eval-async
    `(swank:debug-backtrace ,thread-id ,index ,count) continue))
 
-(defun ensime-rpc-debug-value-for-name (thread-id name)
+(defun ensime-rpc-debug-locate-name (thread-id name)
   (ensime-eval
-   `(swank:debug-value-for-name ,thread-id ,name)))
+   `(swank:debug-locate-name ,thread-id ,name)))
 
-(defun ensime-rpc-debug-value-for-field (object-id name)
+(defun ensime-rpc-debug-value (location)
   (ensime-eval
-   `(swank:debug-value-for-field ,object-id ,name)))
+   `(swank:debug-value ,location)))
 
-(defun ensime-rpc-debug-value-for-stack-var (thread-id frame offset)
+(defun ensime-rpc-debug-to-string (location)
   (ensime-eval
-   `(swank:debug-value-for-stack-var ,thread-id ,frame ,offset)))
+   `(swank:debug-to-string ,location)))
 
-(defun ensime-rpc-debug-value-for-index (object-id index)
+(defun ensime-rpc-debug-set-value (location new-val)
   (ensime-eval
-   `(swank:debug-value-for-index ,object-id ,index)))
-
-(defun ensime-rpc-debug-value-for-id (object-id)
-  (ensime-eval
-   `(swank:debug-value-for-id ,object-id)))
+   `(swank:debug-set-value ,location ,new-val)))
 
 (defun ensime-rpc-debug-start (command-line)
   (ensime-eval
@@ -4253,6 +4293,15 @@ PROP is the name of a text property."
   (assert (get-text-property (point) prop))
   (let ((end (next-single-char-property-change (point) prop)))
     (list (previous-single-char-property-change end prop) end)))
+
+(defun ensime-chomp (str)
+  "Chomp leading and tailing whitespace from STR."
+  (while (string-match "\\`\n+\\|^\\s-+\\|\\s-+$\\|\n+\\'"
+		       str)
+    (setq str (replace-match "" t t str)))
+  str)
+
+
 
 
 ;; Testing helpers
