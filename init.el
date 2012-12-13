@@ -59,9 +59,15 @@
 ;; local is my version of vendor.
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
 
+(require 'mustache-mode)
+
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/pandoc"))
 (require 'pandoc-mode)
 
-(require 'mustache-mode)
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/ghc-mod"))
+(require 'ghc)
+(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+(setq haskell-literate-default 'tex)
 
 ;; programming language hook functions. all dependent packages should
 ;; have been loaded before here
@@ -86,10 +92,13 @@
 (setq auto-mode-alist  (cons '("\\.proto$" . protobuf-mode) auto-mode-alist))
 
 ;; scala mode plus ensime for ehanced scalating!
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/scala"))
+;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/scala"))
+;;; try out scala-mode2
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/scala-mode2"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/ensime/elisp"))
-(require 'scala-mode-auto)
+;; (require 'scala-mode-auto)
 (require 'ensime)
+(require 'scala-mode)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 (setq auto-mode-alist  (cons '("\\.sbt$" . scala-mode) auto-mode-alist))
@@ -170,6 +179,7 @@
 
 (require 'package)
 
-(add-to-list 'package-archives '("marmalade" .
-                                 "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+
 (package-initialize)

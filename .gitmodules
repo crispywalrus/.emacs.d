@@ -28,3 +28,6 @@
 [submodule "egg"]
 	path = egg
 	url = https://github.com/byplayer/egg.git
+[submodule "scala-mode2"]
+	path = scala-mode2
+	url = https://github.com/hvesalai/scala-mode2.git
