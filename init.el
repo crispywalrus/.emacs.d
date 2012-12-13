@@ -8,12 +8,14 @@
 (setq seperator ":")
 
 (setenv "PATH" (concat
-                (concat brew-prefix "/bin" seperator)
-                (getenv "PATH") 
+                (concat brew-prefix "/bin")
+                (concat seperator (expand-file-name "~/.cabal/bin"))
+                (concat seperator (getenv "PATH"))
                 (concat seperator brew-prefix "/sbin")))
 
 (add-to-list 'exec-path (concat brew-prefix "/sbin"))
 (add-to-list 'exec-path (concat brew-prefix "/bin"))
+(add-to-list 'exec-path (expand-file-name "~/.cabal/bin"))
 
 ;; start code 
 (defun crispy-remove-regexp (reg str)
@@ -56,6 +58,8 @@
 
 ;; local is my version of vendor.
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
+
+(require 'pandoc-mode)
 
 (require 'mustache-mode)
 
