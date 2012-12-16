@@ -13,9 +13,6 @@
 [submodule "coffee-mode"]
 	path = coffee-mode
 	url = https://github.com/defunkt/coffee-mode.git
-[submodule "mongo-el"]
-	path = mongo-el
-	url = git@github.com:crispywalrus/mongo-el.git
 [submodule "js2-mode"]
 	path = js2-mode
 	url = https://github.com/mooz/js2-mode.git
