@@ -140,6 +140,12 @@
 
 (require 'eredis)
 
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/shadchen-el"))
+(require 'shadchen)
+
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/gazelle"))
+(require 'gazelle)
+
 ;; coffeescript coding
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/coffee-mode"))
 (require 'coffee-mode)
