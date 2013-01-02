@@ -152,8 +152,8 @@
 (require 'erlang-start)
 
 ;; git enhancements
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/egg"))
-(require 'egg)
+;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/egg"))
+;; (require 'egg)
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/find-file-in-project"))
 (require 'find-file-in-project)
