@@ -57,7 +57,7 @@
 (setq-default debug-on-error nil)
 
 ;; local is my version of vendor.
-;(add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
 
 (require 'mustache-mode)
 
@@ -98,7 +98,7 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/ensime/elisp"))
 ;; (require 'scala-mode-auto)
 (require 'ensime)
-(require 'scala-mode)
+(require 'scala-mode2)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 (setq auto-mode-alist  (cons '("\\.sbt$" . scala-mode) auto-mode-alist))
@@ -156,10 +156,6 @@
 (add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.6.8/emacs"))
 (add-to-list 'exec-path (concat erlang-root-dir "/bin"))
 (require 'erlang-start)
-
-;; git enhancements
-;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/egg"))
-;; (require 'egg)
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/find-file-in-project"))
 (require 'find-file-in-project)
