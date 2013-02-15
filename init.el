@@ -132,12 +132,6 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/virtualenv.el"))
 (require 'virtualenv)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/html5-el"))
-(eval-after-load "rng-loc"
-    '(add-to-list 'rng-schema-locating-files "~/.emacs.d/html5-el/schemas.xml"))
-(require 'whattf-dt)
-
-
 (require 'eredis)
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/shadchen-el"))
@@ -145,10 +139,6 @@
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/gazelle"))
 (require 'gazelle)
-
-;; coffeescript coding
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/coffee-mode"))
-(require 'coffee-mode)
 
 (add-to-list 'exec-path (concat (chomp (shell-command-to-string "brew --prefix coreutils")) "/libexec/gnubin"))
 
