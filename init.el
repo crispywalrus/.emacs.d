@@ -53,7 +53,7 @@
 (put 'narrow-to-region 'disabled nil)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
-;; (setq special-display-buffer-names '("*compilation*" "*grep*" "*Find*"))
+(setq special-display-buffer-names '("*compilation*" "*grep*" "*Find*"))
 (setq-default debug-on-error nil)
 
 ;; local is my version of vendor.
@@ -143,7 +143,7 @@
 (add-to-list 'exec-path (concat (chomp (shell-command-to-string "brew --prefix coreutils")) "/libexec/gnubin"))
 
 (setq erlang-root-dir (chomp (shell-command-to-string "brew --prefix erlang")))
-(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.6.8/emacs"))
+(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.6.10/emacs"))
 (add-to-list 'exec-path (concat erlang-root-dir "/bin"))
 (require 'erlang-start)
 
