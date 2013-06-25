@@ -157,6 +157,7 @@
  ;; If there is more than one, they won't work right.
  '(elnode-do-init nil)
  '(jenkins-api-url "http://f1tst-linbld100.f1tst.rl.com/jenkins/")
+ '(scala-indent:align-parameters t)
  '(scala-interpreter "/usr/local/bin/scala")
  '(virtualenv-root "~/Development/crispy/pyEnvs"))
 
