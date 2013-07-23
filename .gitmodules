@@ -10,9 +10,6 @@
 [submodule "js2-mode"]
 	path = js2-mode
 	url = https://github.com/mooz/js2-mode.git
-[submodule "swank-clojure"]
-	path = swank-clojure
-	url = git://github.com/technomancy/swank-clojure.git
 [submodule "find-file-in-project"]
 	path = find-file-in-project
 	url = git://github.com/technomancy/find-file-in-project
