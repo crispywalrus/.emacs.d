@@ -17,18 +17,12 @@
 (add-to-list 'exec-path (concat brew-prefix "/bin"))
 (add-to-list 'exec-path (expand-file-name "~/.cabal/bin"))
 
-;; start code 
-(defun crispy-remove-regexp (reg str)
-  (if
-      (and
-       (stringp str)
-       (string-match reg str))
-      (replace-match "" t nil str)
-    str))
-  
-(defun chomp (str) 
-  "Remove trailing crlf from STR like perl chomp"
-  (crispy-remove-regexp ("\r?\n$" str)))
+(defun chomp (str)
+  "Chomp leading and tailing whitespace from STR."
+  (while (string-match "\\`\n+\\|^\\s-+\\|\\s-+$\\|\n+\\'"
+                       str)
+    (setq str (replace-match "" t t str)))
+  str)
 
 (defun fix-format-buffer ()
   "indent, untabify and remove trailing whitespace for a buffer"
@@ -74,6 +68,7 @@
 ;; (defun crispy-c-mode-common-hook ()
 ;;   (google-set-c-style))
 ;; (add-hook 'c-mode-common-hook 'crispy-c-mode-common-hook)
+(setenv "JAVA_HOME" (chomp (shell-command-to-string "/usr/libexec/java_home")))
 
 (defun crispy-java-mode-hook ()
   (progn
@@ -133,6 +128,7 @@
 (require 'virtualenv)
 
 (require 'eredis)
+(require 'redis-cli-mode)
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/shadchen-el"))
 (require 'shadchen)
@@ -143,7 +139,7 @@
 (add-to-list 'exec-path (concat (chomp (shell-command-to-string "brew --prefix coreutils")) "/libexec/gnubin"))
 
 (setq erlang-root-dir (chomp (shell-command-to-string "brew --prefix erlang")))
-(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.6.8/emacs"))
+(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.6.12/emacs"))
 (add-to-list 'exec-path (concat erlang-root-dir "/bin"))
 (require 'erlang-start)
 
