@@ -33,4 +33,4 @@
 
 (defalias 'redis-cli 'inferior-redis)
 
-(provide 'inferior-redis-mode)
+(provide 'redis-cli-mode)
