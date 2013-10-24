@@ -11,11 +11,13 @@
                 (concat brew-prefix "/bin")
                 (concat seperator (expand-file-name "~/.cabal/bin"))
                 (concat seperator (getenv "PATH"))
-                (concat seperator brew-prefix "/sbin")))
+                (concat seperator brew-prefix "/sbin")
+                (concat seperator brew-prefix "/share/npm/bin")))
 
 (add-to-list 'exec-path (concat brew-prefix "/sbin"))
 (add-to-list 'exec-path (concat brew-prefix "/bin"))
 (add-to-list 'exec-path (expand-file-name "~/.cabal/bin"))
+(add-to-list 'exec-path "/usr/local/share/npm/bin/")
 
 (defun chomp (str)
   "Chomp leading and tailing whitespace from STR."
