@@ -19,6 +19,3 @@
 [submodule "shadchen-el"]
 	path = shadchen-el
 	url = https://github.com/VincentToups/shadchen-el.git
-[submodule "gazelle"]
-	path = gazelle
-	url = https://github.com/VincentToups/gazelle.git
