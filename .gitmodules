@@ -13,9 +13,6 @@
 [submodule "find-file-in-project"]
 	path = find-file-in-project
 	url = git://github.com/technomancy/find-file-in-project
-[submodule "scala-mode2"]
-	path = scala-mode2
-	url = https://github.com/hvesalai/scala-mode2.git
 [submodule "shadchen-el"]
 	path = shadchen-el
 	url = https://github.com/VincentToups/shadchen-el.git

@@ -57,9 +57,6 @@
 
 (require 'mustache-mode)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/pandoc"))
-(require 'pandoc-mode)
-
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/ghc-mod"))
 (require 'ghc)
 (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
@@ -88,11 +85,13 @@
 (require 'protobuf-mode)
 (setq auto-mode-alist  (cons '("\\.proto$" . protobuf-mode) auto-mode-alist))
 
+(package-initialize)
+
 ;; scala mode plus ensime for ehanced scalating!
 ;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/scala"))
 ;;; try out scala-mode2
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/scala-mode2"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/ensime/elisp"))
+;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/scala-mode2"))
+;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/ensime/elisp"))
 ;; (require 'scala-mode-auto)
 (require 'ensime)
 (require 'scala-mode2)
@@ -121,7 +120,7 @@
 
 (require 'ido)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/markdown-mode"))
+; (add-to-list 'load-path (expand-file-name "~/.emacs.d/markdown-mode"))
 (require 'markdown-mode)
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist))
@@ -138,7 +137,7 @@
 (add-to-list 'exec-path (concat (chomp (shell-command-to-string "brew --prefix coreutils")) "/libexec/gnubin"))
 
 (setq erlang-root-dir (chomp (shell-command-to-string "brew --prefix erlang")))
-(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.6.13/emacs"))
+(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.6.15/emacs"))
 (add-to-list 'exec-path (concat erlang-root-dir "/bin"))
 (require 'erlang-start)
 
@@ -168,7 +167,10 @@
 
 (require 'package)
 
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-;; (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-;; (package-initialize)
+(require 'pandoc-mode)
+
+(projectile-global-mode)
+(setq projectile-completion-system 'grizzl)
