@@ -19,8 +19,8 @@
 (add-to-list 'exec-path (expand-file-name "~/.cabal/bin"))
 (add-to-list 'exec-path "/usr/local/share/npm/bin/")
 
-(defun chomp (str)
-  "Chomp leading and tailing whitespace from STR."
+(defun trimstr (str)
+  "trim off leading and tailing whitespace from STR."
   (while (string-match "\\`\n+\\|^\\s-+\\|\\s-+$\\|\n+\\'"
                        str)
     (setq str (replace-match "" t t str)))
@@ -67,7 +67,7 @@
 ;; (defun crispy-c-mode-common-hook ()
 ;;   (google-set-c-style))
 ;; (add-hook 'c-mode-common-hook 'crispy-c-mode-common-hook)
-(setenv "JAVA_HOME" (chomp (shell-command-to-string "/usr/libexec/java_home")))
+(setenv "JAVA_HOME" (trimstr (shell-command-to-string "/usr/libexec/java_home")))
 
 (defun crispy-java-mode-hook ()
   (progn
@@ -125,24 +125,17 @@
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist))
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/virtualenv.el"))
-(require 'virtualenv)
-
 (require 'eredis)
 (require 'redis-cli-mode)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/shadchen-el"))
-(require 'shadchen)
+(add-to-list 'exec-path (concat (trimstr (shell-command-to-string "brew --prefix coreutils")) "/libexec/gnubin"))
 
-(add-to-list 'exec-path (concat (chomp (shell-command-to-string "brew --prefix coreutils")) "/libexec/gnubin"))
-
-(setq erlang-root-dir (chomp (shell-command-to-string "brew --prefix erlang")))
+;; despite being able to ask brew where erlang is we still have to
+;; hardcode a constant for the erlang tools version
+(setq erlang-root-dir (trimstr (shell-command-to-string "brew --prefix erlang")))
 (add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.6.15/emacs"))
 (add-to-list 'exec-path (concat erlang-root-dir "/bin"))
 (require 'erlang-start)
-
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/find-file-in-project"))
-(require 'find-file-in-project)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
