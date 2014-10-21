@@ -14,6 +14,7 @@
                 (concat seperator brew-prefix "/sbin")
                 (concat seperator brew-prefix "/share/npm/bin")))
 
+(add-to-list 'exec-path (concat brew-prefix "/opt/coreutils/libexec/gnubin"))
 (add-to-list 'exec-path (concat brew-prefix "/sbin"))
 (add-to-list 'exec-path (concat brew-prefix "/bin"))
 (add-to-list 'exec-path (expand-file-name "~/.cabal/bin"))
@@ -79,20 +80,18 @@
 
 (add-hook 'java-mode-hook 'crispy-java-mode-hook)
 
-;; (setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
-;; (setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
+(setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
+(setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
+
+(package-initialize)
 
 (require 'protobuf-mode)
 (setq auto-mode-alist  (cons '("\\.proto$" . protobuf-mode) auto-mode-alist))
 
-(package-initialize)
 
 ;; scala mode plus ensime for ehanced scalating!
 ;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/scala"))
 ;;; try out scala-mode2
-;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/scala-mode2"))
-;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/ensime/elisp"))
-;; (require 'scala-mode-auto)
 (require 'ensime)
 (require 'scala-mode2)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
@@ -103,24 +102,13 @@
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/crispy"))
 (require 'maven)
 
-;; Enable EDE (Project Management) features
-(global-ede-mode 1)
-
-;; (require 'semantic)
-(semantic-mode 1)
-
 ;; use emacs as the system editor
 (server-start)
-
-;; groovy coding configuration
-(require 'groovy-mode)
-(add-to-list 'auto-mode-alist '("\\.groovy$" . groovy-mode))
 
 (require 'org-install)
 
 (require 'ido)
 
-; (add-to-list 'load-path (expand-file-name "~/.emacs.d/markdown-mode"))
 (require 'markdown-mode)
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist))
@@ -133,7 +121,7 @@
 ;; despite being able to ask brew where erlang is we still have to
 ;; hardcode a constant for the erlang tools version
 (setq erlang-root-dir (trimstr (shell-command-to-string "brew --prefix erlang")))
-(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.6.15/emacs"))
+(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.7/emacs"))
 (add-to-list 'exec-path (concat erlang-root-dir "/bin"))
 (require 'erlang-start)
 
@@ -155,8 +143,8 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#ffffff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundery "apple" :family "Monaco")))))
 
-(add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/emacs-color-theme-solarized"))
-(load-theme 'solarized-dark t)
+;; (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/emacs-color-theme-solarized"))
+;; (load-theme 'solarized-dark t)
 
 (require 'package)
 
