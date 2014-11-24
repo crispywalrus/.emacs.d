@@ -11,3 +11,4 @@ var
 elnode
 projectile-bookmarks.eld
 projectile.cache
+eshell/*

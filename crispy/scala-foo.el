@@ -3,9 +3,6 @@
   ;;add all subdirectories of ~/.emacs.d/scala to load path
   (normal-top-level-add-subdirs-to-load-path))
 
-;; necessary for comint.
-(setq exec-path (append exec-path (list (expand-file-name "~/.opt/scala/bin"))))
-
 (require 'scala-mode-auto)
 (require 'ensime)
 
@@ -31,7 +28,3 @@
     (switch-to-buffer-other-window
      (get-buffer-create (ensime-sbt-build-buffer-name)))
     (switch-to-buffer-other-window c))) 
-
-(setq exec-path
-      ;;REPLACE THIS with the directory of your scalac executable!
-      (append exec-path (list "~/.opt/scala/bin")))
