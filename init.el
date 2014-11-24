@@ -100,7 +100,8 @@
 
 ;; make maven work (such as it is)
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/crispy"))
-(require 'maven)
+(require 'mvn-foo)
+(require 'eshell-foo)
 
 ;; use emacs as the system editor
 (server-start)

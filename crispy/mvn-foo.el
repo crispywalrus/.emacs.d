@@ -29,4 +29,4 @@ future direct execution"
                                (concat "mvn -f " dir "/pom.xml clean install")
                                nil nil 'mvn-command-history)))))
 
-(provide 'maven)
+(provide 'mvn-foo)

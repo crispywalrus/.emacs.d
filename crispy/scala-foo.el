@@ -28,3 +28,4 @@
     (switch-to-buffer-other-window
      (get-buffer-create (ensime-sbt-build-buffer-name)))
     (switch-to-buffer-other-window c))) 
+(provide 'scala-foo)
