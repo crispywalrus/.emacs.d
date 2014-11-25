@@ -56,13 +56,6 @@
 ;; local is my version of vendor.
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
 
-(require 'mustache-mode)
-
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/ghc-mod"))
-(require 'ghc)
-(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
-(setq haskell-literate-default 'tex)
-
 ;; programming language hook functions. all dependent packages should
 ;; have been loaded before here
 ;; (defun crispy-c-mode-common-hook ()
@@ -235,6 +228,13 @@ static char *gnus-pointer[] = {
 
 (require 'pandoc-mode)
 
+(require 'mustache-mode)
+
+(require 'ghc)
+(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+(setq haskell-literate-default 'tex)
+
+
 (projectile-global-mode)
 (setq projectile-completion-system 'grizzl)
 (custom-set-faces
@@ -243,3 +243,4 @@ static char *gnus-pointer[] = {
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+

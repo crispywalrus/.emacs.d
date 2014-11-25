@@ -1,8 +1,8 @@
-;; This is just a simple mode for interacting with an inferior Gosu process.
+;; This is just a simple mode for interacting with an inferior redis-cli.
 ;;
 ;; This mode is based on comint, which is the base on which all respectable 
 ;; interactive process modes like shell and ielm are based. This mode is really
-;; simple--it only sets the appropriate command ("gosu -i") and the name of the
+;; simple--it only sets the appropriate command ("redis-cli") and the name of the
 ;; buffer.
 (require 'comint)
 
