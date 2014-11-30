@@ -232,6 +232,7 @@ static char *gnus-pointer[] = {
 (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
 (setq haskell-literate-default 'tex)
 
+(require 'alchemist)
 
 (projectile-global-mode)
 (setq projectile-completion-system 'grizzl)
