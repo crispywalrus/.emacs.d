@@ -87,7 +87,7 @@
 (require 'scala-mode2)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
-(setq auto-mode-alist  (cons '("\\.sbt$" . scala-mode) auto-mode-alist))
+;; (setq auto-mode-alist  (cons '("\\.sbt$" . scala-mode) auto-mode-alist))
 
 ;; make maven work (such as it is)
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/crispy"))
@@ -98,8 +98,6 @@
 (server-start)
 
 (require 'org-install)
-
-(require 'ido)
 
 (require 'markdown-mode)
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
@@ -242,9 +240,4 @@ static char *gnus-pointer[] = {
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-(require 'ido)
-(require 'flx-ido)
-(ido-mode 1)
-(flx-ido-mode 1)
-(setq ido-enable-flex-matching t)
-;; (setq ido-use-faces nill)
+
