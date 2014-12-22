@@ -111,7 +111,7 @@
 ;; despite being able to ask brew where erlang is we still have to
 ;; hardcode a constant for the erlang tools version
 (setq erlang-root-dir (trimstr (shell-command-to-string "brew --prefix erlang")))
-(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.7/emacs"))
+(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.7.1/emacs"))
 (add-to-list 'exec-path (concat erlang-root-dir "/bin"))
 (require 'erlang-start)
 
