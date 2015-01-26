@@ -81,8 +81,6 @@
 
 
 ;; scala mode plus ensime for ehanced scalating!
-;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/scala"))
-;;; try out scala-mode2
 (require 'ensime)
 (require 'scala-mode2)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
