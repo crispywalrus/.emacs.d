@@ -14,3 +14,5 @@ projectile.cache
 eshell/*
 notes
 ido.last
+.sx
+ensime

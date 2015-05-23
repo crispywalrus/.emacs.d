@@ -7,6 +7,8 @@
 (setq brew-prefix "/usr/local")
 (setq seperator ":")
 
+;; I don't bother with the login shell setup, it's easier to customize
+;; emacs and then run shells in a buffer.
 (setenv "PATH" (concat
                 (concat brew-prefix "/bin")
                 (concat seperator (getenv "PATH"))
@@ -17,29 +19,11 @@
 (add-to-list 'exec-path (concat brew-prefix "/sbin"))
 (add-to-list 'exec-path (concat brew-prefix "/bin"))
 (add-to-list 'exec-path "/usr/local/share/npm/bin/")
-
-(defun trimstr (str)
-  "trim off leading and tailing whitespace from STR."
-  (while (string-match "\\`\n+\\|^\\s-+\\|\\s-+$\\|\n+\\'"
-                       str)
-    (setq str (replace-match "" t t str)))
-  str)
-
-(defun fix-format-buffer ()
-  "indent, untabify and remove trailing whitespace for a buffer"
-  (interactive)
-  (save-excursion 
-    (delete-trailing-whitespace)
-    (indent-region (point-min) (point-max))
-    (untabify (point-min) (point-max))
-    (replace-string "( " "(" nil (point-min) (point-max))
-    (replace-string " (" "(" nil (point-min) (point-max))
-    (replace-string " )" ")" nil (point-min) (point-max))
-    (replace-string " +" "+" nil (point-min) (point-max))
-    (replace-string "+ " "+" nil (point-min) (point-max))
-    (replace-string " ," "," nil (point-min) (point-max))
-    (replace-string ", " "," nil (point-min) (point-max))))
-;; end code 
+(add-to-list 'exec-path
+             (concat
+              (s-trim
+               (shell-command-to-string "brew --prefix coreutils"))
+              "/libexec/gnubin"))
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
 ;; pop out compilation and grep windows.
@@ -53,32 +37,21 @@
 
 ;; local is my version of vendor.
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/emacs-livedown"))
 
-;; programming language hook functions. all dependent packages should
-;; have been loaded before here
-;; (defun crispy-c-mode-common-hook ()
-;;   (google-set-c-style))
-;; (add-hook 'c-mode-common-hook 'crispy-c-mode-common-hook)
-(setenv "JAVA_HOME" (trimstr (shell-command-to-string "/usr/libexec/java_home")))
-
-(defun crispy-java-mode-hook ()
-  (progn
-    (c-set-style "bsd")
-    (setq c-basic-offset 4)
-    ;; (c-toggle-auto-newline 1)
-    (c-set-offset 'substatement-open 0)
-    (c-set-offset 'annotation-var-cont 0)))
-
-(add-hook 'java-mode-hook 'crispy-java-mode-hook)
-
+;; this only points out that I need to do something to fix xml and html editing
 (setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
 (setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
 
+;; other than my personal code and a very few oddball packages
+;; everything elispy comes from elpa/melpa etc. nowadays.
 (package-initialize)
 
+;; load and customize modes
+
+;; protobuffer IDL editing mode
 (require 'protobuf-mode)
 (setq auto-mode-alist  (cons '("\\.proto$" . protobuf-mode) auto-mode-alist))
-
 
 ;; scala mode plus ensime for ehanced scalating!
 (require 'ensime)
@@ -101,18 +74,91 @@
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist))
 
+;; redis
+;; edredis give us elisp access to redis
 (require 'eredis)
+;; customize comint a bit for redis
 (require 'redis-cli-mode)
 
-(add-to-list 'exec-path (concat (trimstr (shell-command-to-string "brew --prefix coreutils")) "/libexec/gnubin"))
+;; look in marmalade as well as melpa for packages
+(require 'package)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+
+;; docs are good, pandoc is at least simple to use
+(require 'pandoc-mode)
+(require 'livedown)
+
+;; bah
+(require 'mustache-mode)
+
+;; haskell stuff, given my current work environment perhaps this
+;; should go.
+(require 'ghc)
+(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+(setq haskell-literate-default 'tex)
+
+(require 'alchemist)
+
+(projectile-global-mode)
+(setq projectile-completion-system 'grizzl)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+;; crispy code
+(require 's)
+
+;; programming language hook functions. all dependent packages should
+;; have been loaded before here
+
+;; (defun crispy-c-mode-common-hook ()
+;;   (google-set-c-style))
+;; (add-hook 'c-mode-common-hook 'crispy-c-mode-common-hook)
+
+;; yes java, it's still there
+(setenv "JAVA_HOME" (s-trim (shell-command-to-string "/usr/libexec/java_home")))
+
+(defun crispy-java-mode-hook ()
+  (progn
+    (c-set-style "bsd")
+    (setq c-basic-offset 4)
+    ;; (c-toggle-auto-newline 1)
+    (c-set-offset 'substatement-open 0)
+    (c-set-offset 'annotation-var-cont 0)))
+
+(add-hook 'java-mode-hook 'crispy-java-mode-hook)
 
 ;; despite being able to ask brew where erlang is we still have to
 ;; hardcode a constant for the erlang tools version
-(setq erlang-root-dir (trimstr (shell-command-to-string "brew --prefix erlang")))
-(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.7.1/emacs"))
+;;(setq erlang-root-dir (trimstr (shell-command-to-string "brew --prefix erlang")))
+(setq erlang-root-dir (s-trim (shell-command-to-string "brew --prefix erlang")))
+(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.7.2/emacs"))
 (add-to-list 'exec-path (concat erlang-root-dir "/bin"))
 (require 'erlang-start)
 
+;; ok, this is not much of a function but given that I have to work
+;; with eclipse users it's the only way to stay sane.
+(defun fix-format-buffer ()
+  "indent, untabify and remove trailing whitespace for a buffer"
+  (interactive)
+  (save-excursion 
+    (delete-trailing-whitespace)
+    (indent-region (point-min) (point-max))
+    (untabify (point-min) (point-max))
+    (replace-string "( " "(" nil (point-min) (point-max))
+    (replace-string " (" "(" nil (point-min) (point-max))
+    (replace-string " )" ")" nil (point-min) (point-max))
+    (replace-string " +" "+" nil (point-min) (point-max))
+    (replace-string "+ " "+" nil (point-min) (point-max))
+    (replace-string " ," "," nil (point-min) (point-max))
+    (replace-string ", " "," nil (point-min) (point-max))))
+;; end code 
+
+;; auto generted custom stuffs
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -179,6 +225,7 @@ static char *gnus-pointer[] = {
 \"###..######.######\",
 \"###########.######\" };")))
  '(jenkins-api-url "http://f1tst-linbld100.f1tst.rl.com/jenkins/")
+ '(org-log-done (quote time))
  '(scala-indent:align-parameters t)
  '(scala-interpreter "/usr/local/bin/scala")
  '(vc-annotate-background "#d4d4d4")
@@ -204,38 +251,3 @@ static char *gnus-pointer[] = {
      (360 . "#23733c"))))
  '(vc-annotate-very-old-color "#23733c")
  '(virtualenv-root "~/Development/crispy/pyEnvs"))
-
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#ffffff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundery "apple" :family "Monaco")))))
-
-;; (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/emacs-color-theme-solarized"))
-;; (load-theme 'solarized-dark t)
-
-(require 'package)
-
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-
-(require 'pandoc-mode)
-
-(require 'mustache-mode)
-
-(require 'ghc)
-(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
-(setq haskell-literate-default 'tex)
-
-(require 'alchemist)
-
-(projectile-global-mode)
-(setq projectile-completion-system 'grizzl)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
