@@ -2,6 +2,17 @@
 ;;
 ;; crispy's init.el
 
+;; other than my personal code and a very few oddball packages
+;; everything elispy comes from elpa/melpa etc. nowadays.
+(package-initialize)
+
+;; look in marmalade as well as melpa for packages
+(require 'package)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+
+(require 's)
+
 ;; system specific
 ;; these are set for OS X with brew
 (setq brew-prefix "/usr/local")
@@ -37,15 +48,6 @@
 
 ;; local is my version of vendor.
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/emacs-livedown"))
-
-;; this only points out that I need to do something to fix xml and html editing
-(setq magic-mode-alist (cons '("<\\?xml\\s " . nxml-mode) magic-mode-alist))
-(setq auto-mode-alist  (cons '("\\.x?html?$" . html-mode) auto-mode-alist))
-
-;; other than my personal code and a very few oddball packages
-;; everything elispy comes from elpa/melpa etc. nowadays.
-(package-initialize)
 
 ;; load and customize modes
 
@@ -74,20 +76,11 @@
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist))
 
-;; redis
 ;; edredis give us elisp access to redis
 (require 'eredis)
-;; customize comint a bit for redis
-(require 'redis-cli-mode)
-
-;; look in marmalade as well as melpa for packages
-(require 'package)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 
 ;; docs are good, pandoc is at least simple to use
 (require 'pandoc-mode)
-(require 'livedown)
 
 ;; bah
 (require 'mustache-mode)
@@ -135,10 +128,10 @@
 ;; despite being able to ask brew where erlang is we still have to
 ;; hardcode a constant for the erlang tools version
 ;;(setq erlang-root-dir (trimstr (shell-command-to-string "brew --prefix erlang")))
-(setq erlang-root-dir (s-trim (shell-command-to-string "brew --prefix erlang")))
-(add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.7.2/emacs"))
-(add-to-list 'exec-path (concat erlang-root-dir "/bin"))
-(require 'erlang-start)
+;; (setq erlang-root-dir (s-trim (shell-command-to-string "brew --prefix erlang")))
+;; (add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.7.2/emacs"))
+;; (add-to-list 'exec-path (concat erlang-root-dir "/bin"))
+;; (require 'erlang-start)
 
 ;; ok, this is not much of a function but given that I have to work
 ;; with eclipse users it's the only way to stay sane.
@@ -251,3 +244,4 @@ static char *gnus-pointer[] = {
      (360 . "#23733c"))))
  '(vc-annotate-very-old-color "#23733c")
  '(virtualenv-root "~/Development/crispy/pyEnvs"))
+

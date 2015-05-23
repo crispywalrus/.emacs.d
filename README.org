@@ -1,0 +1,6 @@
+#+Title: Readme
+#+Author: crispy
+
+* My emacs config
+
+Mostly just a backup mechanism
