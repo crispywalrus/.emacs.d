@@ -7,9 +7,14 @@
 (package-initialize)
 
 ;; look in marmalade as well as melpa for packages
-(require 'package)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+
+(unless (package-installed-p 'package+)
+  (package-install 'package+))
+
+(unless (package-installed-p 's)
+  (package-install 's))
 
 (require 's)
 
@@ -18,8 +23,7 @@
 (setq brew-prefix "/usr/local")
 (setq seperator ":")
 
-;; I don't bother with the login shell setup, it's easier to customize
-;; emacs and then run shells in a buffer.
+;; customize our environment
 (setenv "PATH" (concat
                 (concat brew-prefix "/bin")
                 (concat seperator (getenv "PATH"))
@@ -35,6 +39,7 @@
               (s-trim
                (shell-command-to-string "brew --prefix coreutils"))
               "/libexec/gnubin"))
+(setenv "JAVA_HOME" (s-trim (shell-command-to-string "/usr/libexec/java_home")))
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
 ;; pop out compilation and grep windows.
@@ -45,9 +50,14 @@
 (tool-bar-mode -1)
 (setq special-display-buffer-names '("*compilation*" "*grep*" "*Find*"))
 (setq-default debug-on-error nil)
+(server-start)
 
-;; local is my version of vendor.
+;; my local elisp
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
+;; make maven work (such as it is)
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/crispy"))
+(require 'mvn-foo)
+(require 'eshell-foo)
 
 ;; load and customize modes
 
@@ -59,16 +69,6 @@
 (require 'ensime)
 (require 'scala-mode2)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
-
-;; (setq auto-mode-alist  (cons '("\\.sbt$" . scala-mode) auto-mode-alist))
-
-;; make maven work (such as it is)
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/crispy"))
-(require 'mvn-foo)
-(require 'eshell-foo)
-
-;; use emacs as the system editor
-(server-start)
 
 (require 'org-install)
 
@@ -82,38 +82,18 @@
 ;; docs are good, pandoc is at least simple to use
 (require 'pandoc-mode)
 
-;; bah
-(require 'mustache-mode)
-
-;; haskell stuff, given my current work environment perhaps this
-;; should go.
-(require 'ghc)
-(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
-(setq haskell-literate-default 'tex)
-
+;; for elixir 
 (require 'alchemist)
 
+;; use projectile 
 (projectile-global-mode)
 (setq projectile-completion-system 'grizzl)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 ;; crispy code
 (require 's)
 
-;; programming language hook functions. all dependent packages should
-;; have been loaded before here
-
-;; (defun crispy-c-mode-common-hook ()
-;;   (google-set-c-style))
-;; (add-hook 'c-mode-common-hook 'crispy-c-mode-common-hook)
-
-;; yes java, it's still there
-(setenv "JAVA_HOME" (s-trim (shell-command-to-string "/usr/libexec/java_home")))
+;; hook functions. all packages should have been loaded and customized
+;; by now
 
 (defun crispy-java-mode-hook ()
   (progn
@@ -124,14 +104,6 @@
     (c-set-offset 'annotation-var-cont 0)))
 
 (add-hook 'java-mode-hook 'crispy-java-mode-hook)
-
-;; despite being able to ask brew where erlang is we still have to
-;; hardcode a constant for the erlang tools version
-;;(setq erlang-root-dir (trimstr (shell-command-to-string "brew --prefix erlang")))
-;; (setq erlang-root-dir (s-trim (shell-command-to-string "brew --prefix erlang")))
-;; (add-to-list 'load-path (concat erlang-root-dir "/lib/erlang/lib/tools-2.7.2/emacs"))
-;; (add-to-list 'exec-path (concat erlang-root-dir "/bin"))
-;; (require 'erlang-start)
 
 ;; ok, this is not much of a function but given that I have to work
 ;; with eclipse users it's the only way to stay sane.
@@ -245,3 +217,6 @@ static char *gnus-pointer[] = {
  '(vc-annotate-very-old-color "#23733c")
  '(virtualenv-root "~/Development/crispy/pyEnvs"))
 
+;; fix some magit warts
+(setq magit-auto-revert-mode nil)
+(setq magit-last-seen-setup-instructions "1.4.0")
