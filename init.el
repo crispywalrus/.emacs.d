@@ -65,6 +65,18 @@
 (require 'ensime)
 (require 'scala-mode2)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+(add-hook 'scala-mode-hook '(lambda()
+                              (require 'whitespace)
+
+                              ;; clean-up whitespace at save
+                              (make-local-variable 'before-save-hook)
+                              (add-hook 'before-save-hook 'whitespace-cleanup)
+
+                              ;; turn on highlight. To configure what is highlighted, customize
+                              ;; the *whitespace-style* variable. A sane set of things to
+                              ;; highlight is: face, tabs, trailing
+                              (whitespace-mode)
+                              ))
 
 (require 'org-install)
 
@@ -268,3 +280,16 @@ static char *gnus-pointer[] = {
  ;; If there is more than one, they won't work right.
  )
 (put 'dired-find-alternate-file 'disabled nil)
+
+;;; experimental ensime refactor config
+(setq
+  ensime-refactor-enable-beta t
+  ensime-refactor-preview t
+  ensime-refactor-auto-apply-file-limit 1
+  ensime-refactor-auto-apply-hunk-limit 1)
+
+(require 'smartparens-config)
+(add-hook 'scala-mode-hook `smartparens-strict-mode)
+
+(sp-local-pair 'scala-mode "(" nil :post-handlers '(("||\n[i]" "RET")))
+  (sp-local-pair 'scala-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))
