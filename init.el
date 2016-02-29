@@ -2,15 +2,18 @@
 ;;
 ;; crispy's init.el
 
-;; other than my personal code and a very few oddball packages
-;; everything elispy comes from elpa/melpa etc. nowadays.
-(package-initialize)
+(defun initialize-crispy ()
+  (progn
+    (require 'package)
+    ;; look in marmalade as well as melpa for packages
+    (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+    (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+    (package-initialize)
 
-;; look in marmalade as well as melpa for packages
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+    (install-saved-packages )
+    ))
 
-(install-saved-packages )
+(initialize-crispy)
 
 (require 's)
 
@@ -35,7 +38,7 @@
               (s-trim
                (shell-command-to-string "brew --prefix coreutils"))
               "/libexec/gnubin"))
-(setenv "JAVA_HOME" (s-trim (shell-command-to-string "/usr/libexec/java_home")))
+;; (setenv "JAVA_HOME" (s-trim (shell-command-to-string "/usr/libexec/java_home -v 1.7")))
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
 ;; pop out compilation and grep windows.
@@ -75,7 +78,7 @@
                               ;; turn on highlight. To configure what is highlighted, customize
                               ;; the *whitespace-style* variable. A sane set of things to
                               ;; highlight is: face, tabs, trailing
-                              (whitespace-mode)
+                              ; (whitespace-mode)
                               ))
 
 (require 'org-install)
@@ -121,14 +124,7 @@
   (save-excursion 
     (delete-trailing-whitespace)
     (indent-region (point-min) (point-max))
-    (untabify (point-min) (point-max))
-    (replace-string "( " "(" nil (point-min) (point-max))
-    (replace-string " (" "(" nil (point-min) (point-max))
-    (replace-string " )" ")" nil (point-min) (point-max))
-    (replace-string " +" "+" nil (point-min) (point-max))
-    (replace-string "+ " "+" nil (point-min) (point-max))
-    (replace-string " ," "," nil (point-min) (point-max))
-    (replace-string ", " "," nil (point-min) (point-max))))
+    (untabify (point-min) (point-max))))
 ;; end code 
 
 ;; auto generted custom stuffs
@@ -149,10 +145,10 @@
  '(cua-overwrite-cursor-color "#b58900")
  '(cua-read-only-cursor-color "#859900")
  '(cursor-color "#839496")
- '(custom-enabled-themes (quote (aurora)))
+ '(custom-enabled-themes (quote (deeper-blue)))
  '(custom-safe-themes
    (quote
-    ("790e74b900c074ac8f64fa0b610ad05bcfece9be44e8f5340d2d94c1e47538de" "76626efc044daee1c402e50f185bd633d1a688c332bc15c8fd5db4cdf2966b79" "001240593e0c4d5322cbf44da17d5987618809acf22f60c0d22a0dc71971a0f2" "67c6ff5060132fa023d8e78a679d4c6573cf1b90c8aef4d1972634956c314da3" "149a813ffb5ed85dc8c0513700e207474a436965b1305e814637f3e925fbd683" "c18fd02975a561463871fe37752f7143c620054b9898d6d59d95a18531222d7d" "f8c697230b77a70f903401d97fe3d86c3f60461f39a2c925824dadba7354c495" "bed4d169698488b8b5b90f7dbdbaca2e7b9c4a18727adbb7b3ddcb4df0577ce0" "a7f46e953a20340a55dabf8083e7c3ef3a609ea6367dadc241a8cf32721b3a32" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "0c387e27a3dd040b33c6711ff92e13bd952369a788eee97e4e4ea2335ac5528f" "1db337246ebc9c083be0d728f8d20913a0f46edc0a00277746ba411c149d7fe5" "354ba2c122241f205f1b162283d434a155eb2b2a0df56377bb11b62644b6d2eb" "28ec8ccf6190f6a73812df9bc91df54ce1d6132f18b4c8fcc85d45298569eb53" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "7356632cebc6a11a87bc5fcffaa49bae528026a78637acd03cae57c091afd9b9" "ab04c00a7e48ad784b52f34aa6bfa1e80d0c3fcacc50e1189af3651013eb0d58" "04dd0236a367865e591927a3810f178e8d33c372ad5bfef48b5ce90d4b476481" "2b5aa66b7d5be41b18cc67f3286ae664134b95ccc4a86c9339c886dfd736132d" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "25f330cb050c7e7ec402af1b60243e8185a7837b455af0fa026593d4f48a78b2" "a705d91a43f7fb73751de9e5f901aeaccbf0b55c92c2a4698104befbed2c5074" default)))
+    ("fa6756e5e858f170efd082c599fc348ced3b2283a624efedac9162bcc45eea80" "0eda8b3e1c6573f10f96df4fc5552ddde83fe23c2daa9223a6f5826570b81d5d" "4c8d348b9171f121812a024db9c91914ad014b06a808d9da1d09d58459020ca2" "8577da1641ed4bdf255341ca92e3d0e49c9f4d574458f09ce78159690442cade" "0ca766734beb5d3af086923a5964570b6f5a94b9abbb5a2147c2b5727fcdb163" "405b0ac2ac4667c5dab77b36e3dd87a603ea4717914e30fcf334983f79cfd87e" "118717ce0a2645a0cf240b044999f964577ee10137b1f992b09a317d5073c02d" "790e74b900c074ac8f64fa0b610ad05bcfece9be44e8f5340d2d94c1e47538de" "76626efc044daee1c402e50f185bd633d1a688c332bc15c8fd5db4cdf2966b79" "001240593e0c4d5322cbf44da17d5987618809acf22f60c0d22a0dc71971a0f2" "67c6ff5060132fa023d8e78a679d4c6573cf1b90c8aef4d1972634956c314da3" "149a813ffb5ed85dc8c0513700e207474a436965b1305e814637f3e925fbd683" "c18fd02975a561463871fe37752f7143c620054b9898d6d59d95a18531222d7d" "085db728c7ea65766c67db4464058511dca3fdcf0fa4c5b26ca3e20aaf08c545" "bed4d169698488b8b5b90f7dbdbaca2e7b9c4a18727adbb7b3ddcb4df0577ce0" "a7f46e953a20340a55dabf8083e7c3ef3a609ea6367dadc241a8cf32721b3a32" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "0c387e27a3dd040b33c6711ff92e13bd952369a788eee97e4e4ea2335ac5528f" "1db337246ebc9c083be0d728f8d20913a0f46edc0a00277746ba411c149d7fe5" "354ba2c122241f205f1b162283d434a155eb2b2a0df56377bb11b62644b6d2eb" "28ec8ccf6190f6a73812df9bc91df54ce1d6132f18b4c8fcc85d45298569eb53" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "7356632cebc6a11a87bc5fcffaa49bae528026a78637acd03cae57c091afd9b9" "ab04c00a7e48ad784b52f34aa6bfa1e80d0c3fcacc50e1189af3651013eb0d58" "04dd0236a367865e591927a3810f178e8d33c372ad5bfef48b5ce90d4b476481" "2b5aa66b7d5be41b18cc67f3286ae664134b95ccc4a86c9339c886dfd736132d" "fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "25f330cb050c7e7ec402af1b60243e8185a7837b455af0fa026593d4f48a78b2" "a705d91a43f7fb73751de9e5f901aeaccbf0b55c92c2a4698104befbed2c5074" default)))
  '(diary-entry-marker (quote font-lock-variable-name-face))
  '(dired-use-ls-dired nil)
  '(elnode-do-init nil)
@@ -177,9 +173,28 @@ static char *note[] = {
 \"#######...\",
 \"######....\",
 \"#######..#\" };")))
+ '(ensime-sem-high-faces
+   (quote
+    ((var :foreground "#9876aa" :underline
+          (:style wave :color "yellow"))
+     (val :foreground "#9876aa")
+     (varField :slant italic)
+     (valField :foreground "#9876aa" :slant italic)
+     (functionCall :foreground "#a9b7c6")
+     (implicitConversion :underline
+                         (:color "#808080"))
+     (implicitParams :underline
+                     (:color "#808080"))
+     (operator :foreground "#cc7832")
+     (param :foreground "#a9b7c6")
+     (class :foreground "#4e807d")
+     (trait :foreground "#4e807d" :slant italic)
+     (object :foreground "#6897bb" :slant italic)
+     (package :foreground "#cc7832")
+     (deprecated :strike-through "#a9b7c6"))))
  '(fci-rule-color "#c7c7c7")
  '(foreground-color "#839496")
- '(gnus-logo-colors (quote ("#4c8383" "#bababa")))
+ '(gnus-logo-colors (quote ("#4c8383" "#bababa")) t)
  '(gnus-mode-line-image-cache
    (quote
     (image :type xpm :ascent center :data "/* XPM */
@@ -202,7 +217,7 @@ static char *gnus-pointer[] = {
 \"######..###.######\",
 \"###....####.######\",
 \"###..######.######\",
-\"###########.######\" };")))
+\"###########.######\" };")) t)
  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
  '(highlight-symbol-colors
    (--map
@@ -229,6 +244,10 @@ static char *gnus-pointer[] = {
  '(jenkins-api-url "http://f1tst-linbld100.f1tst.rl.com/jenkins/")
  '(linum-format "%3i")
  '(magit-diff-use-overlays nil)
+ '(nrepl-message-colors
+   (quote
+    ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
+ '(nxml-child-indent 4)
  '(org-log-done (quote time))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
@@ -289,7 +308,7 @@ static char *gnus-pointer[] = {
   ensime-refactor-auto-apply-hunk-limit 1)
 
 (require 'smartparens-config)
-(add-hook 'scala-mode-hook `smartparens-strict-mode)
+(add-hook 'scala-mode-hook `smartparens-mode)
 
 (sp-local-pair 'scala-mode "(" nil :post-handlers '(("||\n[i]" "RET")))
   (sp-local-pair 'scala-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))
