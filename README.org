@@ -1,6 +1,17 @@
 #+Title: Readme
 #+Author: crispy
 
-* My emacs config
+* Work Configuration
 
-Mostly just a backup mechanism
+** Getting Started
+
+Clone this repo into your ~/.emacs.d
+
+** Goals
+
+Stability and unability. melpa stable is the preferred repo for
+package with a focus on making sure that ensime, scala mode and
+projectile especially are pulled from their most stable sources.
+
+
+

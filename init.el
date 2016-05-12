@@ -2,43 +2,41 @@
 ;;
 ;; crispy's init.el
 
-(defun initialize-crispy ()
-  (progn
-    (require 'package)
-    ;; look in marmalade as well as melpa for packages
-    (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-    (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-    (package-initialize)
+(require 'package)
 
-    (install-saved-packages )
-    ))
+;; use melpa and melpa stable
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 
-(initialize-crispy)
+(package-initialize)
+
+;; my local elisp
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/crispy"))
+
+(require 'save-packages)
+
+(install-saved-packages)
 
 (require 's)
 
-;; system specific
-;; these are set for OS X with brew
+;; leverage homebrew installs
 (setq brew-prefix "/usr/local")
 (setq seperator ":")
 
-;; customize our environment
-(setenv "PATH" (concat
-                (concat brew-prefix "/bin")
-                (concat seperator (getenv "PATH"))
-                (concat seperator brew-prefix "/sbin")
-                (concat seperator brew-prefix "/share/npm/bin")))
+(setenv "PATH" 
+        (mapconcat `identity `("/bin" ,(getenv "PATH") "/sbin" "/share/npm/bin") seperator))
 
 (add-to-list 'exec-path (concat brew-prefix "/opt/coreutils/libexec/gnubin"))
 (add-to-list 'exec-path (concat brew-prefix "/sbin"))
 (add-to-list 'exec-path (concat brew-prefix "/bin"))
 (add-to-list 'exec-path "/usr/local/share/npm/bin/")
+
 (add-to-list 'exec-path
              (concat
               (s-trim
                (shell-command-to-string "brew --prefix coreutils"))
               "/libexec/gnubin"))
-;; (setenv "JAVA_HOME" (s-trim (shell-command-to-string "/usr/libexec/java_home -v 1.7")))
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
 ;; pop out compilation and grep windows.
@@ -51,10 +49,7 @@
 (setq-default debug-on-error nil)
 (server-start)
 
-;; my local elisp
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
 ;; make maven work (such as it is)
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/crispy"))
 (require 'mvn-foo)
 (require 'eshell-foo)
 
@@ -66,7 +61,7 @@
 
 ;; scala mode plus ensime for ehanced scalating!
 (require 'ensime)
-(require 'scala-mode2)
+(require 'scala-mode)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 (require 'org-install)
@@ -86,7 +81,8 @@
 
 ;; use projectile 
 (projectile-global-mode)
-(setq projectile-completion-system 'grizzl)
+(setq projectile-completion-system 'ivy)
+(setq projectile-enable-caching t)
 
 ;; crispy code
 (require 's)
@@ -288,15 +284,6 @@ static char *gnus-pointer[] = {
  )
 (put 'dired-find-alternate-file 'disabled nil)
 
-;;; experimental ensime refactor config
-(setq
-  ensime-refactor-enable-beta t
-  ensime-refactor-preview t
-  ensime-refactor-auto-apply-file-limit 1
-  ensime-refactor-auto-apply-hunk-limit 1)
-
 (require 'smartparens-config)
 (add-hook 'scala-mode-hook `smartparens-mode)
 
-;; (sp-local-pair 'scala-mode "(" nil :post-handlers '(("||\n[i]" "RET")))
-;;   (sp-local-pair 'scala-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))
