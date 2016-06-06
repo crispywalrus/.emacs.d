@@ -85,8 +85,9 @@
 (require 'alchemist)
 
 ;; use projectile 
-(projectile-global-mode)
-(setq projectile-completion-system 'grizzl)
+;(projectile-global-mode)
+;(setq projectile-completion-system 'grizzl)
+;(setq projectile-enable-caching t)
 
 ;; crispy code
 (require 's)
@@ -287,13 +288,6 @@ static char *gnus-pointer[] = {
  ;; If there is more than one, they won't work right.
  )
 (put 'dired-find-alternate-file 'disabled nil)
-
-;;; experimental ensime refactor config
-(setq
-  ensime-refactor-enable-beta t
-  ensime-refactor-preview t
-  ensime-refactor-auto-apply-file-limit 1
-  ensime-refactor-auto-apply-hunk-limit 1)
 
 (require 'smartparens-config)
 (add-hook 'scala-mode-hook `smartparens-mode)
