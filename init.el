@@ -8,6 +8,7 @@
     ;; look in marmalade as well as melpa for packages
     (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+    (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
     (package-initialize)
 
     (install-saved-packages )
@@ -85,9 +86,9 @@
 (require 'alchemist)
 
 ;; use projectile 
-;(projectile-global-mode)
-;(setq projectile-completion-system 'grizzl)
-;(setq projectile-enable-caching t)
+(projectile-global-mode)
+(setq projectile-completion-system 'ivy)
+(setq projectile-enable-caching t)
 
 ;; crispy code
 (require 's)
@@ -292,5 +293,3 @@ static char *gnus-pointer[] = {
 (require 'smartparens-config)
 (add-hook 'scala-mode-hook `smartparens-mode)
 
-;; (sp-local-pair 'scala-mode "(" nil :post-handlers '(("||\n[i]" "RET")))
-;;   (sp-local-pair 'scala-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))
