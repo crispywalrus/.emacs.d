@@ -25,7 +25,7 @@
 (setq seperator ":")
 
 (setenv "PATH" 
-        (mapconcat `identity `("/bin" ,(getenv "PATH") "/sbin" "/share/npm/bin") seperator))
+        (mapconcat `(lambda (z) (concat brew-prefix z)) `("/bin" ,(getenv "PATH") "/sbin" "/share/npm/bin") seperator))
 
 (add-to-list 'exec-path (concat brew-prefix "/opt/coreutils/libexec/gnubin"))
 (add-to-list 'exec-path (concat brew-prefix "/sbin"))
