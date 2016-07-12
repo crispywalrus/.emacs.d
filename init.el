@@ -1,30 +1,59 @@
 ;; -*- mode: emacs-lisp; -*-
 ;;
-;; crispy's init.el
 
+;; package configuration and management
 (require 'package)
 
 ;; use melpa
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 
 (package-initialize)
+(when
+    (not package-archive-contents)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
-;; my local elisp
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
+(eval-when-compile
+  (require 'use-package))
+
+;; pin the important stuff to stable
+(use-package ensime :pin melpa-stable)
+(use-package projectile :pin melpa-stable)
+(use-package company :pin melpa-stable)
+(use-package ivy :pin melpa-stable)
+
+(setq required-packages-list `(ensime projectile eredis protobuf-mode org-install smartparens markdown-mode pandoc-mode alchemist projectile s magit find-file-in-project dockerfile-mode org org-readme org-pandoc org-elisp-help org-dashboard org-bullets web-server web elnode))
+
+(defun install-packages-automatic (package-list)
+  (package-refresh-contents)
+  (mapc (lambda (package)
+          (unless (require package nil t)
+            (package-install package)))
+        package-list))
+
+(install-packages-automatic required-packages-list)
+;; end package management
+
+;; load local elisp
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/crispy"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/nullman"))
 
-(require 'save-packages)
-
-(install-saved-packages)
-
+;; string functions which this uses mostly to manipulate environment variables
 (require 's)
 
 ;; leverage homebrew installs
 (setq brew-prefix "/usr/local")
-(setq seperator ":")
 
-(setenv "PATH" 
-        (mapconcat `identity `("/bin" ,(getenv "PATH") "/sbin" "/share/npm/bin") seperator))
+(setenv "PATH"
+        (concat
+         (mapconcat
+          `(lambda (x) (concat brew-prefix x))
+          `("/bin" "/sbin" "/share/npm/bin")
+          path-separator)
+         path-separator
+        (getenv "PATH")))
+        
 
 (add-to-list 'exec-path (concat brew-prefix "/opt/coreutils/libexec/gnubin"))
 (add-to-list 'exec-path (concat brew-prefix "/sbin"))
@@ -36,6 +65,7 @@
               (s-trim
                (shell-command-to-string "brew --prefix coreutils"))
               "/libexec/gnubin"))
+;; end environment
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
 ;; pop out compilation and grep windows.
@@ -63,8 +93,6 @@
 (require 'scala-mode)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
-(require 'org-install)
-
 (require 'markdown-mode)
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist))
@@ -84,7 +112,6 @@
 (setq projectile-enable-caching t)
 
 ;; crispy code
-(require 's)
 
 ;; hook functions. all packages should have been loaded and customized
 ;; by now
