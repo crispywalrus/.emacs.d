@@ -1,44 +1,71 @@
 ;; -*- mode: emacs-lisp; -*-
 ;;
-;; crispy's init.el
 
-(defun initialize-crispy ()
-  (progn
-    (require 'package)
-    ;; look in marmalade as well as melpa for packages
-    (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-    (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-    (package-initialize)
+;; package configuration and management
+(require 'package)
 
-    (install-saved-packages )
-    ))
+;; use melpa
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 
-(initialize-crispy)
+(package-initialize)
+(when
+    (not package-archive-contents)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
+(eval-when-compile
+  (require 'use-package))
+
+;; pin the important stuff to stable
+(use-package ensime :pin melpa-stable)
+(use-package projectile :pin melpa-stable)
+(use-package company :pin melpa-stable)
+(use-package ivy :pin melpa-stable)
+
+(setq required-packages-list `(ensime projectile eredis protobuf-mode org-install smartparens markdown-mode pandoc-mode alchemist projectile s magit find-file-in-project dockerfile-mode org org-readme org-pandoc org-elisp-help org-dashboard org-bullets web-server web elnode))
+
+(defun install-packages-automatic (package-list)
+  (package-refresh-contents)
+  (mapc (lambda (package)
+          (unless (require package nil t)
+            (package-install package)))
+        package-list))
+
+(install-packages-automatic required-packages-list)
+;; end package management
+
+;; load local elisp
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/crispy"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/nullman"))
+
+;; string functions which this uses mostly to manipulate environment variables
 (require 's)
 
-;; system specific
-;; these are set for OS X with brew
+;; leverage homebrew installs
 (setq brew-prefix "/usr/local")
-(setq seperator ":")
 
-;; customize our environment
-(setenv "PATH" (concat
-                (concat brew-prefix "/bin")
-                (concat seperator (getenv "PATH"))
-                (concat seperator brew-prefix "/sbin")
-                (concat seperator brew-prefix "/share/npm/bin")))
+(setenv "PATH"
+        (concat
+         (mapconcat
+          `(lambda (x) (concat brew-prefix x))
+          `("/bin" "/sbin" "/share/npm/bin")
+          path-separator)
+         path-separator
+        (getenv "PATH")))
+        
 
 (add-to-list 'exec-path (concat brew-prefix "/opt/coreutils/libexec/gnubin"))
 (add-to-list 'exec-path (concat brew-prefix "/sbin"))
 (add-to-list 'exec-path (concat brew-prefix "/bin"))
 (add-to-list 'exec-path "/usr/local/share/npm/bin/")
+
 (add-to-list 'exec-path
              (concat
               (s-trim
                (shell-command-to-string "brew --prefix coreutils"))
               "/libexec/gnubin"))
-;; (setenv "JAVA_HOME" (s-trim (shell-command-to-string "/usr/libexec/java_home -v 1.7")))
+;; end environment
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
 ;; pop out compilation and grep windows.
@@ -51,10 +78,7 @@
 (setq-default debug-on-error nil)
 (server-start)
 
-;; my local elisp
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/local"))
 ;; make maven work (such as it is)
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/crispy"))
 (require 'mvn-foo)
 (require 'eshell-foo)
 
@@ -66,10 +90,8 @@
 
 ;; scala mode plus ensime for ehanced scalating!
 (require 'ensime)
-(require 'scala-mode2)
+(require 'scala-mode)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
-
-(require 'org-install)
 
 (require 'markdown-mode)
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
@@ -86,10 +108,10 @@
 
 ;; use projectile 
 (projectile-global-mode)
-(setq projectile-completion-system 'grizzl)
+(setq projectile-completion-system 'ivy)
+(setq projectile-enable-caching t)
 
 ;; crispy code
-(require 's)
 
 ;; hook functions. all packages should have been loaded and customized
 ;; by now
@@ -288,15 +310,6 @@ static char *gnus-pointer[] = {
  )
 (put 'dired-find-alternate-file 'disabled nil)
 
-;;; experimental ensime refactor config
-(setq
-  ensime-refactor-enable-beta t
-  ensime-refactor-preview t
-  ensime-refactor-auto-apply-file-limit 1
-  ensime-refactor-auto-apply-hunk-limit 1)
-
 (require 'smartparens-config)
 (add-hook 'scala-mode-hook `smartparens-mode)
 
-;; (sp-local-pair 'scala-mode "(" nil :post-handlers '(("||\n[i]" "RET")))
-;;   (sp-local-pair 'scala-mode "{" nil :post-handlers '(("||\n[i]" "RET") ("| " "SPC")))
