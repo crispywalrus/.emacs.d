@@ -15,22 +15,78 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; pin the important stuff to stable
-(use-package ensime :pin melpa-stable)
-(use-package projectile :pin melpa-stable)
-(use-package company :pin melpa-stable)
-(use-package ivy :pin melpa-stable)
+(use-package yasnippet
+  :diminish yas-mode)
 
-(setq required-packages-list `(ensime projectile eredis protobuf-mode org-install smartparens markdown-mode pandoc-mode alchemist projectile s magit find-file-in-project dockerfile-mode org org-readme org-pandoc org-elisp-help org-dashboard org-bullets web-server web elnode))
+(use-package projectile
+  :pin melpa-stable
+  :diminish projectile-mode
+  :init
+  (setq projectile-completion-system 'ivy)
+  (setq projectile-enable-caching t)
+  :config
+  (projectile-global-mode))
 
-(defun install-packages-automatic (package-list)
-  (package-refresh-contents)
-  (mapc (lambda (package)
-          (unless (require package nil t)
-            (package-install package)))
-        package-list))
+(use-package company
+  :pin melpa-stable
+  :diminish company-mode)
 
-(install-packages-automatic required-packages-list)
+(use-package ivy
+  :pin melpa-stable)
+
+(use-package magit
+  :commands magit-status magit-blame
+  :init
+  (setq magit-revert-buffers nil)
+  (setq magit-auto-revert-mode nil)
+  (setq magit-last-seen-setup-instructions "1.4.0")
+  :bind (("s-g" . magit-status)
+         ("s-b" . magit-blame)))
+
+(use-package projectile)
+(use-package eredis)
+
+(use-package expand-region
+  :ensure t
+  :commands 'er/expand-region
+  :bind ("C-=" . er/expand-region))
+
+(use-package protobuf-mode)
+
+(use-package smartparens
+  :diminish smartparens-mode
+  :init (setq sp-interactive-dwim t)
+  :config
+  (require 'smartparens-config))
+
+(use-package markdown-mode)
+(use-package pandoc-mode)
+(use-package alchemist)
+(use-package s)
+(use-package find-file-in-project)
+(use-package dockerfile-mode)
+(use-package org)
+(use-package org-readme)
+(use-package org-pandoc)
+(use-package org-elisp-help)
+(use-package org-dashboard)
+(use-package org-bullets)
+(use-package web-server)
+(use-package web)
+(use-package elnode)
+(use-package git-timemachine)
+
+(use-package scala-mode
+  :interpreter ("scala" . scala-mode))
+
+(use-package ensime
+  :pin melpa-stable
+  :init (put 'ensime-auto-generate-config 'safe-local-variable #'booleanp)
+  ;; (setq ensime-startup-snapshot-notification nil)
+  :config
+  (require 'ensime-expand-region)
+  (add-hook 'git-timemachine-mode-hook (lambda () (ensime-mode 0))))
+
 ;; end package management
 
 ;; load local elisp
@@ -50,8 +106,8 @@
           `("/bin" "/sbin" "/share/npm/bin")
           path-separator)
          path-separator
-        (getenv "PATH")))
-        
+         (getenv "PATH")))
+
 
 (add-to-list 'exec-path (concat brew-prefix "/opt/coreutils/libexec/gnubin"))
 (add-to-list 'exec-path (concat brew-prefix "/sbin"))
@@ -81,15 +137,18 @@
 (require 'eshell-foo)
 
 ;; load and customize modes
-
-;; protobuffer IDL editing mode
-(require 'protobuf-mode)
-(setq auto-mode-alist  (cons '("\\.proto$" . protobuf-mode) auto-mode-alist))
-
-;; scala mode plus ensime for ehanced scalating!
-(require 'ensime)
-(require 'scala-mode)
-(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+(defcustom
+  scala-mode-prettify-symbols
+  '(("->" . ?→)
+    ("<-" . ?←)
+    ("=>" . ?⇒)
+    ("<=" . ?≤)
+    (">=" . ?≥)
+    ("==" . ?≡)
+    ("!=" . ?≠)
+    ;; implicit https://github.com/chrissimpkins/Hack/issues/214
+    ("+-" . ?±))
+  "Prettify symbols for scala-mode.")
 
 (require 'markdown-mode)
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
@@ -101,54 +160,62 @@
 ;; docs are good, pandoc is at least simple to use
 (require 'pandoc-mode)
 
-;; for elixir 
+;; for elixir
 (require 'alchemist)
 
-;; use projectile 
-(projectile-global-mode)
-(setq projectile-completion-system 'ivy)
-(setq projectile-enable-caching t)
-
-;; crispy code
-
+(put 'dired-find-alternate-file 'disabled nil)
 ;; hook functions. all packages should have been loaded and customized
 ;; by now
 
-(defun crispy-java-mode-hook ()
-  (progn
-    (c-set-style "bsd")
-    (setq c-basic-offset 4)
-    ;; (c-toggle-auto-newline 1)
-    (c-set-offset 'substatement-open 0)
-    (c-set-offset 'annotation-var-cont 0)))
+(add-hook 'scala-mode-hook
+          (lambda ()
+            (setq prettify-symbols-alist scala-mode-prettify-symbols)
+            (smartparens-mode t)))
 
-(add-hook 'java-mode-hook 'crispy-java-mode-hook)
+(add-hook 'java-mode-hook
+          (lambda ()
+            (c-set-style "bsd")
+            (setq c-basic-offset 4)
+            ;; (c-toggle-auto-newline 1)
+            (c-set-offset 'substatement-open 0)
+            (c-set-offset 'annotation-var-cont 0)))
 
-;; ok, this is not much of a function but given that I have to work
-;; with eclipse users it's the only way to stay sane.
+(add-hook 'ensime-mode-hook
+          (lambda ()
+            (let ((backends (company-backends-for-buffer)))
+              (setq company-backends (push '(ensime-company company-yasnippet) backends)))))
+
+;; start code
+(defun company-backends-for-buffer ()
+  "Calculate appropriate `company-backends' for the buffer.
+For small projects, use TAGS for completions, otherwise use a
+very minimal set."
+  (projectile-visit-project-tags-table)
+  (cl-flet ((size () (buffer-size (get-file-buffer tags-file-name))))
+    (let ((base '(company-keywords company-dabbrev-code company-yasnippet)))
+      (if (and tags-file-name (<= 20000000 (size)))
+          (list (push 'company-etags base))
+        (list base)))))
+
+;; given that I have to work with eclipse users it's the only way to
+;; stay sane.
 (defun fix-format-buffer ()
   "indent, untabify and remove trailing whitespace for a buffer"
   (interactive)
-  (save-excursion 
+  (save-excursion
     (delete-trailing-whitespace)
     (indent-region (point-min) (point-max))
     (untabify (point-min) (point-max))))
-;; end code 
 
 
-;; fix some magit warts
-(setq magit-auto-revert-mode nil)
-(setq magit-last-seen-setup-instructions "1.4.0")
+;; end code
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-(put 'dired-find-alternate-file 'disabled nil)
-
-(require 'smartparens-config)
-(add-hook 'scala-mode-hook `smartparens-mode)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
