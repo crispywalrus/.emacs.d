@@ -15,6 +15,8 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+(setq use-package-always-ensure t)
+
 (use-package yasnippet
   :diminish yas-mode)
 
@@ -47,7 +49,6 @@
 (use-package eredis)
 
 (use-package expand-region
-  :ensure t
   :commands 'er/expand-region
   :bind ("C-=" . er/expand-region))
 
@@ -75,6 +76,7 @@
 (use-package web)
 (use-package elnode)
 (use-package git-timemachine)
+(use-package geiser)
 
 (use-package scala-mode
   :interpreter ("scala" . scala-mode))
