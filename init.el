@@ -17,6 +17,26 @@
 
 (setq use-package-always-ensure t)
 
+(use-package s)
+
+;; leverage homebrew installs
+(setq brew-prefix "/usr/local")
+
+(setenv "PATH"
+        (concat
+         (mapconcat
+          `(lambda (x) (concat brew-prefix x))
+          `("/bin" "/sbin" "/share/npm/bin")
+          path-separator)
+         path-separator
+         (getenv "PATH")))
+
+
+(add-to-list 'exec-path (concat brew-prefix "/opt/coreutils/libexec/gnubin"))
+(add-to-list 'exec-path (concat brew-prefix "/sbin"))
+(add-to-list 'exec-path (concat brew-prefix "/bin"))
+(add-to-list 'exec-path "/usr/local/share/npm/bin/")
+
 (use-package yasnippet
   :diminish yas-mode)
 
@@ -63,7 +83,6 @@
 (use-package markdown-mode)
 (use-package pandoc-mode)
 (use-package alchemist)
-(use-package s)
 (use-package find-file-in-project)
 (use-package dockerfile-mode)
 (use-package org)
@@ -78,13 +97,12 @@
 (use-package git-timemachine)
 (use-package geiser)
 
-(use-package scala-mode
-  :interpreter ("scala" . scala-mode))
+(use-package sbt-mode
+  :pin melpa-stable)
 
 (use-package ensime
   :pin melpa-stable
   :init (put 'ensime-auto-generate-config 'safe-local-variable #'booleanp)
-  ;; (setq ensime-startup-snapshot-notification nil)
   :config
   (require 'ensime-expand-region)
   (add-hook 'git-timemachine-mode-hook (lambda () (ensime-mode 0))))
@@ -97,24 +115,6 @@
 
 ;; string functions which this uses mostly to manipulate environment variables
 (require 's)
-
-;; leverage homebrew installs
-(setq brew-prefix "/usr/local")
-
-(setenv "PATH"
-        (concat
-         (mapconcat
-          `(lambda (x) (concat brew-prefix x))
-          `("/bin" "/sbin" "/share/npm/bin")
-          path-separator)
-         path-separator
-         (getenv "PATH")))
-
-
-(add-to-list 'exec-path (concat brew-prefix "/opt/coreutils/libexec/gnubin"))
-(add-to-list 'exec-path (concat brew-prefix "/sbin"))
-(add-to-list 'exec-path (concat brew-prefix "/bin"))
-(add-to-list 'exec-path "/usr/local/share/npm/bin/")
 
 (add-to-list 'exec-path
              (concat
