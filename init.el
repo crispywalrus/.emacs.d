@@ -38,7 +38,9 @@
 (add-to-list 'exec-path "/usr/local/share/npm/bin/")
 
 (use-package yasnippet
-  :diminish yas-mode)
+  :diminish yas-mode
+  :commands yas-minor-mode
+  :config (yas-reload-all))
 
 (use-package projectile
   :pin melpa-stable
@@ -75,10 +77,21 @@
 (use-package protobuf-mode)
 
 (use-package smartparens
-  :diminish smartparens-mode
-  :init (setq sp-interactive-dwim t)
+  :diminish
+  smartparens-mode
+  :init
+  (setq sp-interactive-dwim t)
   :config
-  (require 'smartparens-config))
+  (require 'smartparens-config)
+  (sp-use-smartparens-bindings)
+  (sp-pair "(" ")" :wrap "C-(") ;; how do people live without this?
+  (sp-pair "[" "]" :wrap "s-[") ;; C-[ sends ESC
+  (sp-pair "{" "}" :wrap "C-{")
+  (bind-key "C-<left>" nil smartparens-mode-map)
+  (bind-key "C-<right>" nil smartparens-mode-map)
+
+  (bind-key "s-<delete>" 'sp-kill-sexp smartparens-mode-map)
+  (bind-key "s-<backspace>" 'sp-backward-kill-sexp smartparens-mode-map))
 
 (use-package markdown-mode)
 (use-package pandoc-mode)
@@ -96,9 +109,11 @@
 (use-package elnode)
 (use-package git-timemachine)
 (use-package geiser)
+(use-package thrift)
 
-(use-package sbt-mode
-  :pin melpa-stable)
+(use-package scala-mode)
+
+(use-package sbt-mode)
 
 (use-package ensime
   :pin melpa-stable
@@ -209,6 +224,23 @@ very minimal set."
     (indent-region (point-min) (point-max))
     (untabify (point-min) (point-max))))
 
+(defun contextual-backspace ()
+  "Hungry whitespace or delete word depending on context."
+  (interactive)
+  (if (looking-back "[[:space:]\n]\\{2,\\}" (- (point) 2))
+      (while (looking-back "[[:space:]\n]" (- (point) 1))
+        (delete-char -1))
+    (cond
+     ((and (boundp 'smartparens-strict-mode)
+           smartparens-strict-mode)
+      (sp-backward-kill-word 1))
+     ((and (boundp 'subword-mode) 
+           subword-mode)
+      (subword-backward-kill 1))
+     (t
+      (backward-kill-word 1)))))
+
+(global-set-key (kbd "C-<backspace>") 'contextual-backspace)
 
 ;; end code
 
