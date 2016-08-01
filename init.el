@@ -17,7 +17,7 @@
 
 (setq use-package-always-ensure t)
 
-(use-package s)
+(use-package s)                         ;string functions
 
 ;; leverage homebrew installs
 (setq brew-prefix "/usr/local")
@@ -36,6 +36,8 @@
 (add-to-list 'exec-path (concat brew-prefix "/sbin"))
 (add-to-list 'exec-path (concat brew-prefix "/bin"))
 (add-to-list 'exec-path "/usr/local/share/npm/bin/")
+
+;; packages
 
 (use-package yasnippet
   :diminish yas-mode
@@ -67,14 +69,9 @@
   :bind (("s-g" . magit-status)
          ("s-b" . magit-blame)))
 
-(use-package projectile)
-(use-package eredis)
-
 (use-package expand-region
   :commands 'er/expand-region
   :bind ("C-=" . er/expand-region))
-
-(use-package protobuf-mode)
 
 (use-package smartparens
   :diminish
@@ -93,28 +90,45 @@
   (bind-key "s-<delete>" 'sp-kill-sexp smartparens-mode-map)
   (bind-key "s-<backspace>" 'sp-backward-kill-sexp smartparens-mode-map))
 
+;; lesser used hence lesser customized stuff
 (use-package markdown-mode)
 (use-package pandoc-mode)
-(use-package alchemist)
 (use-package find-file-in-project)
+(use-package git-timemachine)
+(use-package thrift)
 (use-package dockerfile-mode)
-(use-package org)
+
+;; org however isn't minor
+(use-package org)                       ;force to latest
 (use-package org-readme)
 (use-package org-pandoc)
 (use-package org-elisp-help)
 (use-package org-dashboard)
 (use-package org-bullets)
+
+;; some cranky and insane stuff
+(use-package eredis)
 (use-package web-server)
 (use-package web)
-(use-package elnode)
-(use-package git-timemachine)
+(use-package elnode)                    ;awesome evented io
+
+;; erlang etc.
+(use-package alchemist)
+(use-package edts)
+(use-package erlang)
+(use-package lfe-mode)
+
+;; various schemes, esp. chicken
 (use-package geiser)
-(use-package thrift)
 
-(use-package scala-mode)
+;; clojure
+(use-package clojure-mode)
+(use-package cider)
 
+;; scala
 (use-package sbt-mode)
-
+(use-package scala-mode
+  :interpreter ("scala" . scala-mode))
 (use-package ensime
   :pin melpa-stable
   :init (put 'ensime-auto-generate-config 'safe-local-variable #'booleanp)
@@ -122,14 +136,12 @@
   (require 'ensime-expand-region)
   (add-hook 'git-timemachine-mode-hook (lambda () (ensime-mode 0))))
 
+(use-package protobuf-mode)
 ;; end package management
 
 ;; load local elisp
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/crispy"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/nullman"))
-
-;; string functions which this uses mostly to manipulate environment variables
-(require 's)
 
 (add-to-list 'exec-path
              (concat
@@ -167,18 +179,9 @@
     ("+-" . ?±))
   "Prettify symbols for scala-mode.")
 
-(require 'markdown-mode)
+;;(require 'markdown-mode)
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
 (setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist))
-
-;; edredis give us elisp access to redis
-(require 'eredis)
-
-;; docs are good, pandoc is at least simple to use
-(require 'pandoc-mode)
-
-;; for elixir
-(require 'alchemist)
 
 (put 'dired-find-alternate-file 'disabled nil)
 ;; hook functions. all packages should have been loaded and customized
