@@ -14,9 +14,9 @@
   "Starting at the current buffers default directory a recursive
 search up the directory tree is made for the first instance of
 pom.xml. A compile command is constructed from the path generated
-and placed in the minibuffer. Errors are navigate to as in any
-other compile mode and the command is left in compiles stack for
-future direct execution"
+and placed in the minibuffer. Errors are navigated to as in any
+other compile mode and the command is left in the command history
+ stack for future execution"
   (interactive)
   (let ((dir default-directory))
       (while (and (not (file-exists-p (concat dir "/pom.xml")))
@@ -29,4 +29,4 @@ future direct execution"
                                (concat "mvn -f " dir "/pom.xml clean install")
                                nil nil 'mvn-command-history)))))
 
-(provide 'mvn-foo)
+(provide 'maven)
