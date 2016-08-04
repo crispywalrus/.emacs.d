@@ -7,6 +7,7 @@
 ;; use melpa
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
 (package-initialize)
 
@@ -53,6 +54,19 @@
   :config
   (projectile-global-mode))
 
+(use-package sx
+  :config
+  (bind-keys
+   :prefix "C-c s"
+   :prefix-map my-sx-map
+   :prefix-docstring "Global keymap for SX."
+   ("q" . sx-tab-all-questions)
+   ("i" . sx-inbox)
+   ("o" . sx-open-link)
+   ("u" . sx-tab-unanswered-my-tags)
+   ("a" . sx-ask)
+   ("s" . sx-search)))
+
 (use-package company
   :pin melpa-stable
   :diminish company-mode)
@@ -68,6 +82,10 @@
   (setq magit-last-seen-setup-instructions "1.4.0")
   :bind (("s-g" . magit-status)
          ("s-b" . magit-blame)))
+
+(use-package gh)
+(use-package magit-gh-pulls)
+(use-package github-notifier)
 
 (use-package expand-region
   :commands 'er/expand-region
@@ -96,21 +114,25 @@
 (use-package find-file-in-project)
 (use-package git-timemachine)
 (use-package thrift)
-(use-package dockerfile-mode)
+(use-package yaml-mode)
+(use-package dockerfile-mode
+  :mode ("Dockerfile\\'" . dockerfile-mode))
 
 ;; org however isn't minor
-(use-package org)                       ;force to latest
+(use-package org
+  :ensure org-plus-contrib)
 (use-package org-readme)
 (use-package org-pandoc)
 (use-package org-elisp-help)
 (use-package org-dashboard)
-(use-package org-bullets)
+
 
 ;; some cranky and insane stuff
 (use-package eredis)
 (use-package web-server)
 (use-package web)
-(use-package elnode)                    ;awesome evented io
+(use-package elnode ;awesome evented io
+  :commands elnode-make-webserver)                    
 
 ;; erlang etc.
 (use-package alchemist)
