@@ -20,23 +20,11 @@
 
 (use-package s)                         ;string functions
 
+(use-package exec-path-from-shell
+  :init (exec-path-from-shell-initialize))
+
 ;; leverage homebrew installs
 (setq brew-prefix "/usr/local")
-
-(setenv "PATH"
-        (concat
-         (mapconcat
-          `(lambda (x) (concat brew-prefix x))
-          `("/bin" "/sbin" "/share/npm/bin")
-          path-separator)
-         path-separator
-         (getenv "PATH")))
-
-
-(add-to-list 'exec-path (concat brew-prefix "/opt/coreutils/libexec/gnubin"))
-(add-to-list 'exec-path (concat brew-prefix "/sbin"))
-(add-to-list 'exec-path (concat brew-prefix "/bin"))
-(add-to-list 'exec-path "/usr/local/share/npm/bin/")
 
 ;; packages
 
@@ -55,6 +43,7 @@
   (projectile-global-mode))
 
 (use-package sx
+  :init (require 'bind-key)
   :config
   (bind-keys
    :prefix "C-c s"
@@ -77,7 +66,6 @@
 (use-package magit
   :commands magit-status magit-blame
   :init
-  (setq magit-revert-buffers nil)
   (setq magit-auto-revert-mode nil)
   (setq magit-last-seen-setup-instructions "1.4.0")
   :bind (("s-g" . magit-status)
@@ -125,7 +113,8 @@
 (use-package org-pandoc)
 (use-package org-elisp-help)
 (use-package org-dashboard)
-
+;; hyperbole
+(use-package hyperbole)
 
 ;; some cranky and insane stuff
 (use-package eredis)
@@ -159,27 +148,28 @@
   (add-hook 'git-timemachine-mode-hook (lambda () (ensime-mode 0))))
 
 (use-package protobuf-mode)
+
+(use-package subword
+  :ensure nil
+  :diminish subword-mode
+  :init (global-subword-mode t))
 ;; end package management
 
 ;; load local elisp
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/maven"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/nullman"))
-
-(add-to-list 'exec-path
-             (concat
-              (s-trim
-               (shell-command-to-string "brew --prefix coreutils"))
-              "/libexec/gnubin"))
+(add-to-list 'load-path (expand-file-name "maven" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "nullman" user-emacs-directory))
 ;; end environment
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
 ;; pop out compilation and grep windows.
 (setq-default indent-tabs-mode nil)
 (setq inhibit-startup-screen t)
+(setq initial-scratch-message nil)
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (put 'narrow-to-region 'disabled nil)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
-(setq special-display-buffer-names '("*compilation*" "*grep*" "*Find*"))
+;; (setq special-display-buffer-names '("*compilation*" "*grep*" "*Find*"))
 (setq-default debug-on-error nil)
 (server-start)
 
@@ -287,19 +277,4 @@ directory to make multiple eshell windows easier."
 (global-set-key(kbd "C-!") 'eshell-here)
 ;; end code
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (deeper-blue)))
- '(custom-safe-themes
-   (quote
-    ("d9e811d5a12dec79289c5bacaecd8ae393d168e9a92a659542c2a9bab6102041" default))))
+(load custom-file)
