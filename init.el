@@ -28,6 +28,8 @@
 
 ;; packages
 
+(use-package kanban)
+
 (use-package yasnippet
   :diminish yas-mode
   :commands yas-minor-mode
@@ -108,7 +110,11 @@
 
 ;; org however isn't minor
 (use-package org
-  :ensure org-plus-contrib)
+  :ensure org-plus-contrib
+  :init (setq org-log-done t)
+  :bind (("\C-cl" . org-store-link)
+         ("\C-ca" . org-agenda)))
+
 (use-package org-readme)
 (use-package org-pandoc)
 (use-package org-elisp-help)
@@ -278,3 +284,9 @@ directory to make multiple eshell windows easier."
 ;; end code
 
 (load custom-file)
+
+(setq org-agenda-files (mapcar 'expand-file-name (file-expand-wildcards "~/.org/*.org")))
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "INPROGRESS(p)" "READY(r)" "BLOCKED(b)" "|" "DONE(d)")))
+
