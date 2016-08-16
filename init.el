@@ -147,7 +147,6 @@
 (use-package scala-mode
   :interpreter ("scala" . scala-mode))
 (use-package ensime
-  :pin melpa-stable
   :init (put 'ensime-auto-generate-config 'safe-local-variable #'booleanp)
   :config
   (require 'ensime-expand-region)
@@ -163,7 +162,6 @@
 
 ;; load local elisp
 (add-to-list 'load-path (expand-file-name "maven" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "nullman" user-emacs-directory))
 ;; end environment
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
