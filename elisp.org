@@ -7,30 +7,20 @@
   functionality. their descriptions tend to be of the "missing" or
   "modern" library for foo variety
 
-** dash
+** [[https://github.com/magnars/dash.el][dash]]
    modern list library
-** ht
+** [[https://github.com/Wilfred/ht.el][ht]]
    missing hash table library
-** f
+** [[https://github.com/rejeep/f.el][f]]
    modern API for working with files/directories
-** kv
+** [[https://github.com/nicferrier/emacs-kv][kv]]
    key value data structure functions
-** pcache
+** [[https://github.com/sigma/pcache][pcache]]
    persistent cache
-** queue
+** [[ww.dr-qubits.org/tags/computing-code-emacs.html][queue]]
    queue data structure
-** s
-   long lost emacs string manipulation library
-** seq
+** [[https://github.com/magnars/s][s]]
+long lost emacs string manipulation library
+** [[https://github.com/NicolasPetton/seq.el][seq]]
    sequence manipulation functions
-
-
-* just playing around here!
-src_scala { def bob[A,F[_]](a: A): Option[F] = ??? }
-
-#+NAME: Some code
-#+BEGIN_SRC scala
-val b = "some text"
-#+END_SRC
-
 
