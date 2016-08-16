@@ -1,0 +1,36 @@
+#+TITLE: Interesting Elisp Packages
+#+STARTUP: indent
+#+STARTUP: showstars
+* Interesting packages
+
+  these are here because of they were installed by some high-level
+  functionality. their descriptions tend to be of the "missing" or
+  "modern" library for foo variety
+
+** dash
+   modern list library
+** ht
+   missing hash table library
+** f
+   modern API for working with files/directories
+** kv
+   key value data structure functions
+** pcache
+   persistent cache
+** queue
+   queue data structure
+** s
+   long lost emacs string manipulation library
+** seq
+   sequence manipulation functions
+
+
+* just playing around here!
+src_scala { def bob[A,F[_]](a: A): Option[F] = ??? }
+
+#+NAME: Some code
+#+BEGIN_SRC scala
+val b = "some text"
+#+END_SRC
+
+
