@@ -9,9 +9,33 @@ Clone this repo into your ~/.emacs.d
 
 ** Goals
 
-Stability and unability. melpa stable is the preferred repo for
-package with a focus on making sure that ensime, scala mode and
-projectile especially are pulled from their most stable sources.
+Stability and unsurprising usability. Initially I wanted to focus on
+building a stable environment using melpa-stable packages to the
+greatest extent possible but that just hasn't worked out. Usability
+ended up triumphing and trampling stability
+
+** Focus
+
+Software engineering using scala and the rest of the jvm based
+ecosystem.
+
+*** Ensime for scala
+
+Ensime adds a level of scala integration that none of the "real" IDE's
+seem to be able to match. To me this is unsurprising as the authors
+are scala devs first and IDE devs second.
+
+*** Magit for git
+
+Now able to handle almost all of my daily needs for interacting with
+git. Only rarely do I need to interact with gits CLI porcelain anymore
+(although I do because ... once you're in a shell buffer it's just so
+easy to do the thing)
+
+
+
+
+
 
 
 
