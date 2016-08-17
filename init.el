@@ -158,6 +158,9 @@
   :ensure nil
   :diminish subword-mode
   :init (global-subword-mode t))
+
+(use-package m-buffer
+  :pin melpa-stable)
 ;; end package management
 
 ;; load local elisp
