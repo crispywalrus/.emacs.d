@@ -1,4 +1,3 @@
-;; -*- mode: emacs-lisp; -*-
 ;;
 
 ;; package configuration and management
@@ -18,17 +17,22 @@
 
 (setq use-package-always-ensure t)
 
-(use-package s)                         ;string functions
+(use-package use-package-chords
+  :config (key-chord-mode 1))
+
+;; string functions
+(use-package s)
+
+(use-package string-inflection
+  :bind ("s-i" . string-inflection-all-cycle))
+
+(use-package m-buffer)
 
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
 
-;; leverage homebrew installs
-(setq brew-prefix "/usr/local")
-
 ;; packages
-
-(use-package kanban)
+(use-package ivy)
 
 (use-package yasnippet
   :diminish yas-mode
@@ -36,7 +40,6 @@
   :config (yas-reload-all))
 
 (use-package projectile
-  :pin melpa-stable
   :diminish projectile-mode
   :init
   (setq projectile-completion-system 'ivy)
@@ -59,11 +62,27 @@
    ("s" . sx-search)))
 
 (use-package company
-  :pin melpa-stable
   :diminish company-mode)
 
 (use-package ivy
-  :pin melpa-stable)
+  :bind
+  (:map ivy-mode-map
+        ("C-'" . ivy-avy))
+  :diminish (ivy-mode . "")
+  :config
+  ;; (ivy-mode 1)
+  ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
+  (setq ivy-use-virtual-buffers t)
+  ;; number of result lines to display
+  (setq ivy-height 10)
+  ;; does not count candidates
+  (setq ivy-count-format "")
+  ;; no regexp by default
+  (setq ivy-initial-inputs-alist nil)
+  ;; configure regexp engine.
+  (setq ivy-re-builders-alist
+	;; allow input not in order
+        '((t   . ivy--regex-ignore-order))))
 
 (use-package magit
   :commands magit-status magit-blame
@@ -76,6 +95,7 @@
 (use-package gh)
 (use-package magit-gh-pulls)
 (use-package github-notifier)
+(use-package git-auto-commit-mode)
 
 (use-package expand-region
   :commands 'er/expand-region
@@ -101,7 +121,6 @@
 ;; lesser used hence lesser customized stuff
 (use-package markdown-mode)
 (use-package pandoc-mode)
-(use-package find-file-in-project)
 (use-package git-timemachine)
 (use-package thrift)
 (use-package yaml-mode)
@@ -110,17 +129,24 @@
 
 ;; org however isn't minor
 (use-package org
-  :ensure org-plus-contrib
-  :init (setq org-log-done t)
+  :init
+  (setq org-log-done t)
+  (setq org-agenda-files (mapcar 'expand-file-name (file-expand-wildcards "~/.org/*.org")))
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "INPROGRESS(p)" "READY(r)" "BLOCKED(b)" "|" "DONE(d)")))
   :bind (("\C-cl" . org-store-link)
          ("\C-ca" . org-agenda)))
+
+
+(use-package kanban)
+(use-package org-bullets
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
 (use-package org-readme)
 (use-package org-pandoc)
 (use-package org-elisp-help)
 (use-package org-dashboard)
-;; hyperbole
-(use-package hyperbole)
 
 ;; some cranky and insane stuff
 (use-package eredis)
@@ -146,21 +172,20 @@
 (use-package sbt-mode)
 (use-package scala-mode
   :interpreter ("scala" . scala-mode))
+
 (use-package ensime
-  :init (put 'ensime-auto-generate-config 'safe-local-variable #'booleanp)
+  :init
+  (put 'ensime-auto-generate-config 'safe-local-variable #'booleanp)
+  (setq ensime-startup-snapshot-notification nil)
   :config
   (require 'ensime-expand-region)
   (add-hook 'git-timemachine-mode-hook (lambda () (ensime-mode 0))))
-
-(use-package protobuf-mode)
 
 (use-package subword
   :ensure nil
   :diminish subword-mode
   :init (global-subword-mode t))
 
-(use-package m-buffer
-  :pin melpa-stable)
 ;; end package management
 
 ;; load local elisp
@@ -286,8 +311,4 @@ directory to make multiple eshell windows easier."
 
 (load custom-file)
 
-(setq org-agenda-files (mapcar 'expand-file-name (file-expand-wildcards "~/.org/*.org")))
-
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "INPROGRESS(p)" "READY(r)" "BLOCKED(b)" "|" "DONE(d)")))
 
