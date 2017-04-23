@@ -1,6 +1,6 @@
 ;;
 
-;; leverage homebrew installs
+;;
 (setq brew-prefix "/usr/local")
 
 ;; package configuration and management
@@ -11,6 +11,7 @@
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
+;;
 (package-initialize)
 
 (setq use-package-always-ensure t)
@@ -25,13 +26,19 @@
 (use-package use-package-chords
   :config (key-chord-mode 1))
 
-(use-package s)                         ;string functions
+;; elisp string functions
+(use-package s)
 (use-package string-inflection
   :bind ("s-i" . string-inflection-all-cycle))
-(use-package dash)                      ;API for lists
-(use-package dash-functional)           ;combinators
-(use-package m-buffer)                  ;use buffers as lists
-(use-package f)                         ;upgraded API for working with files
+
+;; API for lists
+(use-package dash)
+;; list combinators
+(use-package dash-functional)
+;; use buffers as lists
+(use-package m-buffer)
+;; upgraded API for working with files
+(use-package f)
 (use-package multiple-cursors)
 
 (use-package exec-path-from-shell
@@ -56,6 +63,7 @@
   :config
   (projectile-global-mode))
 
+;; stackoverflow is great but why leave emacs to search it?
 (use-package sx
   :init (require 'bind-key)
   :config
@@ -91,7 +99,7 @@
   (setq ivy-initial-inputs-alist nil)
   ;; configure regexp engine.
   (setq ivy-re-builders-alist
-	;; allow input not in order
+        ;; allow input not in order
         '((t   . ivy--regex-ignore-order))))
 
 (use-package counsel-projectile
@@ -168,9 +176,9 @@
   :ensure org-plus-contrib
   :init
   (setq org-log-done t)
-  (setq org-directory "~/.org")
-  (setq org-default-notes-file (concat org-directory "/ck.org"))
-  (setq org-agenda-files (mapcar 'expand-file-name (file-expand-wildcards "~/.org/*.org")))
+  (setq org-directory (expand-file-name "~/.org"))
+  (setq org-default-notes-file (concat org-directory "~/main.org"))
+  (setq org-agenda-files (mapcar 'expand-file-name (file-expand-wildcards "~/.org/agenda.org")))
   (setq org-todo-keywords
         '((sequence "TODO(t)" "INPROGRESS(p)" "READY(r)" "BLOCKED(b)" "|" "DONE(d)")))
   :bind (("\C-cl" . org-store-link)
@@ -189,12 +197,12 @@
 
 (use-package org-readme)
 (use-package org-bullets)
-(use-package org-pandoc)
+;; (use-package org-pandoc)
 (use-package org-elisp-help)
 (use-package org-dashboard)
-(use-package secretaria
-  :config
-  (add-hook 'after-init-hook #'secretaria-today-unknown-time-appt-always-remind-me))
+
+(use-package deft
+  :pin melpa-stable)
 
 ;; some cranky and insane stuff
 (use-package eredis)
@@ -230,25 +238,30 @@
 
 ;; scala
 (use-package sbt-mode
-  :pin melpa-stable)
+  :pin melpa)
+
 (use-package scala-mode
-  :pin melpa-stable
+  :pin melpa
   :interpreter ("scala" . scala-mode))
+
 (use-package popup
   :pin melpa-stable)
 
 (use-package ensime
-  :pin melpa-stable
+  ;;  :pin melpa-stable
   :init
   (put 'ensime-auto-generate-config 'safe-local-variable #'booleanp)
   (setq
-     ensime-startup-snapshot-notification nil
-     ensime-startup-notification nil)
+   ensime-startup-snapshot-notification nil
+   ensime-startup-notification nil)
   :config
   (require 'ensime-expand-region)
   (add-hook 'git-timemachine-mode-hook (lambda () (ensime-mode 0))))
 
-;; (use-package protobuf-mode)
+(use-package protobuf-mode)
+
+(use-package tuareg)
+(use-package utop)
 
 (use-package js2-mode)
 (use-package js2-refactor)
@@ -268,11 +281,10 @@
 ;; end package management
 
 ;; load local elisp
-(add-to-list 'load-path (expand-file-name "maven" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "coding" user-emacs-directory))
 ;; end environment
 
-;; my normal setup. no tabs, no menu, no scrollbars, no toolbar and
-;; pop out compilation and grep windows.
+;; my normal setup. no tabs, no menu, no scrollbars, no toolbar, no scratch buffer message, no startup screen.
 (setq-default indent-tabs-mode nil)
 (setq
  inhibit-startup-screen t
@@ -280,7 +292,8 @@
  custom-file (expand-file-name "custom.el" user-emacs-directory)
  load-prefer-newer t
  debug-on-error nil)
- 
+
+(load custom-file)
 (put 'narrow-to-region 'disabled nil)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
@@ -289,20 +302,6 @@
 
 ;; make maven work (such as it is)
 (require 'maven)
-
-;; load and customize modes
-(defcustom
-  scala-mode-prettify-symbols
-  '(("->" . ?→)
-    ("<-" . ?←)
-    ("=>" . ?⇒)
-    ("<=" . ?≤)
-    (">=" . ?≥)
-    ("==" . ?≡)
-    ("!=" . ?≠)
-    ;; implicit https://github.com/chrissimpkins/Hack/issues/214
-    ("+-" . ?±))
-  "Prettify symbols for scala-mode.")
 
 ;;(require 'markdown-mode)
 (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
@@ -315,6 +314,7 @@
 (add-hook 'scala-mode-hook
           (lambda ()
             (setq prettify-symbols-alist scala-mode-prettify-symbols)
+            (prettify-symbols-mode)
             (smartparens-mode t)))
 
 (add-hook 'java-mode-hook
@@ -390,6 +390,3 @@ directory to make multiple eshell windows easier."
 
 (global-set-key(kbd "C-!") 'eshell-here)
 ;; end code
-
-(load custom-file)
-
