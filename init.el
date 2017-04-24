@@ -1,8 +1,5 @@
 ;;
 
-;;
-(setq brew-prefix "/usr/local")
-
 ;; package configuration and management
 (require 'package)
 
@@ -23,6 +20,7 @@
 
 
 ;; packages
+;; loads key-chord and adds a :chord symbol for use-package.
 (use-package use-package-chords
   :config (key-chord-mode 1))
 
@@ -156,7 +154,10 @@
 
 ;; lesser used hence lesser customized stuff
 (use-package markdown-mode
-  :pin melpa-stable)
+  :pin melpa-stable
+  :init
+  (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
+  (setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist)))
 
 (use-package pandoc-mode
   :pin melpa-stable)
@@ -185,11 +186,6 @@
          ("\C-ca" . org-agenda)
          ("\C-cc" . org-capture)))
 
-(use-package ox-reveal
-  :init
-  (setq org-reveal-root "file://Users/chris.vale/.org/reveal.js"))
-
-
 (use-package kanban)
 (use-package org-bullets
   :config
@@ -197,9 +193,12 @@
 
 (use-package org-readme)
 (use-package org-bullets)
-;; (use-package org-pandoc)
 (use-package org-elisp-help)
 (use-package org-dashboard)
+
+;; the ox mode name denotes an org exporter
+(use-package ox-pandoc)
+(use-package ox-reveal)
 
 (use-package deft
   :pin melpa-stable)
@@ -226,16 +225,6 @@
 (use-package slime-docker
   :pin melpa-stable)
 
-;; clojure
-(use-package clojure-mode
-  :pin melpa-stable)
-(use-package clojure-mode-extra-font-locking
-  :pin melpa-stable)
-(use-package cider
-  :pin melpa-stable)
-(use-package clj-refactor
-  :pin melpa-stable)
-
 ;; scala
 (use-package sbt-mode
   :pin melpa)
@@ -256,11 +245,31 @@
    ensime-startup-notification nil)
   :config
   (require 'ensime-expand-region)
-  (add-hook 'git-timemachine-mode-hook (lambda () (ensime-mode 0))))
+  (add-hook 'git-timemachine-mode-hook (lambda () (ensime-mode 0)))
+  (add-hook 'ensime-mode-hook
+            (lambda ()
+              (let ((backends (company-backends-for-buffer)))
+                (setq company-backends
+                      (push '(ensime-company company-yasnippet) backends))))))
 
 (use-package protobuf-mode)
 
-(use-package tuareg)
+;; ocalm et. al.
+(use-package merlin)
+(use-package tuareg
+  :init (setq merlin-command 'opam)
+  :config (add-hook 'tuarag-model-hook (lambda ()
+                                         (merlin-mode t)
+                                         (utop-minor-mode))))
+
+;; we jump out of our happy use-package mode to explicitly enable
+;; reason mode which hasn't been published as of yet. this means
+;; there's a checked in version in coding ... :(
+(require 'reason-mode)
+(add-hook 'reason-mode-hook (lambda ()
+                              (add-hook 'before-save-hook 'refmt-before-save)
+                              (merlin-mode)))
+
 (use-package utop)
 
 (use-package js2-mode)
@@ -300,12 +309,9 @@
 
 (server-start)
 
+(require 'clojure-config)
 ;; make maven work (such as it is)
 (require 'maven)
-
-;;(require 'markdown-mode)
-(setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
-(setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist))
 
 (put 'dired-find-alternate-file 'disabled nil)
 ;; hook functions. all packages should have been loaded and customized
@@ -324,11 +330,6 @@
             ;; (c-toggle-auto-newline 1)
             (c-set-offset 'substatement-open 0)
             (c-set-offset 'annotation-var-cont 0)))
-
-(add-hook 'ensime-mode-hook
-          (lambda ()
-            (let ((backends (company-backends-for-buffer)))
-              (setq company-backends (push '(ensime-company company-yasnippet) backends)))))
 
 ;; start code
 (defun company-backends-for-buffer ()

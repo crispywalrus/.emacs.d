@@ -9,4 +9,4 @@
 (use-package clj-refactor
   :pin melpa-stable)
 
-(provide 'clojure-coding)
+(provide 'clojure-config)
