@@ -262,14 +262,6 @@
                                          (merlin-mode t)
                                          (utop-minor-mode))))
 
-;; we jump out of our happy use-package mode to explicitly enable
-;; reason mode which hasn't been published as of yet. this means
-;; there's a checked in version in coding ... :(
-(require 'reason-mode)
-(add-hook 'reason-mode-hook (lambda ()
-                              (add-hook 'before-save-hook 'refmt-before-save)
-                              (merlin-mode)))
-
 (use-package utop)
 
 (use-package js2-mode)
@@ -291,6 +283,15 @@
 
 ;; load local elisp
 (add-to-list 'load-path (expand-file-name "coding" user-emacs-directory))
+
+;; we jump out of our happy use-package mode to explicitly enable
+;; reason mode which hasn't been published as of yet. this means
+;; there's a checked in version in coding ... :(
+(require 'reason-mode)
+(add-hook 'reason-mode-hook (lambda ()
+                              (add-hook 'before-save-hook 'refmt-before-save)
+                              (merlin-mode)))
+
 ;; end environment
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar, no scratch buffer message, no startup screen.
@@ -302,6 +303,7 @@
  load-prefer-newer t
  debug-on-error nil)
 
+(f-touch (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 (put 'narrow-to-region 'disabled nil)
 (scroll-bar-mode -1)
