@@ -29,21 +29,20 @@
 (use-package string-inflection
   :bind ("s-i" . string-inflection-all-cycle))
 
-;; API for lists
+;; these next packages don't describe modes or features rather they're
+;; packages of elisp function designed to make coding better.  API for
 (use-package dash)
-;; list combinators
 (use-package dash-functional)
-;; use buffers as lists
 (use-package m-buffer)
-;; upgraded API for working with files
 (use-package f)
 (use-package multiple-cursors)
 
+;; functionality follows
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
 
 ;; packages
-(use-package kanban)
+;; (use-package kanban)
 
 (use-package yasnippet
   :pin melpa-stable
@@ -159,11 +158,9 @@
   (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
   (setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist)))
 
-(use-package pandoc-mode
-  :pin melpa-stable)
+(use-package pandoc-mode)
 
-(use-package git-timemachine
-  :pin melpa-stable)
+(use-package git-timemachine)
 
 (use-package thrift)
 
@@ -227,7 +224,8 @@
 
 ;; scala
 (use-package sbt-mode
-  :pin melpa)
+  :pin melpa
+  :commands sbt-start sbt-command)
 
 (use-package scala-mode
   :pin melpa
@@ -245,12 +243,7 @@
    ensime-startup-notification nil)
   :config
   (require 'ensime-expand-region)
-  (add-hook 'git-timemachine-mode-hook (lambda () (ensime-mode 0)))
-  (add-hook 'ensime-mode-hook
-            (lambda ()
-              (let ((backends (company-backends-for-buffer)))
-                (setq company-backends
-                      (push '(ensime-company company-yasnippet) backends))))))
+  (add-hook 'git-timemachine-mode-hook (lambda () (ensime-mode 0))))
 
 (use-package protobuf-mode)
 
@@ -308,7 +301,7 @@
 (put 'narrow-to-region 'disabled nil)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
-
+(windmove-default-keybindings)
 (server-start)
 
 (require 'clojure-config)
@@ -319,10 +312,11 @@
 ;; hook functions. all packages should have been loaded and customized
 ;; by now
 
+(global-prettify-symbols-mode)
+
 (add-hook 'scala-mode-hook
           (lambda ()
-            (setq prettify-symbols-alist scala-mode-prettify-symbols)
-            (prettify-symbols-mode)
+            (setq prettify-symbols-alist scala-prettify-symbols-alist)
             (smartparens-mode t)))
 
 (add-hook 'java-mode-hook
@@ -332,6 +326,13 @@
             ;; (c-toggle-auto-newline 1)
             (c-set-offset 'substatement-open 0)
             (c-set-offset 'annotation-var-cont 0)))
+
+(add-hook 'ensime-mode-hook
+          (lambda ()
+            (let ((backends (company-backends-for-buffer)))
+              (setq company-backends
+                    (push '(ensime-company company-yasnippet) backends)))))
+
 
 ;; start code
 (defun company-backends-for-buffer ()
