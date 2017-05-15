@@ -100,7 +100,7 @@
         '((t   . ivy--regex-ignore-order))))
 
 (use-package counsel-projectile
-  :init
+  :config
   (counsel-projectile-on))
 
 (use-package with-editor
@@ -116,18 +116,20 @@
   :pin melpa-stable
   :commands magit-status magit-blame
   :init
-  (setq magit-auto-revert-mode nil)
-  (setq magit-last-seen-setup-instructions "1.4.0")
+  (setq magit-auto-revert-mode nil
+        magit-last-seen-setup-instructions "1.4.0")
   :bind (("s-g" . magit-status)
          ("s-b" . magit-blame)))
 
-(use-package magit-find-file
-  :pin melpa-stable)
+(use-package magithub
+  :after magit
+  :config (magithub-feature-autoinject t))
 
-(use-package gh)
-(use-package magit-gh-pulls)
-(use-package github-notifier)
-(use-package git-auto-commit-mode)
+(use-package magit-find-file
+  :pin melpa-stable
+  :bind (("s-f" . magit-find-file-completing-read)))
+
+(use-package git-timemachine)
 
 (use-package expand-region
   :commands 'er/expand-region
@@ -159,8 +161,6 @@
   (setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist)))
 
 (use-package pandoc-mode)
-
-(use-package git-timemachine)
 
 (use-package thrift)
 
@@ -288,6 +288,8 @@
 ;; end environment
 
 ;; my normal setup. no tabs, no menu, no scrollbars, no toolbar, no scratch buffer message, no startup screen.
+(f-touch (expand-file-name "custom.el" user-emacs-directory))
+
 (setq-default indent-tabs-mode nil)
 (setq
  inhibit-startup-screen t
@@ -296,7 +298,6 @@
  load-prefer-newer t
  debug-on-error nil)
 
-(f-touch (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 (put 'narrow-to-region 'disabled nil)
 (scroll-bar-mode -1)
