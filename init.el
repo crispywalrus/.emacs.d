@@ -1,45 +1,86 @@
-;;
+;;; init.el --- emacs configuration -*- lexical-binding: t -*-
 
-;; package configuration and management
+;; Copyright © 2011 - 2017 Chris Vale
+;;
+;; Author: Chris Vale <crispywalrus@gmail.com>
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+
+;; Configuration.
+
+;;; Code:
+
+
 (require 'package)
-
-;; use melpa
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-
-;;
 (package-initialize)
-
-(setq use-package-always-ensure t)
-
+;; is use-package isn't installed yet go ahead and make it available.
 (when
     (not package-archive-contents)
   (package-refresh-contents)
   (package-install 'use-package))
-
 
 ;; packages
 ;; loads key-chord and adds a :chord symbol for use-package.
 (use-package use-package-chords
   :config (key-chord-mode 1))
 
-;; elisp string functions
+;; these next packages don't describe modes or features rather they're
+;; packages of elisp function designed to make coding better.  Do this
+;; here so that we can be sure they'll be available for local code.
 (use-package s)
 (use-package string-inflection
   :bind ("s-i" . string-inflection-all-cycle))
-
-;; these next packages don't describe modes or features rather they're
-;; packages of elisp function designed to make coding better.  API for
 (use-package dash)
 (use-package dash-functional)
 (use-package m-buffer)
 (use-package f)
 (use-package multiple-cursors)
 
+;; no tabs, no menu, no scrollbars, no toolbar, no scratch buffer message, no startup screen.
+(f-touch (expand-file-name "custom.el" user-emacs-directory))
+
+(setq-default indent-tabs-mode nil)
+
+(setq
+ use-package-always-ensure t
+ inhibit-startup-screen t
+ initial-scratch-message nil
+ custom-file (expand-file-name "custom.el" user-emacs-directory)
+ load-prefer-newer t
+ debug-on-error nil)
+
+(load custom-file)
+(put 'narrow-to-region 'disabled nil)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(windmove-default-keybindings)
+(server-start)
+;; end defaults
+
 ;; functionality follows
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
+
+;; use melpa
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+
 
 ;; packages
 ;; (use-package kanban)
@@ -207,21 +248,6 @@
 (use-package elnode ;awesome evented io
   :commands elnode-make-webserver)
 
-;; erlang etc.
-(use-package erlang)
-(use-package alchemist)
-(use-package ivy-erlang-complete)
-(use-package lfe-mode)
-
-;; various lisps and schemes
-(use-package paredit
-  :pin melpa-stable)
-(use-package racket-mode)
-(use-package slime
-  :pin melpa-stable)
-(use-package slime-docker
-  :pin melpa-stable)
-
 ;; scala
 (use-package sbt-mode
   :pin melpa
@@ -274,40 +300,24 @@
 (use-package popwin)
 ;; end package management
 
-;; load local elisp
-(add-to-list 'load-path (expand-file-name "coding" user-emacs-directory))
+;; packs are packages of packages and utility functions
+(add-to-list 'load-path (expand-file-name "packs" user-emacs-directory))
 
 ;; we jump out of our happy use-package mode to explicitly enable
 ;; reason mode which hasn't been published as of yet. this means
 ;; there's a checked in version in coding ... :(
-(require 'reason-mode)
+(require 'reason-pack)
 (add-hook 'reason-mode-hook (lambda ()
                               (add-hook 'before-save-hook 'refmt-before-save)
                               (merlin-mode)))
 
-;; end environment
 
-;; my normal setup. no tabs, no menu, no scrollbars, no toolbar, no scratch buffer message, no startup screen.
-(f-touch (expand-file-name "custom.el" user-emacs-directory))
+;; load clojure pack
+(require 'clojure-pack)
 
-(setq-default indent-tabs-mode nil)
-(setq
- inhibit-startup-screen t
- initial-scratch-message nil
- custom-file (expand-file-name "custom.el" user-emacs-directory)
- load-prefer-newer t
- debug-on-error nil)
-
-(load custom-file)
-(put 'narrow-to-region 'disabled nil)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-(windmove-default-keybindings)
-(server-start)
-
-(require 'clojure-config)
 ;; make maven work (such as it is)
-(require 'maven)
+(require 'maven-pack)
+;; end packs
 
 (put 'dired-find-alternate-file 'disabled nil)
 ;; hook functions. all packages should have been loaded and customized
@@ -347,12 +357,11 @@ very minimal set."
           (list (push 'company-etags base))
         (list base)))))
 
-;; given that I have to work with eclipse users it's the only way to
-;; stay sane.
+;; given that I have to work with eclipse and intellij users
 (defun fix-format-buffer ()
   "indent, untabify and remove trailing whitespace for a buffer"
   (interactive)
-  (save-excursion
+  (save-mark-and-excursion
     (delete-trailing-whitespace)
     (indent-region (point-min) (point-max))
     (untabify (point-min) (point-max))))

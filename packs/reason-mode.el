@@ -1153,5 +1153,4 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
 (require 'refmt)
 
 (provide 'reason-mode)
-
 ;;; reason-mode.el ends here

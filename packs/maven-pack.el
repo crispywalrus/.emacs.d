@@ -29,4 +29,4 @@ other compile mode and the command is left in the command history
                                (concat "mvn -f " dir "/pom.xml clean install")
                                nil nil 'mvn-command-history)))))
 
-(provide 'maven)
+(provide 'maven-pack)
