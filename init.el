@@ -72,10 +72,6 @@
 (server-start)
 ;; end defaults
 
-;; functionality follows
-(use-package exec-path-from-shell
-  :init (exec-path-from-shell-initialize))
-
 ;; use melpa
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
@@ -83,7 +79,10 @@
 
 
 ;; packages
-;; (use-package kanban)
+;; functionality follows
+(use-package exec-path-from-shell
+  :init (exec-path-from-shell-initialize))
+
 
 (use-package yasnippet
   :pin melpa-stable
@@ -161,10 +160,6 @@
         magit-last-seen-setup-instructions "1.4.0")
   :bind (("s-g" . magit-status)
          ("s-b" . magit-blame)))
-
-(use-package magithub
-  :after magit
-  :config (magithub-feature-autoinject t))
 
 (use-package magit-find-file
   :pin melpa-stable
@@ -251,7 +246,8 @@
 ;; scala
 (use-package sbt-mode
   :pin melpa
-  :commands sbt-start sbt-command)
+  :commands sbt-start sbt-command
+  :init (setq sbt:prefer-nested-projects t))
 
 (use-package scala-mode
   :pin melpa
@@ -283,9 +279,12 @@
 
 (use-package utop)
 
+;; javascript
 (use-package js2-mode)
 (use-package js2-refactor)
 
+;; change word bounderies to include lower case to upper case
+;; transitions, as in camel cased words
 (use-package subword
   :ensure nil
   :diminish subword-mode
