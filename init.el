@@ -27,6 +27,12 @@
 
 
 (require 'package)
+
+;; use melpa
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+
 (package-initialize)
 ;; is use-package isn't installed yet go ahead and make it available.
 (when
@@ -48,7 +54,8 @@
 (use-package dash)
 (use-package dash-functional)
 (use-package m-buffer)
-(use-package f)
+(use-package f
+  :ensure t)
 (use-package multiple-cursors)
 
 ;; no tabs, no menu, no scrollbars, no toolbar, no scratch buffer message, no startup screen.
@@ -71,12 +78,6 @@
 (windmove-default-keybindings)
 (server-start)
 ;; end defaults
-
-;; use melpa
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-
 
 ;; packages
 ;; functionality follows
@@ -207,7 +208,7 @@
 
 ;; omg, org mode ends up eating the world!
 (use-package org
-  :ensure org-plus-contrib
+  :ensure t
   :init
   (setq org-log-done t)
   (setq org-directory (expand-file-name "~/.org"))
@@ -297,6 +298,11 @@
   :diminish undo-tree)
 
 (use-package popwin)
+;; on to themes
+(use-package cyberpunk-theme)
+(use-package paganini-theme)
+(use-package kaolin-theme)
+
 ;; end package management
 
 ;; packs are packages of packages and utility functions
