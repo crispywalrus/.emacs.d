@@ -281,8 +281,9 @@
 (use-package utop)
 
 ;; javascript
-(use-package js2-mode)
-(use-package js2-refactor)
+;; (use-package js2-mode)
+;; (use-package js2-refactor)
+(use-package indium)
 
 ;; change word bounderies to include lower case to upper case
 ;; transitions, as in camel cased words
@@ -298,6 +299,12 @@
   :diminish undo-tree)
 
 (use-package popwin)
+
+;; window/frame management
+(use-package e2wm
+  :pin melpa-stable
+  :ensure t)
+
 ;; on to themes
 (use-package cyberpunk-theme)
 (use-package paganini-theme)
