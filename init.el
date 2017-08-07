@@ -27,6 +27,12 @@
 
 
 (require 'package)
+
+;; use melpa
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+
 (package-initialize)
 ;; is use-package isn't installed yet go ahead and make it available.
 (when
@@ -48,7 +54,8 @@
 (use-package dash)
 (use-package dash-functional)
 (use-package m-buffer)
-(use-package f)
+(use-package f
+  :ensure t)
 (use-package multiple-cursors)
 
 ;; no tabs, no menu, no scrollbars, no toolbar, no scratch buffer message, no startup screen.
@@ -72,18 +79,11 @@
 (server-start)
 ;; end defaults
 
+;; packages
 ;; functionality follows
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
 
-;; use melpa
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-
-
-;; packages
-;; (use-package kanban)
 
 (use-package yasnippet
   :pin melpa-stable
@@ -144,6 +144,8 @@
   :config
   (counsel-projectile-on))
 
+(use-package suggest)
+
 (use-package with-editor
   :pin melpa-stable)
 
@@ -161,10 +163,6 @@
         magit-last-seen-setup-instructions "1.4.0")
   :bind (("s-g" . magit-status)
          ("s-b" . magit-blame)))
-
-(use-package magithub
-  :after magit
-  :config (magithub-feature-autoinject t))
 
 (use-package magit-find-file
   :pin melpa-stable
@@ -212,7 +210,7 @@
 
 ;; omg, org mode ends up eating the world!
 (use-package org
-  :ensure org-plus-contrib
+  :ensure t
   :init
   (setq org-log-done t)
   (setq org-directory (expand-file-name "~/.org"))
@@ -251,7 +249,8 @@
 ;; scala
 (use-package sbt-mode
   :pin melpa
-  :commands sbt-start sbt-command)
+  :commands sbt-start sbt-command
+  :init (setq sbt:prefer-nested-projects t))
 
 (use-package scala-mode
   :pin melpa
@@ -283,9 +282,13 @@
 
 (use-package utop)
 
-(use-package js2-mode)
-(use-package js2-refactor)
+;; javascript
+;; (use-package js2-mode)
+;; (use-package js2-refactor)
+(use-package indium)
 
+;; change word bounderies to include lower case to upper case
+;; transitions, as in camel cased words
 (use-package subword
   :ensure nil
   :diminish subword-mode
@@ -298,6 +301,12 @@
   :diminish undo-tree)
 
 (use-package popwin)
+
+;; window/frame management
+(use-package e2wm
+  :pin melpa-stable
+  :ensure t)
+
 ;; end package management
 
 ;; packs are packages of packages and utility functions
