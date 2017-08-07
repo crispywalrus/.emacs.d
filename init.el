@@ -144,6 +144,8 @@
   :config
   (counsel-projectile-on))
 
+(use-package suggest)
+
 (use-package with-editor
   :pin melpa-stable)
 
@@ -304,11 +306,6 @@
 (use-package e2wm
   :pin melpa-stable
   :ensure t)
-
-;; on to themes
-(use-package cyberpunk-theme)
-(use-package paganini-theme)
-(use-package kaolin-theme)
 
 ;; end package management
 
