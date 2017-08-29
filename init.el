@@ -77,6 +77,9 @@
 (tool-bar-mode -1)
 (windmove-default-keybindings)
 (server-start)
+
+(when (eq system-type 'darwin)
+  (setq ns-use-native-fullscreen nil))
 ;; end defaults
 
 ;; packages
@@ -99,7 +102,7 @@
   (setq projectile-completion-system 'ivy)
   (setq projectile-enable-caching t)
   :config
-  (projectile-global-mode))
+  (projectile-mode))
 
 ;; stackoverflow is great but why leave emacs to search it?
 (use-package sx
@@ -307,6 +310,11 @@
   :pin melpa-stable
   :ensure t)
 
+(use-package eyebrowse
+  :ensure t
+  :config
+  (eyebrowse-mode))
+  
 ;; end package management
 
 ;; packs are packages of packages and utility functions
@@ -328,6 +336,11 @@
 (require 'maven-pack)
 ;; end packs
 
+;; theme management
+(use-package cyberpunk-theme)
+(use-package paganini-theme)
+
+;; end themes
 (put 'dired-find-alternate-file 'disabled nil)
 ;; hook functions. all packages should have been loaded and customized
 ;; by now
@@ -393,6 +406,7 @@ very minimal set."
 
 (global-set-key (kbd "C-<backspace>") 'contextual-backspace)
 
+(require 'esh-mode)
 (defun eshell-here()
   "Opens up a new shell in the directory associated with the
 current buffer's file. The eshell is renamed to match that

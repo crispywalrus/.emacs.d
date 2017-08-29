@@ -5,20 +5,6 @@
 
 (define-abbrev-table 'Info-edit-mode-abbrev-table '())
 
-(define-abbrev-table 'alchemist-compile-mode-abbrev-table '())
-
-(define-abbrev-table 'alchemist-execute-mode-abbrev-table '())
-
-(define-abbrev-table 'alchemist-iex-mode-abbrev-table '())
-
-(define-abbrev-table 'alchemist-mix-mode-abbrev-table '())
-
-(define-abbrev-table 'alchemist-refcard-mode-abbrev-table '())
-
-(define-abbrev-table 'alchemist-test-report-mode-abbrev-table '())
-
-(define-abbrev-table 'apropos-mode-abbrev-table '())
-
 (define-abbrev-table 'awk-mode-abbrev-table
   '(
    ))
@@ -49,15 +35,11 @@
 
 (define-abbrev-table 'elisp-byte-code-mode-abbrev-table '())
 
-(define-abbrev-table 'elixir-mode-abbrev-table '())
-
 (define-abbrev-table 'emacs-lisp-mode-abbrev-table '())
 
 (define-abbrev-table 'ensime-connection-list-mode-abbrev-table '())
 
 (define-abbrev-table 'ensime-inf-mode-abbrev-table '())
-
-(define-abbrev-table 'ensime-inspector-mode-abbrev-table '())
 
 (define-abbrev-table 'ert-results-mode-abbrev-table '())
 
@@ -109,35 +91,7 @@
 
 (define-abbrev-table 'log-edit-mode-abbrev-table '())
 
-(define-abbrev-table 'magit-cherry-mode-abbrev-table '())
-
-(define-abbrev-table 'magit-diff-mode-abbrev-table '())
-
-(define-abbrev-table 'magit-log-mode-abbrev-table '())
-
-(define-abbrev-table 'magit-log-select-mode-abbrev-table '())
-
-(define-abbrev-table 'magit-merge-preview-mode-abbrev-table '())
-
-(define-abbrev-table 'magit-mode-abbrev-table '())
-
 (define-abbrev-table 'magit-popup-mode-abbrev-table '())
-
-(define-abbrev-table 'magit-process-mode-abbrev-table '())
-
-(define-abbrev-table 'magit-reflog-mode-abbrev-table '())
-
-(define-abbrev-table 'magit-refs-mode-abbrev-table '())
-
-(define-abbrev-table 'magit-repolist-mode-abbrev-table '())
-
-(define-abbrev-table 'magit-revision-mode-abbrev-table '())
-
-(define-abbrev-table 'magit-stash-mode-abbrev-table '())
-
-(define-abbrev-table 'magit-stashes-mode-abbrev-table '())
-
-(define-abbrev-table 'magit-status-mode-abbrev-table '())
 
 (define-abbrev-table 'markdown-mode-abbrev-table '())
 
@@ -173,14 +127,6 @@
 
 (define-abbrev-table 'prog-mode-abbrev-table '())
 
-(define-abbrev-table 'racket-describe-mode-abbrev-table '())
-
-(define-abbrev-table 'racket-mode-abbrev-table '())
-
-(define-abbrev-table 'racket-profile-mode-abbrev-table '())
-
-(define-abbrev-table 'racket-repl-mode-abbrev-table '())
-
 (define-abbrev-table 'sbt-mode-abbrev-table '())
 
 (define-abbrev-table 'scala-mode-abbrev-table '())
@@ -189,31 +135,13 @@
 
 (define-abbrev-table 'sgml-mode-abbrev-table '())
 
-(define-abbrev-table 'sh-mode-abbrev-table '())
-
 (define-abbrev-table 'shell-mode-abbrev-table '())
-
-(define-abbrev-table 'sldb-mode-abbrev-table '())
-
-(define-abbrev-table 'slime-compiler-notes-mode-abbrev-table '())
-
-(define-abbrev-table 'slime-connection-list-mode-abbrev-table '())
-
-(define-abbrev-table 'slime-fuzzy-completions-mode-abbrev-table '())
-
-(define-abbrev-table 'slime-inspector-mode-abbrev-table '())
-
-(define-abbrev-table 'slime-thread-control-mode-abbrev-table '())
-
-(define-abbrev-table 'slime-trace-dialog--detail-mode-abbrev-table '())
-
-(define-abbrev-table 'slime-trace-dialog-mode-abbrev-table '())
-
-(define-abbrev-table 'slime-xref-mode-abbrev-table '())
 
 (define-abbrev-table 'snippet-mode-abbrev-table '())
 
 (define-abbrev-table 'special-mode-abbrev-table '())
+
+(define-abbrev-table 'suggest-mode-abbrev-table '())
 
 (define-abbrev-table 'tabulated-list-mode-abbrev-table '())
 
