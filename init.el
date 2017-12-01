@@ -334,6 +334,10 @@
 
 ;; make maven work (such as it is)
 (require 'maven-pack)
+
+;; common lisp
+(require 'common-lisp)
+
 ;; end packs
 
 ;; theme management

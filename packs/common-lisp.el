@@ -7,3 +7,4 @@
 
 ;; Replace "sbcl" with the path to your implementation
 (setq inferior-lisp-program "sbcl")
+(provide 'common-lisp)
