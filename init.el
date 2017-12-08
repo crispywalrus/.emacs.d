@@ -34,11 +34,20 @@
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
 (package-initialize)
+
 ;; is use-package isn't installed yet go ahead and make it available.
 (when
     (not package-archive-contents)
   (package-refresh-contents)
   (package-install 'use-package))
+
+;; quelpa is something of a competitor to how use-package
+;; works. instead of relying on melpa to build new versions it pulls
+;; directly (usually) from the source repo and builds
+;; locally. quelpa-use-package adds a 'virtual' package archive to
+;; use-package the resolves down to quelpa proper.
+(use-package quelpa)
+(use-package quelpa-use-package)
 
 ;; packages
 ;; loads key-chord and adds a :chord symbol for use-package.
@@ -220,7 +229,8 @@
   (setq org-default-notes-file (concat org-directory "~/main.org"))
   (setq org-agenda-files (mapcar 'expand-file-name (file-expand-wildcards "~/.org/agenda.org")))
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "INPROGRESS(p)" "READY(r)" "BLOCKED(b)" "|" "DONE(d)")))
+        '((sequence "TODO(t)" "READY(r)" "INPROGRESS(p)" "BLOCKED(b)" "DONE(d)")
+          (sequence "IDEATE" "REFINE" "DOCUMENT" "PROMOTED")))
   :bind (("\C-cl" . org-store-link)
          ("\C-ca" . org-agenda)
          ("\C-cc" . org-capture)))
@@ -239,9 +249,6 @@
 (use-package ox-pandoc)
 (use-package ox-reveal)
 
-(use-package deft
-  :pin melpa-stable)
-
 ;; some cranky and insane stuff
 (use-package eredis)
 (use-package web-server)
@@ -251,19 +258,22 @@
 
 ;; scala
 (use-package sbt-mode
-  :pin melpa
+  :pin melpa-stable
   :commands sbt-start sbt-command
   :init (setq sbt:prefer-nested-projects t))
 
 (use-package scala-mode
-  :pin melpa
+  :pin melpa-stable
+  :chords (("=." . "⇒")
+           ("-," . "←")
+           ("-." . "→"))
   :interpreter ("scala" . scala-mode))
 
 (use-package popup
   :pin melpa-stable)
 
 (use-package ensime
-  ;;  :pin melpa-stable
+  :pin melpa-stable
   :init
   (put 'ensime-auto-generate-config 'safe-local-variable #'booleanp)
   (setq
@@ -275,19 +285,9 @@
 
 (use-package protobuf-mode)
 
-;; ocalm et. al.
-(use-package merlin)
-(use-package tuareg
-  :init (setq merlin-command 'opam)
-  :config (add-hook 'tuarag-model-hook (lambda ()
-                                         (merlin-mode t)
-                                         (utop-minor-mode))))
-
 (use-package utop)
 
 ;; javascript
-;; (use-package js2-mode)
-;; (use-package js2-refactor)
 (use-package indium)
 
 ;; change word bounderies to include lower case to upper case
@@ -334,11 +334,14 @@
 
 ;; make maven work (such as it is)
 (require 'maven-pack)
+
+;; common lisp
+(require 'common-lisp)
+
 ;; end packs
 
 ;; theme management
-(use-package cyberpunk-theme)
-(use-package paganini-theme)
+;; (use-package paganini-theme)
 
 ;; end themes
 (put 'dired-find-alternate-file 'disabled nil)
