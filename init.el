@@ -41,6 +41,10 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+;; make use-package download if we've referenced any uninstalled
+;; package.
+(setq use-package-always-ensure t)
+
 ;; quelpa is something of a competitor to how use-package
 ;; works. instead of relying on melpa to build new versions it pulls
 ;; directly (usually) from the source repo and builds
@@ -67,7 +71,10 @@
   :ensure t)
 (use-package multiple-cursors)
 
-;; no tabs, no menu, no scrollbars, no toolbar, no scratch buffer message, no startup screen.
+;; no tabs, no menu, no scrollbars, no toolbar, no scratch buffer
+;; message, no startup screen.  using an external custom file fails if
+;; the file doesn't exist. Since custom.el is git-ignored it doesn't
+;; appear magically on new boxen. this fixes that
 (f-touch (expand-file-name "custom.el" user-emacs-directory))
 
 (setq-default indent-tabs-mode nil)
@@ -95,7 +102,6 @@
 ;; functionality follows
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
-
 
 (use-package yasnippet
   :pin melpa-stable
