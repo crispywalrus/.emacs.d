@@ -158,10 +158,6 @@
         ;; allow input not in order
         '((t   . ivy--regex-ignore-order))))
 
-(use-package counsel-projectile
-  :config
-  (counsel-projectile-mode))
-
 (use-package suggest)
 
 (use-package with-editor
