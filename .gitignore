@@ -22,3 +22,5 @@ recentf
 custom.el
 magithub
 quelpa
+request
+opam-user-setup.el
