@@ -25,7 +25,6 @@
 
 ;;; Code:
 
-
 (require 'package)
 
 ;; use melpa
@@ -45,9 +44,9 @@
 ;; package.
 (setq use-package-always-ensure t)
 
-;; quelpa is something of a competitor to how use-package
-;; works. instead of relying on melpa to build new versions it pulls
-;; directly (usually) from the source repo and builds
+;; quelpa and quelpa are an alternative to the standard pacakge system
+;; and repositories. Instead of relying on melpa to build packages and
+;; then distribute them quelpa pulls from the source repo and builds
 ;; locally. quelpa-use-package adds a 'virtual' package archive to
 ;; use-package the resolves down to quelpa proper.
 (use-package quelpa)
@@ -92,7 +91,7 @@
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (windmove-default-keybindings)
-(server-start)
+;; (server-start)
 
 (when (eq system-type 'darwin)
   (setq ns-use-native-fullscreen nil))
@@ -103,18 +102,11 @@
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
 
-(use-package yasnippet
-  :pin melpa-stable
-  :diminish yas-mode
-  :commands yas-minor-mode
-  :config (yas-reload-all))
-
 (use-package desktop+)
 
 (use-package projectile
   :diminish projectile-mode
   :init
-  (setq projectile-completion-system 'ivy)
   (setq projectile-enable-caching t)
   :config
   (projectile-mode))
@@ -138,27 +130,6 @@
 
 (use-package company
   :diminish company-mode)
-
-(use-package ivy
-  :pin melpa-stable
-  :bind
-  (:map ivy-mode-map
-        ("C-'" . ivy-avy))
-  :diminish (ivy-mode . "")
-  :config
-  ;; (ivy-mode 1)
-  ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
-  (setq ivy-use-virtual-buffers t)
-  ;; number of result lines to display
-  (setq ivy-height 10)
-  ;; does not count candidates
-  (setq ivy-count-format "")
-  ;; no regexp by default
-  (setq ivy-initial-inputs-alist nil)
-  ;; configure regexp engine.
-  (setq ivy-re-builders-alist
-        ;; allow input not in order
-        '((t   . ivy--regex-ignore-order))))
 
 (use-package suggest)
 
@@ -211,8 +182,9 @@
 (use-package markdown-mode
   :pin melpa-stable
   :init
-  (setq auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist))
-  (setq auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist)))
+  (setq
+   auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist)
+   auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist)))
 
 (use-package pandoc-mode)
 
@@ -227,11 +199,11 @@
 (use-package org
   :ensure t
   :init
-  (setq org-log-done t)
-  (setq org-directory (expand-file-name "~/.org"))
-  (setq org-default-notes-file (concat org-directory "~/main.org"))
-  (setq org-agenda-files (mapcar 'expand-file-name (file-expand-wildcards "~/.org/agenda.org")))
-  (setq org-todo-keywords
+  (setq org-log-done t
+        org-directory (expand-file-name "~/.org")
+        org-default-notes-file (concat org-directory "~/main.org")
+        org-agenda-files (mapcar 'expand-file-name (file-expand-wildcards "~/.org/agenda.org"))
+        org-todo-keywords
         '((sequence "TODO(t)" "READY(r)" "INPROGRESS(p)" "BLOCKED(b)" "DONE(d)")
           (sequence "IDEATE" "REFINE" "DOCUMENT" "PROMOTED")))
   :bind (("\C-cl" . org-store-link)
@@ -243,8 +215,15 @@
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
+(use-package org-journal
+  :ensure t
+  :custom
+  (org-journal-dir "~/.journal")
+  (org-journal-file-format "ck-%Y%m%d")
+  (org-journal-time-format "")
+  )
+
 (use-package org-readme)
-(use-package org-bullets)
 (use-package org-elisp-help)
 (use-package org-dashboard)
 
@@ -267,9 +246,14 @@
 
 (use-package scala-mode
   :pin melpa-stable
-  :chords (("=." . "⇒")
-           ("-," . "←")
-           ("-." . "→"))
+  :chords ((":." . ":.")
+           (".>" . "⇒")
+           ("->" . "→")
+           ("<-" . "←")
+           ("++" . "⧺")
+           ("<." . "≤")
+           (">." . "≥")
+           (".." . "≡"))
   :interpreter ("scala" . scala-mode))
 
 (use-package popup
@@ -292,6 +276,9 @@
 
 ;; javascript
 (use-package indium)
+
+;; woot?
+(use-package graphql-mode)
 
 ;; change word bounderies to include lower case to upper case
 ;; transitions, as in camel cased words
@@ -317,7 +304,7 @@
   :ensure t
   :config
   (eyebrowse-mode))
-  
+
 ;; end package management
 
 ;; packs are packages of packages and utility functions
