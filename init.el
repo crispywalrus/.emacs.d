@@ -119,6 +119,8 @@
   :config
   (projectile-mode))
 
+(use-package rmsbolt)
+
 ;; stackoverflow is great but why leave emacs to search it?
 (use-package sx
   :init (require 'bind-key)
@@ -166,9 +168,6 @@
 (use-package git-commit
   :pin melpa-stable)
 
-(use-package magit-popup
-  :pin melpa-stable)
-
 (use-package magit
   :pin melpa-stable
   :commands magit-status magit-blame
@@ -178,9 +177,11 @@
   :bind (("s-g" . magit-status)
          ("s-b" . magit-blame)))
 
-(use-package magit-find-file
-  :pin melpa-stable
-  :bind (("s-f" . magit-find-file-completing-read)))
+(use-package magithub
+  :after magit
+  :ensure t
+  :config
+  (magithub-feature-autoinject t))
 
 (use-package git-timemachine)
 
@@ -325,6 +326,8 @@
 ;; we jump out of our happy use-package mode to explicitly enable
 ;; reason mode which hasn't been published as of yet. this means
 ;; there's a checked in version in coding ... :(
+(require 'ocaml-pack)
+
 (require 'reason-pack)
 (add-hook 'reason-mode-hook (lambda ()
                               (add-hook 'before-save-hook 'refmt-before-save)
@@ -432,3 +435,6 @@ directory to make multiple eshell windows easier."
 
 (global-set-key(kbd "C-!") 'eshell-here)
 ;; end code
+;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
+(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
+;; ## end of OPAM user-setup addition for emacs / base ## keep this line
