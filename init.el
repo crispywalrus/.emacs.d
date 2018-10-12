@@ -34,7 +34,8 @@
 
 (package-initialize)
 
-;; is use-package isn't installed yet go ahead and make it available.
+;; if use-package isn't installed go fetch and install it. we're going
+;; to need it in just a few lines.
 (when
     (not package-archive-contents)
   (package-refresh-contents)
@@ -66,18 +67,21 @@
 (use-package dash)
 (use-package dash-functional)
 (use-package m-buffer)
-(use-package f
-  :ensure t)
+(use-package f)
 (use-package multiple-cursors)
 
-;; no tabs, no menu, no scrollbars, no toolbar, no scratch buffer
-;; message, no startup screen.  using an external custom file fails if
-;; the file doesn't exist. Since custom.el is git-ignored it doesn't
-;; appear magically on new boxen. this fixes that
+;; my defaults
+;; I use a .gitignored custom.el file so I can maintain different
+;; configs per system. Loading fails if the file doesn't exist so we
+;; touch it to make sure emacs always starts.
 (f-touch (expand-file-name "custom.el" user-emacs-directory))
 
+;; no tabs, ever. tabs suck. go away tabs!
 (setq-default indent-tabs-mode nil)
 
+;; I feel a bit curmudgeonly about this but no to menus, no to
+;; scrollbars, no to toolbars, no to the scratch buffer message, no to
+;; the startup screen.
 (setq
  use-package-always-ensure t
  inhibit-startup-screen t
@@ -91,11 +95,10 @@
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (windmove-default-keybindings)
-;; (server-start)
 
 (when (eq system-type 'darwin)
   (setq ns-use-native-fullscreen nil))
-;; end defaults
+;; end my defaults
 
 ;; packages
 ;; functionality follows
@@ -272,8 +275,6 @@
 
 (use-package protobuf-mode)
 
-(use-package utop)
-
 ;; javascript
 (use-package indium)
 
@@ -281,7 +282,7 @@
 (use-package graphql-mode)
 
 ;; change word bounderies to include lower case to upper case
-;; transitions, as in camel cased words
+;; transitions inside camel cased words. 
 (use-package subword
   :ensure nil
   :diminish subword-mode
@@ -332,14 +333,9 @@
 
 ;; end packs
 
-;; theme management
-;; (use-package paganini-theme)
-
-;; end themes
 (put 'dired-find-alternate-file 'disabled nil)
-;; hook functions. all packages should have been loaded and customized
-;; by now
 
+;; on to our hooks since all packages should be ready to be customized
 (global-prettify-symbols-mode)
 
 (add-hook 'scala-mode-hook
