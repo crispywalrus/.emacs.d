@@ -45,14 +45,6 @@
 ;; package.
 (setq use-package-always-ensure t)
 
-;; quelpa and quelpa are an alternative to the standard pacakge system
-;; and repositories. Instead of relying on melpa to build packages and
-;; then distribute them quelpa pulls from the source repo and builds
-;; locally. quelpa-use-package adds a 'virtual' package archive to
-;; use-package the resolves down to quelpa proper.
-(use-package quelpa)
-(use-package quelpa-use-package)
-
 ;; packages
 ;; loads key-chord and adds a :chord symbol for use-package.
 (use-package use-package-chords
@@ -112,7 +104,9 @@
   :init
   (setq projectile-enable-caching t)
   :config
-  (projectile-mode))
+  (projectile-mode +1)
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
 (use-package rmsbolt)
 
@@ -151,12 +145,6 @@
   :bind (("s-g" . magit-status)
          ("s-b" . magit-blame)))
 
-(use-package magithub
-  :after magit
-  :ensure t
-  :config
-  (magithub-feature-autoinject t))
-
 (use-package git-timemachine)
 
 (use-package expand-region
@@ -189,6 +177,7 @@
    auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist)
    auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist)))
 
+(use-package dhall-mode)
 (use-package pandoc-mode)
 
 (use-package thrift)
@@ -226,7 +215,6 @@
   (org-journal-time-format "")
   )
 
-(use-package org-readme)
 (use-package org-elisp-help)
 (use-package org-dashboard)
 
@@ -256,7 +244,7 @@
            ("++" . "⧺")
            ("<." . "≤")
            (">." . "≥")
-           (".." . "≡"))
+           ("==" . "≡"))
   :interpreter ("scala" . scala-mode))
 
 (use-package popup
