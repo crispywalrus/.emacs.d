@@ -1,6 +1,6 @@
 ;;; init.el --- emacs configuration -*- lexical-binding: t -*-
 
-;; Copyright © 2011 - 2017 Chris Vale
+;; Copyright © 2011 - 2019 Chris Vale
 ;;
 ;; Author: Chris Vale <crispywalrus@gmail.com>
 
@@ -45,7 +45,8 @@
 ;; package.
 (setq use-package-always-ensure t)
 
-;; packs are packages of packages and utility functions
+;; packs are my customization code for various programming language modes
+;; and other emacs features.
 (add-to-list 'load-path (expand-file-name "packs" user-emacs-directory))
 
 ;; packages
@@ -89,11 +90,9 @@
 ;; end my defaults
 
 ;; packages
-;; functionality follows
+;; general functionality follows
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
-
-(use-package desktop+)
 
 (use-package projectile
   :pin melpa-stable
@@ -124,8 +123,6 @@
 
 (use-package company
   :diminish company-mode)
-
-(use-package suggest)
 
 (use-package expand-region
   :commands 'er/expand-region
@@ -167,17 +164,7 @@
 (use-package dockerfile-mode
   :mode ("Dockerfile\\'" . dockerfile-mode))
 
-;; some cranky and insane stuff
-(use-package eredis)
-(use-package web-server)
-(use-package web)
-(use-package elnode ;awesome evented io
-  :commands elnode-make-webserver)
-
 (use-package protobuf-mode)
-
-;; javascript
-(use-package indium)
 
 ;; woot?
 (use-package graphql-mode)
@@ -196,16 +183,6 @@
   :diminish undo-tree)
 
 (use-package popwin)
-
-;; window/frame management
-(use-package e2wm
-  :pin melpa-stable
-  :ensure t)
-
-(use-package eyebrowse
-  :ensure t
-  :config
-  (eyebrowse-mode))
 ;; end package management
 
 ;; I've broken out the more complex setup of my dev environment into
@@ -221,6 +198,7 @@
 (require 'maven-pack)
 (require 'common-lisp)
 (require 'java-pack)
+(require 'javascript-pack)
 ;; end packs
 
 (put 'dired-find-alternate-file 'disabled nil)
