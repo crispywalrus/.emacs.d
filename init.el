@@ -85,12 +85,15 @@
 (tool-bar-mode -1)
 (windmove-default-keybindings)
 
-(when (eq system-type 'darwin)
-  (setq ns-use-native-fullscreen nil))
+;; (when (eq system-type 'darwin)
+;;   (setq ns-use-native-fullscreen nil))
 ;; end my defaults
 
 ;; packages
 ;; general functionality follows
+(require 'completion-pack)
+(require 'dhall-nix-pack)
+
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
 
@@ -154,12 +157,9 @@
    auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist)
    auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist)))
 
-(use-package dhall-mode)
 (use-package pandoc-mode)
 
 (use-package thrift)
-
-(use-package yaml-mode)
 
 (use-package dockerfile-mode
   :mode ("Dockerfile\\'" . dockerfile-mode))
@@ -189,10 +189,8 @@
 ;; "packs" of functionality and configuration. So now I have to load
 ;; them.
 (require 'git-pack)
-(require 'scala-pack)
-(require 'ocaml-pack)
+(require 'scala-ensime-pack)
 (require 'haskell-pack)
-(require 'reason-pack)
 (require 'clojure-pack)
 (require 'org-pack)
 (require 'maven-pack)
@@ -266,6 +264,11 @@ directory to make multiple eshell windows easier."
 
 (global-set-key(kbd "C-!") 'eshell-here)
 ;; end code
+
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
 (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
+
+;; now that user-setup has loaded our ocaml support
+(require 'ocaml-pack)
+

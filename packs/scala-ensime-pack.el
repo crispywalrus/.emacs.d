@@ -1,3 +1,4 @@
+
 (use-package sbt-mode
   :pin melpa-stable
   :commands sbt-start sbt-command
@@ -12,7 +13,10 @@
            ("<." . "≤")
            (">." . "≥")
            ("==" . "≡"))
-  :interpreter ("scala" . scala-mode))
+  :interpreter ("scala" . scala-mode)
+  :hook (scala-mode . (lambda ()
+          (setq prettify-symbols-alist scala-prettify-symbols-alist)
+          (smartparens-mode t))))
 
 (use-package popup
   :pin melpa-stable)
@@ -26,17 +30,9 @@
    ensime-startup-notification nil)
   :config
   (require 'ensime-expand-region)
-  (add-hook 'git-timemachine-mode-hook (lambda () (ensime-mode 0))))
+  :hook (ensime-mode . (lambda ()
+          (let ((backends (company-backends-for-buffer)))
+            (setq company-backends
+                  (push '(ensime-company company-yasnippet) backends))))))
 
-(add-hook 'scala-mode-hook
-          (lambda ()
-            (setq prettify-symbols-alist scala-prettify-symbols-alist)
-            (smartparens-mode t)))
-
-(add-hook 'ensime-mode-hook
-          (lambda ()
-            (let ((backends (company-backends-for-buffer)))
-              (setq company-backends
-                    (push '(ensime-company company-yasnippet) backends)))))
-
-(provide 'scala-pack)
+(provide 'scala-ensime-pack)
