@@ -1,22 +1,30 @@
 
+(use-package yasnippet)
+
 (use-package sbt-mode
-  :pin melpa-stable
   :commands sbt-start sbt-command
   :init (setq sbt:prefer-nested-projects t))
 
+
 (use-package scala-mode
-  :pin melpa-stable
-  :chords ((":." . ":.")
-           ("=>" . "⇒")
+  :chords (("=>" . "⇒")
            ("->" . "→")
-           ("<-" . "←")
-           ("<." . "≤")
-           (">." . "≥")
-           ("==" . "≡"))
+           ("<-" . "←"))
   :interpreter ("scala" . scala-mode)
-  :hook (scala-mode . (lambda ()
+  :hook (lambda ()
           (setq prettify-symbols-alist scala-prettify-symbols-alist)
-          (smartparens-mode t))))
+          (smartparens-mode t)))
+
+(use-package lsp-mode
+  :init (setq lsp-prefer-flymake nil))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode))
+
+(use-package lsp-scala
+  :after scala-mode
+  :demand t
+  :hook (scala-mode . lsp))
 
 (use-package popup
   :pin melpa-stable)
@@ -35,4 +43,5 @@
             (setq company-backends
                   (push '(ensime-company company-yasnippet) backends))))))
 
-(provide 'scala-ensime-pack)
+
+(provide 'scala-pack)

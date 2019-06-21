@@ -92,7 +92,6 @@
 ;; packages
 ;; general functionality follows
 (require 'completion-pack)
-(require 'dhall-nix-pack)
 
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
@@ -189,7 +188,8 @@
 ;; "packs" of functionality and configuration. So now I have to load
 ;; them.
 (require 'git-pack)
-(require 'scala-ensime-pack)
+(require 'scala-pack)
+(require 'dhall-nix-pack)
 (require 'haskell-pack)
 (require 'clojure-pack)
 (require 'org-pack)
