@@ -24,3 +24,8 @@ magithub
 quelpa
 request
 opam-user-setup.el
+forge-database.sqlite
+network-security.data
+transient
+nix-buffer
+.lsp-session*

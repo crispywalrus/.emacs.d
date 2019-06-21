@@ -1,6 +1,6 @@
 ;;; init.el --- emacs configuration -*- lexical-binding: t -*-
 
-;; Copyright © 2011 - 2017 Chris Vale
+;; Copyright © 2011 - 2019 Chris Vale
 ;;
 ;; Author: Chris Vale <crispywalrus@gmail.com>
 
@@ -45,13 +45,9 @@
 ;; package.
 (setq use-package-always-ensure t)
 
-;; quelpa and quelpa are an alternative to the standard pacakge system
-;; and repositories. Instead of relying on melpa to build packages and
-;; then distribute them quelpa pulls from the source repo and builds
-;; locally. quelpa-use-package adds a 'virtual' package archive to
-;; use-package the resolves down to quelpa proper.
-(use-package quelpa)
-(use-package quelpa-use-package)
+;; packs are my customization code for various programming language modes
+;; and other emacs features.
+(add-to-list 'load-path (expand-file-name "packs" user-emacs-directory))
 
 ;; packages
 ;; loads key-chord and adds a :chord symbol for use-package.
@@ -61,14 +57,7 @@
 ;; these next packages don't describe modes or features rather they're
 ;; packages of elisp function designed to make coding better.  Do this
 ;; here so that we can be sure they'll be available for local code.
-(use-package s)
-(use-package string-inflection
-  :bind ("s-i" . string-inflection-all-cycle))
-(use-package dash)
-(use-package dash-functional)
-(use-package m-buffer)
-(use-package f)
-(use-package multiple-cursors)
+(require 'elisp-pack)
 
 ;; my defaults
 ;; I use a .gitignored custom.el file so I can maintain different
@@ -96,23 +85,26 @@
 (tool-bar-mode -1)
 (windmove-default-keybindings)
 
-(when (eq system-type 'darwin)
-  (setq ns-use-native-fullscreen nil))
+;; (when (eq system-type 'darwin)
+;;   (setq ns-use-native-fullscreen nil))
 ;; end my defaults
 
 ;; packages
-;; functionality follows
+;; general functionality follows
+(require 'completion-pack)
+
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
 
-(use-package desktop+)
-
 (use-package projectile
+  :pin melpa-stable
   :diminish projectile-mode
   :init
   (setq projectile-enable-caching t)
   :config
-  (projectile-mode))
+  (projectile-mode +1)
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
 (use-package rmsbolt)
 
@@ -133,31 +125,6 @@
 
 (use-package company
   :diminish company-mode)
-
-(use-package suggest)
-
-(use-package with-editor
-  :pin melpa-stable)
-
-(use-package git-commit
-  :pin melpa-stable)
-
-(use-package magit
-  :pin melpa-stable
-  :commands magit-status magit-blame
-  :init
-  (setq magit-auto-revert-mode nil
-        magit-last-seen-setup-instructions "1.4.0")
-  :bind (("s-g" . magit-status)
-         ("s-b" . magit-blame)))
-
-(use-package magithub
-  :after magit
-  :ensure t
-  :config
-  (magithub-feature-autoinject t))
-
-(use-package git-timemachine)
 
 (use-package expand-region
   :commands 'er/expand-region
@@ -193,90 +160,10 @@
 
 (use-package thrift)
 
-(use-package yaml-mode)
-
 (use-package dockerfile-mode
   :mode ("Dockerfile\\'" . dockerfile-mode))
 
-;; omg, org mode ends up eating the world!
-(use-package org
-  :ensure t
-  :init
-  (setq org-log-done t
-        org-directory (expand-file-name "~/.org")
-        org-default-notes-file (concat org-directory "~/main.org")
-        org-agenda-files (mapcar 'expand-file-name (file-expand-wildcards "~/.org/agenda.org"))
-        org-todo-keywords
-        '((sequence "TODO(t)" "READY(r)" "INPROGRESS(p)" "BLOCKED(b)" "DONE(d)")
-          (sequence "IDEATE" "REFINE" "DOCUMENT" "PROMOTED")))
-  :bind (("\C-cl" . org-store-link)
-         ("\C-ca" . org-agenda)
-         ("\C-cc" . org-capture)))
-
-(use-package kanban)
-(use-package org-bullets
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
-(use-package org-journal
-  :ensure t
-  :custom
-  (org-journal-dir "~/.journal")
-  (org-journal-file-format "ck-%Y%m%d")
-  (org-journal-time-format "")
-  )
-
-(use-package org-readme)
-(use-package org-elisp-help)
-(use-package org-dashboard)
-
-;; the ox mode name denotes an org exporter
-(use-package ox-pandoc)
-(use-package ox-reveal)
-
-;; some cranky and insane stuff
-(use-package eredis)
-(use-package web-server)
-(use-package web)
-(use-package elnode ;awesome evented io
-  :commands elnode-make-webserver)
-
-;; scala
-(use-package sbt-mode
-  :pin melpa-stable
-  :commands sbt-start sbt-command
-  :init (setq sbt:prefer-nested-projects t))
-
-(use-package scala-mode
-  :pin melpa-stable
-  :chords ((":." . ":.")
-           (".>" . "⇒")
-           ("->" . "→")
-           ("<-" . "←")
-           ("++" . "⧺")
-           ("<." . "≤")
-           (">." . "≥")
-           (".." . "≡"))
-  :interpreter ("scala" . scala-mode))
-
-(use-package popup
-  :pin melpa-stable)
-
-(use-package ensime
-  :pin melpa-stable
-  :init
-  (put 'ensime-auto-generate-config 'safe-local-variable #'booleanp)
-  (setq
-   ensime-startup-snapshot-notification nil
-   ensime-startup-notification nil)
-  :config
-  (require 'ensime-expand-region)
-  (add-hook 'git-timemachine-mode-hook (lambda () (ensime-mode 0))))
-
 (use-package protobuf-mode)
-
-;; javascript
-(use-package indium)
 
 ;; woot?
 (use-package graphql-mode)
@@ -295,68 +182,27 @@
   :diminish undo-tree)
 
 (use-package popwin)
-
-;; window/frame management
-(use-package e2wm
-  :pin melpa-stable
-  :ensure t)
-
-(use-package eyebrowse
-  :ensure t
-  :config
-  (eyebrowse-mode))
-
 ;; end package management
 
-;; packs are packages of packages and utility functions
-(add-to-list 'load-path (expand-file-name "packs" user-emacs-directory))
-
-;; we jump out of our happy use-package mode to explicitly enable
-;; reason mode which hasn't been published as of yet. this means
-;; there's a checked in version in coding ... :(
-(require 'ocaml-pack)
-
-(require 'reason-pack)
-(add-hook 'reason-mode-hook (lambda ()
-                              (add-hook 'before-save-hook 'refmt-before-save)
-                              (merlin-mode)))
-
-
-;; load clojure pack
+;; I've broken out the more complex setup of my dev environment into
+;; "packs" of functionality and configuration. So now I have to load
+;; them.
+(require 'git-pack)
+(require 'scala-pack)
+(require 'dhall-nix-pack)
+(require 'haskell-pack)
 (require 'clojure-pack)
-
-;; make maven work (such as it is)
+(require 'org-pack)
 (require 'maven-pack)
-
-;; common lisp
 (require 'common-lisp)
-
+(require 'java-pack)
+(require 'javascript-pack)
 ;; end packs
 
 (put 'dired-find-alternate-file 'disabled nil)
 
 ;; on to our hooks since all packages should be ready to be customized
 (global-prettify-symbols-mode)
-
-(add-hook 'scala-mode-hook
-          (lambda ()
-            (setq prettify-symbols-alist scala-prettify-symbols-alist)
-            (smartparens-mode t)))
-
-(add-hook 'java-mode-hook
-          (lambda ()
-            (c-set-style "bsd")
-            (setq c-basic-offset 4)
-            ;; (c-toggle-auto-newline 1)
-            (c-set-offset 'substatement-open 0)
-            (c-set-offset 'annotation-var-cont 0)))
-
-(add-hook 'ensime-mode-hook
-          (lambda ()
-            (let ((backends (company-backends-for-buffer)))
-              (setq company-backends
-                    (push '(ensime-company company-yasnippet) backends)))))
-
 
 ;; start code
 (defun company-backends-for-buffer ()
@@ -418,6 +264,11 @@ directory to make multiple eshell windows easier."
 
 (global-set-key(kbd "C-!") 'eshell-here)
 ;; end code
+
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
 (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
+
+;; now that user-setup has loaded our ocaml support
+(require 'ocaml-pack)
+

@@ -37,10 +37,6 @@
 
 (define-abbrev-table 'emacs-lisp-mode-abbrev-table '())
 
-(define-abbrev-table 'ensime-connection-list-mode-abbrev-table '())
-
-(define-abbrev-table 'ensime-inf-mode-abbrev-table '())
-
 (define-abbrev-table 'ert-results-mode-abbrev-table '())
 
 (define-abbrev-table 'ert-simple-view-mode-abbrev-table '())

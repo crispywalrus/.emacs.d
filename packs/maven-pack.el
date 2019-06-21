@@ -1,5 +1,4 @@
-;; maven compilation, as if maven where a real tool
-
+;; make maven work with compile
 (require 'compile)
 
 (defvar mvn-command-history nil  "Maven command history variable")
