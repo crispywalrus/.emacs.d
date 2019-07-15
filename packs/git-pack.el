@@ -1,11 +1,10 @@
-(use-package with-editor
-  :pin melpa-stable)
+(use-package gh)
 
-(use-package git-commit
-  :pin melpa-stable)
+(use-package with-editor)
+
+(use-package git-commit)
 
 (use-package magit
-  :pin melpa-stable
   :commands magit-status magit-blame
   :init
   (setq magit-auto-revert-mode nil
@@ -14,5 +13,9 @@
          ("s-b" . magit-blame)))
 
 (use-package git-timemachine)
+
+(use-package magithub
+  :after magit
+  :config (magithub-feature-autoinject t))
 
 (provide 'git-pack)
