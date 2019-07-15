@@ -29,3 +29,4 @@ network-security.data
 transient
 nix-buffer
 .lsp-session*
+.cache
