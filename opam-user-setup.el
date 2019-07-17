@@ -120,11 +120,11 @@
 
 (opam-auto-tools-setup)
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
-;; ## added by OPAM user-setup for emacs / tuareg ## 5cd1d110c1be3e75bf5a62e329953e61 ## you can edit, but keep this line
+;; ## added by OPAM user-setup for emacs / tuareg ## 3fbdb617be7daaa80080148cd85c26b2 ## you can edit, but keep this line
 ;; Set to autoload tuareg from its original switch when not found in current
 ;; switch (don't load tuareg-site-file as it adds unwanted load-paths)
 (defun opam-tuareg-autoload (fct file doc args)
-  (let ((load-path (cons "/Users/crispy/.opam/grapherd/share/emacs/site-lisp" load-path)))
+  (let ((load-path (cons "/Users/christopher.vale/.opam/default/share/emacs/site-lisp" load-path)))
     (load file))
   (apply fct args))
 (when (not (member "tuareg" opam-tools-installed))

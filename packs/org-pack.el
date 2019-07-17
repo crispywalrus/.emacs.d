@@ -5,11 +5,11 @@
   :ensure t
   :init
   (setq org-log-done t
-        org-directory (expand-file-name "~/.org")
+        org-directory (expand-file-name "~/Devel/notes")
         org-default-notes-file (concat org-directory "/crispy/notes.org")
         org-agenda-files (append
                           (list org-directory)
-                          (mapcar 'xxx (list "/flyingwalrusllc" "/crispy")))
+                          (mapcar 'xxx (list "/flyingwalrus" "/crispy" "/rally")))
         org-todo-keywords
         '((sequence "TODO(t)" "READY(r)" "INPROGRESS(p)" "BLOCKED(b)" "|" "CANCELED(c)" "DONE(d)")
           (sequence "IDEATE" "REFINE" "DOCUMENT" "PROMOTED"))

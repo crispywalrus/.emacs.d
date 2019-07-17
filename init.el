@@ -28,9 +28,11 @@
 (require 'package)
 
 ;; use melpa
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+			 ("melpa" . "http://melpa.org/packages/")
+			 ("melpa-stable" . "http://stable.melpa.org/packages/")
+			 ("org" . "http://orgmode.org/elpa/")))
+
 
 (package-initialize)
 
@@ -85,8 +87,8 @@
 (tool-bar-mode -1)
 (windmove-default-keybindings)
 
-;; (when (eq system-type 'darwin)
-;;   (setq ns-use-native-fullscreen nil))
+(when (eq system-type 'darwin)
+  (setq ns-use-native-fullscreen nil))
 ;; end my defaults
 
 ;; packages
@@ -175,11 +177,11 @@
   :diminish subword-mode
   :init (global-subword-mode t))
 
-(use-package undo-tree
-  :ensure t
-  :init
-  (global-undo-tree-mode)
-  :diminish undo-tree)
+;; (use-package undo-tree
+;;   :ensure t
+;;   :init
+;;   (global-undo-tree-mode)
+;;   :diminish undo-tree)
 
 (use-package popwin)
 ;; end package management
