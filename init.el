@@ -83,9 +83,11 @@
 
 (load custom-file)
 (put 'narrow-to-region 'disabled nil)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-(windmove-default-keybindings)
+
+(when (display-graphic-p)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (windmove-default-keybindings))
 
 (when (eq system-type 'darwin)
   (setq ns-use-native-fullscreen nil))
@@ -258,4 +260,14 @@ directory to make multiple eshell windows easier."
 ;; now that user-setup has loaded our ocaml support
 (require 'ocaml-pack)
 
+;; workaround for a bug in emacs' behaviour with gnutls versions
+;; greater than 3.6.0
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
+(if (eq system-type 'darwin)
+    (progn
+      (setq ns-command-modifier 'meta)
+      (setq ns-option-modifier 'super)
+      (setq ns-right-option-modifier 'hyper))
+  ())
+  
