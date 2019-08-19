@@ -61,7 +61,7 @@
 ;; here so that we can be sure they'll be available for local code.
 (require 'elisp-pack)
 
-;; my defaults
+;; my default customization
 ;; I use a .gitignored custom.el file so I can maintain different
 ;; configs per system. Loading fails if the file doesn't exist so we
 ;; touch it to make sure emacs always starts.
@@ -125,9 +125,6 @@
    ("a" . sx-ask)
    ("s" . sx-search)))
 
-(use-package company
-  :diminish company-mode)
-
 (use-package expand-region
   :commands 'er/expand-region
   :bind ("C-=" . er/expand-region))
@@ -177,12 +174,6 @@
   :diminish subword-mode
   :init (global-subword-mode t))
 
-;; (use-package undo-tree
-;;   :ensure t
-;;   :init
-;;   (global-undo-tree-mode)
-;;   :diminish undo-tree)
-
 (use-package popwin)
 ;; end package management
 
@@ -191,14 +182,7 @@
 ;; them.
 (require 'git-pack)
 (require 'scala-pack)
-(require 'dhall-nix-pack)
-(require 'haskell-pack)
-(require 'clojure-pack)
 (require 'org-pack)
-(require 'maven-pack)
-(require 'common-lisp)
-(require 'java-pack)
-(require 'javascript-pack)
 ;; end packs
 
 (put 'dired-find-alternate-file 'disabled nil)
@@ -274,3 +258,4 @@ directory to make multiple eshell windows easier."
 ;; now that user-setup has loaded our ocaml support
 (require 'ocaml-pack)
 
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")

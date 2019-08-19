@@ -1,5 +1,5 @@
-;; omg, org mode ends up eating the world!
-(defun xxx (dir) (concat org-directory dir))
+;; org-mode additional packages and configuration
+(defun troll-org-directory (dir) (concat org-directory dir))
 
 (use-package org
   :ensure t
@@ -9,7 +9,7 @@
         org-default-notes-file (concat org-directory "/crispy/notes.org")
         org-agenda-files (append
                           (list org-directory)
-                          (mapcar 'xxx (list "/flyingwalrus" "/crispy" "/rally")))
+                          (mapcar 'troll-org-directory (list "/crispy" "/rally")))
         org-todo-keywords
         '((sequence "TODO(t)" "READY(r)" "INPROGRESS(p)" "BLOCKED(b)" "|" "CANCELED(c)" "DONE(d)")
           (sequence "IDEATE" "REFINE" "DOCUMENT" "PROMOTED"))

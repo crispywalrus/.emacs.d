@@ -1,15 +1,10 @@
 
-(use-package yasnippet)
-
 (use-package sbt-mode
   :commands sbt-start sbt-command
   :init (setq sbt:prefer-nested-projects t))
 
 
 (use-package scala-mode
-  :chords (("=>" . "⇒")
-           ("->" . "→")
-           ("<-" . "←"))
   :interpreter ("scala" . scala-mode)
   :hook (lambda ()
           (setq prettify-symbols-alist scala-prettify-symbols-alist)

@@ -13,7 +13,7 @@
 ;;           (list (push 'company-etags base))
 ;;         (list base)))))
 
-(use-package helm)
-(require 'helm-config)
+;; (use-package helm)
+;; (require 'helm-config)
 
 (provide 'completion-pack)
