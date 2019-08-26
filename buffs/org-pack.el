@@ -6,7 +6,7 @@
   :init
   (setq org-log-done t
         org-directory (expand-file-name "~/Devel/notes")
-        org-default-notes-file (concat org-directory "/crispy/notes.org")
+        org-default-notes-file (concat org-directory "/rally/notes.org")
         org-agenda-files (append
                           (list org-directory)
                           (mapcar 'troll-org-directory (list "/crispy" "/rally")))
@@ -27,7 +27,8 @@
  'org-babel-load-languages
  '((emacs-lisp . t)
    (ocaml . t)
-   (scala . t)))
+   (sql . t)))
+;;   (scala . t)))
 
 
 ;; Syntax highlight in #+BEGIN_SRC blocks

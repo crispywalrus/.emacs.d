@@ -47,9 +47,9 @@
 ;; package.
 (setq use-package-always-ensure t)
 
-;; packs are my customization code for various programming language modes
-;; and other emacs features.
-(add-to-list 'load-path (expand-file-name "packs" user-emacs-directory))
+;; buffs are my customization code for various programming language
+;; modes and other coding releated tasks
+(add-to-list 'load-path (expand-file-name "buffs" user-emacs-directory))
 
 ;; packages
 ;; loads key-chord and adds a :chord symbol for use-package.
@@ -85,6 +85,9 @@
 (put 'narrow-to-region 'disabled nil)
 
 (when (display-graphic-p)
+  (setq initial-frame-alist nil
+        default-frame-alist nil)
+  (set-frame-font "Fira Code 12")
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
   (windmove-default-keybindings))
@@ -165,6 +168,8 @@
   :mode ("Dockerfile\\'" . dockerfile-mode))
 
 (use-package protobuf-mode)
+
+(use-package yasnippet)
 
 ;; woot?
 (use-package graphql-mode)
