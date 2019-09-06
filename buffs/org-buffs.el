@@ -5,7 +5,7 @@
   :ensure t
   :init
   (setq org-log-done t
-        org-directory (expand-file-name "~/Devel/notes")
+        org-directory (expand-file-name "~/.org")
         org-default-notes-file (concat org-directory "/rally/notes.org")
         org-agenda-files (append
                           (list org-directory)
@@ -21,7 +21,10 @@
           ("CANCELED" . (:foreground "LimeGreen" :weight bold))))
   :bind (("\C-cl" . org-store-link)
          ("\C-ca" . org-agenda)
-         ("\C-cc" . org-capture)))
+         ("\C-cc" . org-capture)
+         ("H-l" . org-store-link)
+         ("H-c" . org-capture)
+         ("H-a" . org-agenda)))
 
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -58,15 +61,21 @@
 (use-package ox-pandoc)
 (use-package ox-reveal)
 
+(defvar crispy:created-property-string "
+  :PROPERTIES:
+  :CREATED: %U
+  :END:")
+
 (use-package org-projectile
-  :after (org-mode projectile)
   :config
   (org-projectile-per-project)
   (setq
-   org-projectile-per-project-fileapth "notes.org"
+   org-projectile-per-project-filepath "project-todo.org"
    org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
   (push (org-projectile-project-todo-entry) org-capture-templates)
-  :bind
-  (("\C-cnp" .'org-projectile-project-todo-completing-read)))
+  :bind (("C-c n p" .'org-projectile-project-todo-completing-read)
+         ("H-n" .'org-projectile-project-todo-completing-read)))
 
-(provide 'org-pack)
+(setq diary-file (f-join org-directory "diary"))
+
+(provide 'org-buffs)

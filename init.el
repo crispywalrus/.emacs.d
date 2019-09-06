@@ -25,42 +25,39 @@
 
 ;;; Code:
 
+
+;; preable, require up the emacs built in package manager.
 (require 'package)
 
-;; use melpa
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			 ("melpa" . "http://melpa.org/packages/")
-			 ("melpa-stable" . "http://stable.melpa.org/packages/")
-			 ("org" . "http://orgmode.org/elpa/")))
+;; configure package to use melpa, org, and melpa-stable
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")))
 
-
+;; and finaglly initialize package manager
 (package-initialize)
 
-;; if use-package isn't installed go fetch and install it. we're going
-;; to need it in just a few lines.
+;; the rest of this uses use-package to manage loading and configuring
+;; packagess. if use-package isn't installed go fetch and install
+;; it. this is super easy because our just configured package manager
+;; can fetch use package for us.
 (when
     (not package-archive-contents)
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; make use-package download if we've referenced any uninstalled
-;; package.
+;; make use-package download all referenced but uninstalled
+;; packages.
+(require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
 ;; buffs are my customization code for various programming language
 ;; modes and other coding releated tasks
 (add-to-list 'load-path (expand-file-name "buffs" user-emacs-directory))
+(require 'elisp-buffs)
 
 ;; packages
-;; loads key-chord and adds a :chord symbol for use-package.
-(use-package use-package-chords
-  :config (key-chord-mode 1))
-
-;; these next packages don't describe modes or features rather they're
-;; packages of elisp function designed to make coding better.  Do this
-;; here so that we can be sure they'll be available for local code.
-(require 'elisp-pack)
-
 ;; my default customization
 ;; I use a .gitignored custom.el file so I can maintain different
 ;; configs per system. Loading fails if the file doesn't exist so we
@@ -81,9 +78,16 @@
  load-prefer-newer t
  debug-on-error nil)
 
+;; up abover we touched custom.el. we did this so that there was
+;; definately going to be a file. now we can load it in relative
+;; safety.
 (load custom-file)
+
+;; don't ask about narrow-to-regeion
 (put 'narrow-to-region 'disabled nil)
 
+;; configure our GUI appearance. no scrollbar or toolbars and set the
+;; font to Fira Code 12.
 (when (display-graphic-p)
   (setq initial-frame-alist nil
         default-frame-alist nil)
@@ -91,188 +95,34 @@
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
   (windmove-default-keybindings))
-
-(when (eq system-type 'darwin)
-  (setq ns-use-native-fullscreen nil))
 ;; end my defaults
 
-;; packages
-;; general functionality follows
-(require 'completion-pack)
-
-(use-package exec-path-from-shell
-  :init (exec-path-from-shell-initialize))
-
-(use-package projectile
-  :pin melpa-stable
-  :diminish projectile-mode
-  :init
-  (setq projectile-enable-caching t)
-  :config
-  (projectile-mode +1)
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
-
-(use-package rmsbolt)
-
-;; stackoverflow is great but why leave emacs to search it?
-(use-package sx
-  :init (require 'bind-key)
-  :config
-  (bind-keys
-   :prefix "C-c s"
-   :prefix-map my-sx-map
-   :prefix-docstring "Global keymap for SX."
-   ("q" . sx-tab-all-questions)
-   ("i" . sx-inbox)
-   ("o" . sx-open-link)
-   ("u" . sx-tab-unanswered-my-tags)
-   ("a" . sx-ask)
-   ("s" . sx-search)))
-
-(use-package expand-region
-  :commands 'er/expand-region
-  :bind ("C-=" . er/expand-region))
-
-(use-package smartparens
-  :pin melpa-stable
-  :diminish
-  smartparens-mode
-  :init
-  (setq sp-interactive-dwim t)
-  :config
-  (require 'smartparens-config)
-  (sp-use-smartparens-bindings)
-  (sp-pair "(" ")" :wrap "s-(") ;; how do people live without this?
-  (sp-pair "[" "]" :wrap "s-[") ;; C-[ sends ESC
-  (sp-pair "{" "}" :wrap "s-{")
-  (bind-key "C-<left>" nil smartparens-mode-map)
-  (bind-key "C-<right>" nil smartparens-mode-map)
-
-  (bind-key "s-<delete>" 'sp-kill-sexp smartparens-mode-map)
-  (bind-key "s-<backspace>" 'sp-backward-kill-sexp smartparens-mode-map))
-
-;; lesser used hence lesser customized stuff
-(use-package markdown-mode
-  :pin melpa-stable
-  :init
-  (setq
-   auto-mode-alist  (cons '("\\.md$" . markdown-mode) auto-mode-alist)
-   auto-mode-alist  (cons '("\\.markdown$" . markdown-mode) auto-mode-alist)))
-
-(use-package pandoc-mode)
-
-(use-package thrift)
-
-(use-package dockerfile-mode
-  :mode ("Dockerfile\\'" . dockerfile-mode))
-
-(use-package protobuf-mode)
-
-(use-package yasnippet)
-
-;; woot?
-(use-package graphql-mode)
-
-;; change word bounderies to include lower case to upper case
-;; transitions inside camel cased words. 
-(use-package subword
-  :ensure nil
-  :diminish subword-mode
-  :init (global-subword-mode t))
-
-(use-package popwin)
-;; end package management
-
 ;; I've broken out the more complex setup of my dev environment into
-;; "packs" of functionality and configuration. So now I have to load
-;; them.
-(require 'git-pack)
-(require 'scala-pack)
-(require 'org-pack)
-;; end packs
+;; buffs. each buff respresents a particular area of emacs configured
+;; the way I like it.
+(require 'buffs)
 
-(put 'dired-find-alternate-file 'disabled nil)
-
-;; on to our hooks since all packages should be ready to be customized
-(global-prettify-symbols-mode)
-
-;; start code
-(defun company-backends-for-buffer ()
-  "Calculate appropriate `company-backends' for the buffer.
-For small projects, use TAGS for completions, otherwise use a
-very minimal set."
-  (projectile-visit-project-tags-table)
-  (cl-flet ((size () (buffer-size (get-file-buffer tags-file-name))))
-    (let ((base '(company-keywords company-dabbrev-code company-yasnippet)))
-      (if (and tags-file-name (<= 20000000 (size)))
-          (list (push 'company-etags base))
-        (list base)))))
-
-;; given that I have to work with eclipse and intellij users
-(defun fix-format-buffer ()
-  "indent, untabify and remove trailing whitespace for a buffer"
-  (interactive)
-  (save-mark-and-excursion
-    (delete-trailing-whitespace)
-    (indent-region (point-min) (point-max))
-    (untabify (point-min) (point-max))))
-
-(defun contextual-backspace ()
-  "Hungry whitespace or delete word depending on context."
-  (interactive)
-  (if (looking-back "[[:space:]\n]\\{2,\\}" (- (point) 2))
-      (while (looking-back "[[:space:]\n]" (- (point) 1))
-        (delete-char -1))
-    (cond
-     ((and (boundp 'smartparens-strict-mode)
-           smartparens-strict-mode)
-      (sp-backward-kill-word 1))
-     ((and (boundp 'subword-mode)
-           subword-mode)
-      (subword-backward-kill 1))
-     (t
-      (backward-kill-word 1)))))
-
-(global-set-key (kbd "C-<backspace>") 'contextual-backspace)
-
-(require 'esh-mode)
-(defun eshell-here()
-  "Opens up a new shell in the directory associated with the
-current buffer's file. The eshell is renamed to match that
-directory to make multiple eshell windows easier."
-  (interactive)
-  (let*((parent(if(buffer-file-name)
-                   (file-name-directory(buffer-file-name))
-                 default-directory))
-        (height(/(window-total-height) 3))
-        (name  (car(last(split-string parent "/" t)))))
-    (split-window-vertically(- height))
-    (other-window 1)
-    (eshell "new")
-    (rename-buffer(concat "*eshell: " name "*"))
-
-    (insert(concat "ls"))
-    (eshell-send-input)))
-
-(global-set-key(kbd "C-!") 'eshell-here)
-;; end code
+(load (expand-file-name "~/.emacs.d/code.el"))
 
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
 (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
 
 ;; now that user-setup has loaded our ocaml support
-(require 'ocaml-pack)
+(require 'ocaml-reasonml)
 
-;; workaround for a bug in emacs' behaviour with gnutls versions
-;; greater than 3.6.0
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-
-(if (eq system-type 'darwin)
+(when (eq system-type 'darwin)
+  ;; mac osx, use ns-* settings to distiguish between the flavors of emacs available.
+  (if (boundp 'ns-use-native-fullscreen)
+      (progn
+        (setq ns-use-native-fullscreen t
+              ns-command-modifier 'meta
+              ns-option-modifier 'super
+              ns-right-option-modifier 'hyper)
+        (global-set-key (kbd "M-h") 'ns-do-hide-emacs))
     (progn
-      (setq ns-command-modifier 'meta)
-      (setq ns-option-modifier 'super)
-      (setq ns-right-option-modifier 'hyper))
-  ())
-  
+      (setq mac-command-modifier 'meta
+            mac-option-modifier 'super
+            mac-right-option-modifier 'hyper))
+    ())
+  (global-set-key (kbd "M-q") 'save-buffers-kill-emacs))

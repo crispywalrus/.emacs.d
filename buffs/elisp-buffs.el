@@ -1,4 +1,7 @@
 ;; elisp programming add ons and customizations
+;;
+
+(require 'coding-core)
 
 (use-package s)
 (use-package string-inflection
@@ -10,4 +13,4 @@
 (use-package multiple-cursors)
 (use-package suggest)
 
-(provide 'elisp-pack)
+(provide 'elisp-buffs)

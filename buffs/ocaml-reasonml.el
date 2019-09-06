@@ -1,4 +1,4 @@
-;; ocalm et. al.
+;; ocalm and reasonml
 (require 'dune)
 (require 'dune-flymake)
 
@@ -11,5 +11,5 @@
 (add-to-list 'auto-mode-alist
              '("\\(?:\\`\\|/\\)dune-project\\(?:\\.inc\\)?\\'" . dune-mode))
 
-(provide 'ocaml-pack)
+(provide 'ocaml-reasonml)
 

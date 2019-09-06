@@ -1,3 +1,8 @@
+;; configure for scala coding pleasure
+;;
+;; sadly ensime is falling back so here i am falling back to lsp.
+
+(require 'coding-core)
 
 (use-package sbt-mode
   :init (setq sbt:prefer-nested-projects t)
@@ -12,26 +17,9 @@
   :bind (:map scala-mode-map
               ("C-c C-b" . sbt-hydra)))
 
-(use-package lsp-mode
-  :init (setq lsp-prefer-flymake nil))
-
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode))
-
-(use-package lsp-scala
-  :after scala-mode
-  :demand t
-  :hook (scala-mode . lsp))
-
-(use-package popup
-  :pin melpa-stable)
-
-(use-package company-lsp)
-
 (use-package ob-ammonite
   :config
   (setq ob-ammonite-prompt-string "@"))
 
-(require 'tree)
-(require 'git-pack)
-(provide 'scala-pack)
+(require 'git-buffs)
+(provide 'scala-buffs)

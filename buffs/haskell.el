@@ -21,4 +21,4 @@
   :config
   (add-hook 'flycheck-mode-hook 'flycheck-haskell-setup))
 
-(provide 'haskell-pack)
+(provide 'haskell)
