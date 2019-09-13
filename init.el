@@ -53,7 +53,7 @@
 
 ;; buffs are my customization code for various programming language
 ;; modes and other coding releated tasks
-(add-to-list 'load-path (expand-file-name "buffs" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "local" user-emacs-directory))
 (require 'elisp-buffs)
 
 ;; packages
@@ -101,7 +101,7 @@
 ;; the way I like it.
 (require 'buffs)
 
-(load (expand-file-name "~/.emacs.d/code.el"))
+(require 'code)
 
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
 (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
