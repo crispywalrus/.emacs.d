@@ -12,7 +12,7 @@ very minimal set."
 
 ;; reformat a buffer based on the current emacs mode. This is likely
 ;; not perfect, but it's closer than you might think
-(defun crispy:fix-format-buffer ()
+(defun fix-format-buffer ()
   "indent, untabify and remove trailing whitespace for a buffer"
   (interactive)
   (save-mark-and-excursion
@@ -39,7 +39,7 @@ very minimal set."
 (global-set-key (kbd "C-<backspace>") 'crispy:contextual-backspace)
 
 (require 'esh-mode)
-(defun crispy:eshell-here()
+(defun eshell-here()
   "Opens up a new shell in the directory associated with the
 current buffer's file. The eshell is renamed to match that
 directory to make multiple eshell windows easier."

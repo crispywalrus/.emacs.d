@@ -49,7 +49,6 @@
 
 ;; make use-package download all referenced but uninstalled
 ;; packages.
-(require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
 ;; buffs are my customization code for various programming language

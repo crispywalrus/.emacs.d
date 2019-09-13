@@ -1,7 +1,6 @@
 ;;
 
 (use-package projectile
-  :pin melpa-stable
   :diminish projectile-mode
   :init
   (setq projectile-enable-caching t)

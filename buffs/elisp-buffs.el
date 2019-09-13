@@ -1,8 +1,5 @@
 ;; elisp programming add ons and customizations
 ;;
-
-(require 'coding-core)
-
 (use-package s)
 (use-package string-inflection
   :bind ("s-i" . string-inflection-all-cycle))

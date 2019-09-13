@@ -2,18 +2,19 @@
 
 (require 'usability)
 (require 'project-management)
+(require 'coding-core)
 
 ;; org mode ... might as well be god-mode
 (require 'org-buffs)
 
 ;; programming modes and customizations
-(require 'scala-buffs)
+(require 'git-buffs)
+(require 'scala)
 (require 'common-lisp)
 (require 'haskell)
+(require 'markup)
 
 (use-package rmsbolt)
-
-(use-package yasnippet)
 
 ;; woot?
 (use-package graphql-mode)

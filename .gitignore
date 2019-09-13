@@ -30,3 +30,4 @@ transient
 nix-buffer
 .lsp-session*
 .cache
+org-journal.cache
