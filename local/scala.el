@@ -8,9 +8,7 @@
            'self-insert-command
            minibuffer-local-completion-map))
 
-(use-package scala-mode
-  :config (setq prettify-symbols-alist scala-prettify-symbols-alist)
-  :hook (smartparens-mode))
+(use-package scala-mode)
 
 (use-package lsp-scala
   :after scala-mode
