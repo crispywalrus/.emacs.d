@@ -1,4 +1,4 @@
-;; configure for scala coding pleasure
+;; scala.el -- configure for scala coding pleasure -*- lexical-binding: t -*-
 
 (use-package sbt-mode
   :init (setq sbt:prefer-nested-projects t)
@@ -18,5 +18,7 @@
 (use-package ob-ammonite
   :config
   (setq ob-ammonite-prompt-string "@"))
+
+(use-package company-lsp)
 
 (provide 'scala)

@@ -1,13 +1,11 @@
-;;
+;; project-management.el -*- lexical-binding: t -*-
 
 (use-package projectile
-  :diminish projectile-mode
   :init
   (setq projectile-enable-caching t)
   :config
   (projectile-mode +1)
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
-
+  :bind-keymap (("S-p" . projectile-command-map)
+                ("C-c p")))
 
 (provide 'project-management)

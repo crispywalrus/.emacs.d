@@ -1,4 +1,4 @@
-;; elisp programming add ons and customizations
+;; elisp.el elisp programming add ons and customizations -*- lexical-binding: t -*- 
 ;;
 (use-package s)
 (use-package string-inflection

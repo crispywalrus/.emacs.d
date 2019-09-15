@@ -1,4 +1,4 @@
-;; super power buff for git interactions
+;; git.el -- super power buff for git interactions -*- lexical-binding: t -*-
 ;;
 ;; this uses magit for basic git status and commands, with added fun
 ;; from magithub for our github buffers, and git-timemachine to
