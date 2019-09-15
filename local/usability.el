@@ -29,4 +29,11 @@
 
 (use-package popwin)
 
+(use-package all-the-icons
+  :ensure t)
+(use-package doom-modeline
+  :ensure t
+  :init (setq doom-modeline-buffer-file-name-style 'relative-from-project)
+  :hook (after-init . doom-modeline-mode))
+
 (provide 'usability)

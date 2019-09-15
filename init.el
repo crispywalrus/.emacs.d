@@ -97,12 +97,12 @@
 ;; end my defaults
 
 ;; I've broken out the more complex setup of my dev environment into
-;; buffs. each buff respresents a particular area of emacs configured
-;; the way I like it.
+;; local buffs. each buff respresents a particular area of emacs
+;; configured the way I like it.
+(require 'code)
 (require 'buffs)
 
-(require 'code)
-
+;; this is slightly custom as it allows ocamls user-setup via opam to work unmolested.
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
 (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
