@@ -74,4 +74,11 @@
 
 (setq diary-file (f-join org-directory "diary"))
 
+;; read the news in emacs
+(use-package elfeed)
+(use-package elfeed-org
+  :config
+  (elfeed-org)
+  (setq rmh-elfeed-org-files (list  (f-join org-directory "elfeed.org"))))
+
 (provide 'org-buffs)
