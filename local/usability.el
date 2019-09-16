@@ -23,6 +23,8 @@
 
 (use-package popwin)
 
+(use-package memoize)
+
 (use-package all-the-icons
   :ensure t)
 (use-package doom-modeline

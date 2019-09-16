@@ -5,7 +5,7 @@
   (setq projectile-enable-caching t)
   :config
   (projectile-mode +1)
-  :bind-keymap (("S-p" . projectile-command-map)
-                ("C-c p")))
+  :bind-keymap (("s-p" . projectile-command-map)
+                ("C-c p" . projectile-command-map)))
 
 (provide 'project-management)
