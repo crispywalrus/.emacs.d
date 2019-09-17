@@ -1,7 +1,9 @@
 ;; configuration for loading buffs
 
 (require 'usability)
-;; (require 'themes)
+(require 'mac-keys)
+
+(require 'themes)
 (require 'project-management)
 (require 'coding-core)
 

@@ -1,6 +1,7 @@
 ;; usability.el -*- lexical-binding: t -*-
+
 ;; stackoverflow is an integral part of the coding process. so why
-;; leave emacs to search it? 
+;; leave emacs to search it?
 (use-package sx
   :bind (("H-x q" . sx-tab-all-questions)
          ("H-x i" . SX-inbox)
