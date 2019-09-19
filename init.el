@@ -53,8 +53,15 @@
 
 ;; buffs are my customization code for various programming language
 ;; modes and other coding releated tasks
-(add-to-list 'load-path (expand-file-name "local" user-emacs-directory))
-(require 'elisp-buffs)
+(use-package s)
+(use-package string-inflection
+  :bind ("s-i" . string-inflection-all-cycle))
+(use-package dash)
+(use-package dash-functional)
+(use-package m-buffer)
+(use-package f)
+(use-package multiple-cursors)
+(use-package suggest)
 
 ;; packages
 ;; my default customization
@@ -66,8 +73,12 @@
 ;; I've broken out the more complex setup of my dev environment into
 ;; local buffs. each buff respresents a particular area of emacs
 ;; configured the way I like it.
+(add-to-list 'load-path (expand-file-name "local" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "themes" user-emacs-directory))
+
 (require 'code)
 (require 'buffs)
+(require 'themes)
 
 ;; this is slightly custom as it allows ocamls user-setup via opam to work unmolested.
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line

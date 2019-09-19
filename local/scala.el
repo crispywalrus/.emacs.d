@@ -8,16 +8,21 @@
            'self-insert-command
            minibuffer-local-completion-map))
 
-(use-package scala-mode)
-
-(use-package lsp-scala
-  :after scala-mode
-  :demand t
-  :hook (scala-mode . lsp))
+(use-package scala-mode
+  :config (setq prettify-symbols-alist scala-prettify-symbols-alist)
+  :bind ("H-c" . sbt-hydra))
 
 (use-package ob-ammonite
   :config
   (setq ob-ammonite-prompt-string "@"))
+
+(use-package lsp-mode
+  :hook (scala-mode . lsp)
+  :init (setq lsp-prefer-flymake nil
+              lsp-enable-snippet nil))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode))
 
 (use-package company-lsp)
 

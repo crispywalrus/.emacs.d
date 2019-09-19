@@ -3,7 +3,6 @@
 (require 'usability)
 (require 'mac-keys)
 
-(require 'themes)
 (require 'project-management)
 (require 'coding-core)
 
