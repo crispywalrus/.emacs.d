@@ -10,7 +10,7 @@
 
 (use-package scala-mode
   :config (setq prettify-symbols-alist scala-prettify-symbols-alist)
-  :bind ("H-c" . sbt-hydra))
+  :bind ("C-c C-b" . sbt-hydra))
 
 (use-package ob-ammonite
   :config

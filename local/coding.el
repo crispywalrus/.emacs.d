@@ -8,4 +8,7 @@
   (smartparens-global-mode t)
   (show-smartparens-global-mode t))
 
-(provide 'coding-core)
+(use-package yasnippet)
+(use-package yasnippet-snippets)
+
+(provide 'coding)

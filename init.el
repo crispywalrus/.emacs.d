@@ -62,6 +62,7 @@
 (use-package f)
 (use-package multiple-cursors)
 (use-package suggest)
+(use-package parsec)
 
 ;; packages
 ;; my default customization

@@ -4,7 +4,7 @@
 (require 'mac-keys)
 
 (require 'project-management)
-(require 'coding-core)
+(require 'coding)
 
 ;; org mode ... might as well be god-mode
 (require 'org-buffs)

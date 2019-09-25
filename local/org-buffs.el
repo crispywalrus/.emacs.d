@@ -58,7 +58,8 @@
 
 ;; thet ox mode name denotes an org exporter
 (use-package ox-pandoc)
-(use-package ox-reveal)
+(use-package ox-reveal
+  :config (setq org-reveal-root (expand-file-name (f-join org-directory "reveal.js"))))
 
 (defvar crispy:created-property-string "
   :PROPERTIES:
