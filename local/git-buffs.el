@@ -23,8 +23,7 @@
   :bind (("s-t" . git-timemachine)
          ("s-T" . git-timemchine-toggle)))
 
-(use-package magithub
-  :after magit
-  :config (magithub-feature-autoinject t))
+(use-package forge
+  :after magit)
 
 (provide 'git-buffs)
