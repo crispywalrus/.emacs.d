@@ -6,7 +6,7 @@
   :ensure t
   :init
   (setq org-log-done t
-        org-directory (expand-file-name "~/Documents/org")
+        org-directory (expand-file-name "~/Org")
         org-default-notes-file (f-join org-directory "notes.org")
         org-agenda-files (list (f-join org-directory "agenda"))
         org-todo-keywords
