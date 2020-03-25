@@ -15,6 +15,7 @@
 (require 'common-lisp)
 (require 'haskell)
 (require 'markup)
+;; (require 'ocaml-reasonml)
 
 (use-package rmsbolt)
 

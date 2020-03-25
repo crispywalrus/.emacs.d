@@ -1,5 +1,7 @@
 ;; org-buffs.el --- org additions and configuration -*- lexical-binding: t -*-
 
+(require 'project-management)
+
 (defun crispy:troll-org-directory (dir) (f-expand dir org-directory))
 
 (use-package org
