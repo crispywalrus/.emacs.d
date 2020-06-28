@@ -1,4 +1,5 @@
 ;; ocalm and reasonml
+(require 'coding)
 (require 'dune)
 (require 'dune-flymake)
 

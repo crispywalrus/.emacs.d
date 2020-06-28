@@ -48,5 +48,5 @@ directory to make multiple eshell windows easier."
     (eshell-send-input)))
 
 (global-set-key(kbd "C-!") 'crispy:eshell-here)
-;; end code
+
 (provide 'code)

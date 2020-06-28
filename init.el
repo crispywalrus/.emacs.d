@@ -1,7 +1,6 @@
 ;;; init.el --- emacs configuration -*- lexical-binding: t -*-
 
-;; Copyright © 2011 - 2019 Chris Vale
-;;
+;; Copyright © 2011 - 2020 Chris Vale
 ;; Author: Chris Vale <crispywalrus@gmail.com>
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -24,7 +23,6 @@
 ;; Configuration.
 
 ;;; Code:
-
 
 ;; preable, require up the emacs built in package manager.
 (require 'package)
@@ -51,8 +49,9 @@
 ;; packages.
 (setq use-package-always-ensure t)
 
-;; buffs are my customization code for various programming language
-;; modes and other coding releated tasks
+;; these are various elisp coding and data structure
+;; libraries. they're not modes and often the modes and extensions I
+;; use rely on them.
 (use-package s)
 (use-package string-inflection
   :bind ("s-i" . string-inflection-all-cycle))
@@ -74,10 +73,11 @@
 ;; I've broken out the more complex setup of my dev environment into
 ;; local buffs. each buff respresents a particular area of emacs
 ;; configured the way I like it.
-(add-to-list 'load-path (expand-file-name "local" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "themes" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "buffs" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "appearance" user-emacs-directory))
+(f-mkdir (expand-file-name "staging" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "staging" user-emacs-directory))
 
-(require 'code)
 (require 'buffs)
 (require 'themes)
 

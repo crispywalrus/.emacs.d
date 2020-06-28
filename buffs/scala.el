@@ -1,5 +1,7 @@
 ;; scala.el -- configure for scala coding pleasure -*- lexical-binding: t -*-
 
+(require 'coding)
+
 (use-package sbt-mode
   :init (setq sbt:prefer-nested-projects t)
   :commands sbt-start sbt-command sbt-hydra
@@ -16,14 +18,6 @@
   :config
   (setq ob-ammonite-prompt-string "@"))
 
-(use-package lsp-mode
-  :hook (scala-mode . lsp)
-  :init (setq lsp-prefer-flymake nil
-              lsp-enable-snippet nil))
-
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode))
-
-(use-package company-lsp)
+(use-package lsp-metals)
 
 (provide 'scala)
