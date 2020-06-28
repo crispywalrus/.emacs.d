@@ -9,7 +9,9 @@
   (setq markdown-command "multimarkdown"))
     
 (use-package pandoc-mode
-  :hook
-  markdown-mode)
+  :hook markdown-mode)
+
+(use-package yaml-mode
+  :config (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode)))
 
 (provide 'markup)

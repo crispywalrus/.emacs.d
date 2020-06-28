@@ -1,6 +1,6 @@
 ;; ocalm and reasonml
-(require 'dune)
-(require 'dune-flymake)
+;; (require 'dune)
+;; (require 'dune-flymake)
 
 (use-package reason-mode)
 

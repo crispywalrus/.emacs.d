@@ -69,11 +69,14 @@
   :END:")
 
 (use-package org-projectile
+  :bind (("C-c n p" . org-projectile-project-todo-completing-read)
+         ("H-n" . org-capture))
   :config
-  (setq org-projectile-projects-file (f-join org-directory "agenda" "projectile.org"))
-   (push (org-projectile-project-todo-entry) org-capture-templates)
-  :bind (("C-c n p" .'org-projectile-project-todo-completing-read)
-         ("H-n" .'org-projectile-project-todo-completing-read)))
+  (setq org-projectile-projects-file
+        (f-join org-directory "projectile.org"))
+  (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+  (push (org-projectile-project-todo-entry) org-capture-templates)
+  :ensure t)
 
 (setq diary-file (f-join org-directory "diary"))
 

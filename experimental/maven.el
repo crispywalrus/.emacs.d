@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;; maven compilation, as if maven where a real tool
 
 (require 'compile)

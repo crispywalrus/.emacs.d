@@ -33,3 +33,4 @@ nix-buffer
 org-journal.cache
 eclipse.jdt.ls
 workspace
+.dap*

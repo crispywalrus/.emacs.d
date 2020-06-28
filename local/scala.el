@@ -16,14 +16,12 @@
   :config
   (setq ob-ammonite-prompt-string "@"))
 
-(use-package lsp-mode
-  :hook (scala-mode . lsp)
-  :init (setq lsp-prefer-flymake nil
-              lsp-enable-snippet nil))
+(use-package lsp-metals
+  :hook (scala-mode . lsp))
 
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode))
-
-(use-package company-lsp)
+(use-package dap-mode
+  :hook
+  (lsp-mode . dap-mode)
+  (lsp-mode . dap-ui-mode))
 
 (provide 'scala)
