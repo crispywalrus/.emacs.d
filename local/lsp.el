@@ -1,5 +1,7 @@
 ;; lsp.el -- enable lsp-mode and lsp-ui -*- lexical-binding: t -*-
 
+(require 'coding)
+
 (use-package lsp-mode
   :init (setq lsp-prefer-flymake nil
               lsp-enable-snippet nil))
@@ -15,5 +17,6 @@
   (lsp-mode . dap-ui-mode))
 
 (use-package company-lsp)
+
 
 (provide 'lsp)

@@ -17,11 +17,11 @@
 (require 'markup)
 (require 'ocaml-reasonml)
 (require 'containers)
+(require 'idl)
 
 (use-package rmsbolt)
 
-;; woot?
-(use-package graphql-mode)
+(require 'logic)
 
 ;; do some additional random configuration
 (put 'dired-find-alternate-file 'disabled nil)

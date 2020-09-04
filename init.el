@@ -123,6 +123,7 @@
 ;; safety.
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
+(setq default-directory "~/")
 
 (add-to-list 'load-path (expand-file-name "local" user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "themes" user-emacs-directory))
@@ -132,7 +133,7 @@
     (add-to-list 'load-path (expand-file-name "experimental" user-emacs-directory))))
 
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
-(load (expand-file-name "opam-user-setup.el" user-emacs-directory))
+(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
 
 (require 'code)

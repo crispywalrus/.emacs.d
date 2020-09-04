@@ -1,4 +1,5 @@
 ;; ## added by OPAM user-setup for emacs / base ## cfd3c9b7837c85cffd0c59de521990f0 ## you can edit, but keep this line
+(provide 'opam-user-setup)
 
 ;; Base configuration for OPAM
 
@@ -119,11 +120,11 @@
 
 (opam-auto-tools-setup)
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
-;; ## added by OPAM user-setup for emacs / tuareg ## 6ac76019e5da47c130eda7c3e6e139f2 ## you can edit, but keep this line
+;; ## added by OPAM user-setup for emacs / tuareg ## 038665b10ded6e1ede512fe3079dcaa6 ## you can edit, but keep this line
 ;; Set to autoload tuareg from its original switch when not found in current
 ;; switch (don't load tuareg-site-file as it adds unwanted load-paths)
 (defun opam-tuareg-autoload (fct file doc args)
-  (let ((load-path (cons "/Users/christopher.vale/.opam/4.10/share/emacs/site-lisp" load-path)))
+  (let ((load-path (cons "/Users/christopher.vale/.opam/4.10.0+multicore/share/emacs/site-lisp" load-path)))
     (load file))
   (apply fct args))
 (when (not (member "tuareg" opam-tools-installed))
@@ -142,5 +143,3 @@
   (dolist (ext '(".cmo" ".cmx" ".cma" ".cmxa" ".cmxs" ".cmt" ".cmti" ".cmi" ".annot"))
     (add-to-list 'completion-ignored-extensions ext)))
 ;; ## end of OPAM user-setup addition for emacs / tuareg ## keep this line
-
-(provide 'opam-user-setup)

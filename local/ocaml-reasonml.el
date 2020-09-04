@@ -3,6 +3,7 @@
 ;; (require 'dune-flymake)
 
 (use-package reason-mode)
+(use-package flycheck-ocaml)
 
 (add-hook 'reason-mode-hook (lambda ()
                               (add-hook 'before-save-hook 'refmt-before-save)
