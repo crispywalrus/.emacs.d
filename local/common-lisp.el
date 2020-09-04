@@ -5,13 +5,13 @@
 (use-package slime-docker
   :pin melpa-stable)
 
-;; this assumes you've already run (ql:quickload "quicklisp-slime-helper")
-(if (not (file-exists-p "~/quicklisp/slime-helper.el"))
-    (ql:quickload "quicklisp-slime-helper"))
-
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
-
 ;; Replace "sbcl" with the path to your implementation
 (setq inferior-lisp-program "sbcl")
+
+(if (not (file-exists-p "~/quicklisp/slime-helper.el"))
+    (call-process "sbcl" nil nil nil "--eval" "(ql:quickload \"quicklisp-slime-helper\")"))
+
+;; this assumes you've already run (ql:quickload "quicklisp-slime-helper")
+(load (expand-file-name "~/quicklisp/slime-helper.el"))
 
 (provide 'common-lisp)

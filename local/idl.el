@@ -1,3 +1,4 @@
+;; idl.el support various idl languages -*- lexical-bindings: t -*-
 
 (use-package thrift)
 
@@ -5,6 +6,9 @@
   :mode ("Dockerfile\\'" . dockerfile-mode))
 
 (use-package protobuf-mode)
+
+(use-package graphql-mode)
+
 
 (provide 'idl)
 
