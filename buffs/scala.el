@@ -1,6 +1,8 @@
 ;; scala.el -- configure for scala coding pleasure -*- lexical-binding: t -*-
 
-(require 'coding)
+(require 'coding-support)
+
+(use-package lsp-metals)
 
 (use-package sbt-mode
   :init (setq sbt:prefer-nested-projects t)
@@ -11,13 +13,15 @@
            minibuffer-local-completion-map))
 
 (use-package scala-mode
-  :config (setq prettify-symbols-alist scala-prettify-symbols-alist)
-  :bind ("C-c C-b" . sbt-hydra))
+  :config
+  (setq prettify-symbols-alist scala-prettify-symbols-alist)
+  :init
+  (add-hook 'scala-mode-hook 'company-mode)
+  :bind
+  ("C-c C-b" . sbt-hydra))
 
 (use-package ob-ammonite
   :config
   (setq ob-ammonite-prompt-string "@"))
-
-(use-package lsp-metals)
 
 (provide 'scala)

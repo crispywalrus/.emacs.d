@@ -8,9 +8,9 @@
 (use-package paganini-theme)
 (use-package all-the-icons)
 (use-package spaceline)
-(use-package spaceline-all-the-icons
-  ;; :after spaceline
-  ;; :init (spaceline-all-the-icons-theme)
-  )
+;; (use-package spaceline-all-the-icons
+;;   :after spaceline
+;;   :init (spaceline-all-the-icons-theme)
+;;   )
 
 (provide 'themes)

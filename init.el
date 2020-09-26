@@ -80,6 +80,7 @@
 
 (require 'buffs)
 (require 'themes)
+(setq default-directory "~/")
 
 ;; this is slightly custom as it allows ocamls user-setup via opam to work unmolested.
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line

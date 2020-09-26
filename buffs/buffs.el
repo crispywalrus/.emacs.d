@@ -1,5 +1,5 @@
 ;; configuration for loading buffs
-(require 'code)
+(require 'coding-support)
 (require 'usability)
 (require 'mac-keys)
 ;; org mode ... might as well be god-mode

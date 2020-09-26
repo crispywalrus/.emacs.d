@@ -52,4 +52,6 @@
     ())
   (global-set-key (kbd "M-q") 'save-buffers-kill-emacs))
 
+(add-hook 'dired-load-hook (lambda () (require 'dired-x)))
+
 (provide 'mac-keys)
