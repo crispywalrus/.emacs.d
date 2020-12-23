@@ -16,7 +16,8 @@
   (lsp-mode . dap-mode)
   (lsp-mode . dap-ui-mode))
 
-(use-package company-lsp)
+(use-package company-lsp
+  :init (push 'company-lsp company-backends))
 
 
 (provide 'lsp)

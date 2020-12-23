@@ -51,6 +51,9 @@
 ;; packages.
 (setq use-package-always-ensure t)
 
+(setq gc-cons-threshold 100000000
+      read-process-output-max (* 1024 1024)) ;; 1mb
+
 ;; buffs are my customization code for various programming language
 ;; modes and other coding releated tasks
 (use-package s)
@@ -75,7 +78,8 @@
  inhibit-startup-screen t
  initial-scratch-message nil
  load-prefer-newer t
- debug-on-error nil)
+ debug-on-error nil
+ ring-bell-function 'ignore)
 
 ;; don't ask about narrow-to-regeion
 (put 'narrow-to-region 'disabled nil)

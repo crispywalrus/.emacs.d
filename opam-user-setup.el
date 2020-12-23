@@ -40,6 +40,8 @@
   (let ((reply (opam-shell-command-to-string "opam config var share --safe")))
     (when reply (substring reply 0 -1))))
 
+(message "opam-share %s" opam-share )
+
 (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
 ;; OPAM-installed tools automated detection and initialisation
 
@@ -120,11 +122,11 @@
 
 (opam-auto-tools-setup)
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
-;; ## added by OPAM user-setup for emacs / tuareg ## 038665b10ded6e1ede512fe3079dcaa6 ## you can edit, but keep this line
+;; ## added by OPAM user-setup for emacs / tuareg ## 3fbdb617be7daaa80080148cd85c26b2 ## you can edit, but keep this line
 ;; Set to autoload tuareg from its original switch when not found in current
 ;; switch (don't load tuareg-site-file as it adds unwanted load-paths)
 (defun opam-tuareg-autoload (fct file doc args)
-  (let ((load-path (cons "/Users/christopher.vale/.opam/4.10.0+multicore/share/emacs/site-lisp" load-path)))
+  (let ((load-path (cons "/Users/christopher.vale/.opam/default/share/emacs/site-lisp" load-path)))
     (load file))
   (apply fct args))
 (when (not (member "tuareg" opam-tools-installed))

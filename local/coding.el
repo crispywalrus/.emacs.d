@@ -1,5 +1,12 @@
 
-(use-package popup)
+;; programming modes and customizations
+(require 'git-buffs)
+(require 'scala)
+(require 'markup)
+(require 'ocaml-reasonml)
+(require 'containers)
+(require 'idl)
+(require 'haskell)
 
 (use-package smartparens
   :init
@@ -13,5 +20,9 @@
   (yas-global-mode 1))
 
 (use-package yasnippet-snippets)
+
+;; prettify all our codes
+(global-prettify-symbols-mode)
+
 
 (provide 'coding)
