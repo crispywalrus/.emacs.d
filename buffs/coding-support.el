@@ -59,6 +59,8 @@
   (lsp-mode . dap-mode)
   (lsp-mode . dap-ui-mode))
 
+(use-package posframe)
+
 (use-package company-posframe
     :init (company-posframe-mode 1))
 
