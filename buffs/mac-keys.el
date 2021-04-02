@@ -1,5 +1,10 @@
 ;; mac-keys.el -*- lexical-binding: t -*-
 
+;; I use a .gitignored custom.el file so I can maintain different
+;; configs per system. Loading fails if the file doesn't exist so we
+;; touch it to make sure emacs always starts.
+(f-touch (expand-file-name "custom.el" user-emacs-directory))
+
 ;; no tabs
 (setq-default indent-tabs-mode nil)
 
@@ -49,8 +54,7 @@
       (setq mac-command-modifier 'meta
             mac-option-modifier 'super
             mac-right-option-modifier 'hyper))
-    ())
-  (global-set-key (kbd "M-q") 'save-buffers-kill-emacs))
+    ()))
 
 (add-hook 'dired-load-hook (lambda () (require 'dired-x)))
 

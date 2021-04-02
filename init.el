@@ -24,6 +24,13 @@
 
 ;;; Code:
 
+(setq gc-cons-threshold 100000000)
+(add-hook 'after-init-hook (lambda ()
+                             (setq gc-cons-threshold 800000)))
+
+(setq read-process-output-max (* 1024 1024))
+
+
 ;; preable, require up the emacs built in package manager.
 (require 'package)
 
@@ -47,7 +54,11 @@
 
 ;; make use-package download all referenced but uninstalled
 ;; packages.
+(require 'use-package-ensure)
 (setq use-package-always-ensure t)
+
+(use-package exec-path-from-shell
+  :init (exec-path-from-shell-initialize))
 
 ;; these are various elisp coding and data structure
 ;; libraries. they're not modes and often the modes and extensions I
@@ -65,10 +76,8 @@
 
 ;; packages
 ;; my default customization
-;; I use a .gitignored custom.el file so I can maintain different
-;; configs per system. Loading fails if the file doesn't exist so we
-;; touch it to make sure emacs always starts.
-(f-touch (expand-file-name "custom.el" user-emacs-directory))
+
+(setq default-directory "~/")
 
 ;; I've broken out the more complex setup of my dev environment into
 ;; local buffs. each buff respresents a particular area of emacs
@@ -78,14 +87,12 @@
 (f-mkdir (expand-file-name "staging" user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "staging" user-emacs-directory))
 
-(require 'buffs)
-(require 'themes)
-(setq default-directory "~/")
-
 ;; this is slightly custom as it allows ocamls user-setup via opam to work unmolested.
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
 (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
 
-;; now that user-setup has loaded our ocaml support
-(require 'ocaml-reasonml)
+(require 'mac-keys)
+(require 'themes)
+(require 'buffs)
+

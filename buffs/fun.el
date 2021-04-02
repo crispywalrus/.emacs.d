@@ -1,4 +1,4 @@
-;;; buffs.el --- emacs configuration -*- lexical-binding: t -*-
+;;; fun.el --- emacs configuration -*- lexical-binding: t -*-
 
 ;; Copyright © 2011 - 2020 Chris Vale
 ;;
@@ -21,24 +21,14 @@
 
 ;;; Commentary:
 
-;; load various emacs extensions that make my life easier and more productive.
+;; Configuration.
 
 ;;; Code:
 
-(require 'coding-support)
-(require 'usability)
-(require 'org-buffs)
-(require 'git-buffs)
-(require 'scala)
-(require 'common-lisp)
-(require 'haskell)
-(require 'markup)
-(require 'ocaml-reasonml)
-(use-package graphql-mode)
-(use-package rmsbolt)
+;; just some cranky and insane stuff thats fun to play with
+(use-package eredis)
+(use-package web-server)
+(use-package web)
+(use-package elnode 
+  :commands elnode-make-webserver)
 
-;; do some additional random configuration
-(put 'dired-find-alternate-file 'disabled nil)
-(global-prettify-symbols-mode)
-
-(provide 'buffs)

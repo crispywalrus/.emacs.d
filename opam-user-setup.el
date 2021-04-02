@@ -36,7 +36,8 @@
 
 (opam-update-env nil)
 
-(defvar opam-share
+;; (defvar opam-share
+(setq opam-share
   (let ((reply (opam-shell-command-to-string "opam config var share --safe")))
     (when reply (substring reply 0 -1))))
 

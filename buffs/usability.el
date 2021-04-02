@@ -10,9 +10,6 @@
          ("H-x a" . sx-ask)
          ("H-x s" . sx-search)))
 
-(use-package exec-path-from-shell
-  :init (exec-path-from-shell-initialize))
-
 (use-package expand-region
   :commands 'er/expand-region
   :bind ("C-=" . er/expand-region))
@@ -30,5 +27,13 @@
 
 (use-package all-the-icons-dired
   :hook (dired-mode . all-the-icons-dired-mode))
+
+;; read the news in emacs
+(use-package elfeed)
+(use-package elfeed-org
+  :config
+  (elfeed-org)
+  (setq rmh-elfeed-org-files (list  (f-join org-directory "elfeed.org"))))
+
 
 (provide 'usability)

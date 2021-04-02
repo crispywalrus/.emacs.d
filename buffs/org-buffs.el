@@ -10,8 +10,7 @@
         org-default-notes-file (f-join org-directory "notes.org")
         org-agenda-files (list (f-join org-directory "agenda"))
         org-todo-keywords
-        '((sequence "TODO(t)" "READY(r)" "INPROGRESS(p)" "NEXT(n)" "BLOCKED(b)" "|" "CANCELED(c)" "DONE(d)")
-          (sequence "IDEATE" "REFINE" "DOCUMENT" "PROMOTED"))
+        '((sequence "TODO(t)" "READY(r)" "INPROGRESS(p)" "NEXT(n)" "BLOCKED(b)" "|" "CANCELED(c)" "DONE(d)"))
         org-todo-keyword-faces
         '(("TODO" . (:foreground "GoldenRod" :weight bold))
           ("READY" . (:foreground "IndianRed1" :weight bold))   
@@ -41,7 +40,8 @@
 ;; Fix an incompatibility between the ob-async and ob-ipython packages
 (setq ob-async-no-async-languages-alist '("ipython"))
 
-(use-package kanban)
+(use-package org-kanban)
+
 (use-package org-bullets
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
@@ -70,16 +70,13 @@
   :config
   (setq org-projectile-projects-file (f-join org-directory "agenda" "projectile.org"))
    (push (org-projectile-project-todo-entry) org-capture-templates)
-  :bind (("C-c n p" .'org-projectile-project-todo-completing-read)
-         ("H-n" .'org-projectile-project-todo-completing-read)))
+  :bind (("C-c n p" . 'org-projectile-project-todo-completing-read)
+         ("H-n" . 'org-projectile-project-todo-completing-read)))
 
 (setq diary-file (f-join org-directory "diary"))
 
-;; read the news in emacs
-(use-package elfeed)
-(use-package elfeed-org
-  :config
-  (elfeed-org)
-  (setq rmh-elfeed-org-files (list  (f-join org-directory "elfeed.org"))))
+(use-package org-chef)
 
+;; this is just stupid brilliant 
+(use-package plain-org-wiki)
 (provide 'org-buffs)
