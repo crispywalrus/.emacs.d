@@ -32,3 +32,4 @@ nix-buffer
 .cache
 org-journal.cache
 .dap-breakpoints
+eln-cache
