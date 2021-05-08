@@ -6,9 +6,9 @@
   :ensure t
   :init
   (setq org-log-done t
-        org-directory (expand-file-name "~/Org")
+        org-directory (expand-file-name "~/.org")
         org-default-notes-file (f-join org-directory "notes.org")
-        org-agenda-files (list (f-join org-directory "agenda"))
+        org-agenda-files (list (f-join org-directory "agenda") (expand-file-name "~/Devel/notes"))
         org-todo-keywords
         '((sequence "TODO(t)" "READY(r)" "INPROGRESS(p)" "NEXT(n)" "BLOCKED(b)" "|" "CANCELED(c)" "DONE(d)"))
         org-todo-keyword-faces
@@ -40,31 +40,13 @@
 ;; Fix an incompatibility between the ob-async and ob-ipython packages
 (setq ob-async-no-async-languages-alist '("ipython"))
 
-(use-package org-kanban)
-
-(use-package org-bullets
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
-(use-package org-journal
+(use-package org-roam
   :ensure t
-  :custom
-  (org-journal-dir (f-join org-directory "journal"))
-  (org-journal-file-format "cv-%Y%m%d")
-  (org-journal-time-format ""))
+  :config
+  (add-hook 'after-init-hook 'org-roam-mode)
+  (setq org-roam-directory (f-join org-directory "roam") ))
 
 (use-package org-elisp-help)
-(use-package org-dashboard)
-
-;; thet ox mode name denotes an org exporter
-(use-package ox-pandoc)
-(use-package ox-reveal
-  :config (setq org-reveal-root (expand-file-name (f-join org-directory "reveal.js"))))
-
-(defvar crispy:created-property-string "
-  :PROPERTIES:
-  :CREATED: %U
-  :END:")
 
 (use-package org-projectile
   :config

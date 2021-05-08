@@ -30,12 +30,12 @@
 (require 'org-buffs)
 (require 'git-buffs)
 (require 'scala)
-(require 'common-lisp)
-(require 'haskell)
+;; (require 'common-lisp)
+;; (require 'haskell)
 (require 'markup)
 (require 'ocaml-reasonml)
 (use-package graphql-mode)
-(use-package rmsbolt)
+;; (use-package rmsbolt)
 
 ;; do some additional random configuration
 (put 'dired-find-alternate-file 'disabled nil)

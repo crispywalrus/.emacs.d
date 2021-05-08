@@ -37,7 +37,7 @@
 ;; configure package to use melpa, org, and melpa-stable
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+;;                         ("melpa-stable" . "https://stable.melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")))
 
 ;; and finaglly initialize package manager
@@ -67,7 +67,6 @@
 (use-package string-inflection
   :bind ("s-i" . string-inflection-all-cycle))
 (use-package dash)
-(use-package dash-functional)
 (use-package m-buffer)
 (use-package f)
 (use-package multiple-cursors)
@@ -92,7 +91,6 @@
 (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
 
-(require 'mac-keys)
-(require 'themes)
-(require 'buffs)
+;; now that user-setup has loaded our ocaml support
+(require 'ocaml)
 

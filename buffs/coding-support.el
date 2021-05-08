@@ -29,9 +29,9 @@
   :init (add-hook 'after-init-hook 'global-company-mode))
 
 (use-package lsp-mode
-  :config
-  (setq lsp-enable-snippet nil)
-  (setq lsp-completion-provider :capf)
+  :config (setq lsp-enable-snippet nil)
+  (setq gc-cons-threshold 100000000)
+  (setq read-process-output-max (* 1024 1024))
   :hook (scala-mode . lsp)
         (merlin-mode . lsp)
         (lsp-mode . lsp-lens-mode))
@@ -62,10 +62,9 @@
 (use-package posframe)
 
 (use-package company-posframe
-    :init (company-posframe-mode 1))
 
-(use-package which-key :diminish "")
-(use-package which-key-posframe)
+  :diminish
+  :config (company-posframe-mode 1))
 
 (use-package smartparens
   :init
@@ -73,12 +72,6 @@
   :config
   (smartparens-global-mode t)
   (show-smartparens-global-mode t))
-
-;; (use-package yasnippet
-;;   :config
-;;   (yas-global-mode 1))
-
-;; (use-package yasnippet-snippets)
 
 (use-package projectile
   :init

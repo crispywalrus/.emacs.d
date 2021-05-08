@@ -28,12 +28,21 @@
 (use-package all-the-icons-dired
   :hook (dired-mode . all-the-icons-dired-mode))
 
-;; read the news in emacs
-(use-package elfeed)
-(use-package elfeed-org
-  :config
-  (elfeed-org)
-  (setq rmh-elfeed-org-files (list  (f-join org-directory "elfeed.org"))))
+(use-package ivy
+  :diminish
+  :bind (("C-c C-r" . ivy-resume)
+         ("C-x B" . ivy-switch-buffer-other-window))
+  :custom
+  (ivy-count-format "(%d/%d) ")
+  (ivy-use-virtual-buffers t)
+  :config (ivy-mode))
 
+(use-package counsel)
+
+(use-package all-the-icons-ivy-rich
+  :init (all-the-icons-ivy-rich-mode 1))
+
+(use-package ivy-rich
+  :init (ivy-rich-mode 1))
 
 (provide 'usability)
