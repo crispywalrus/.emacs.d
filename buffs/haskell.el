@@ -1,10 +1,11 @@
 ;; haskell.el -- haskell coding support -*- lexical-binding: t -*-
+
+(require 'coding-support)
+
 (use-package haskell-mode
-  :ensure t
   :commands haskell-mode)
 
 (use-package dante
-  :ensure t
   :after haskell-mode
   :commands 'dante-mode
   :init
@@ -15,7 +16,6 @@
                 '(warning . haskell-hlint)))))
 
 (use-package flycheck-haskell
-  :ensure t
   :commands flycheck-haskell-configure 
   :init 
   (setq flycheck-check-syntax-automatically '(save mode-enabled))

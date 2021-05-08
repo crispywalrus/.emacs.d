@@ -31,3 +31,5 @@ nix-buffer
 .lsp-session*
 .cache
 org-journal.cache
+.dap-breakpoints
+eln-cache

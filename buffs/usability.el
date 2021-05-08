@@ -10,9 +10,6 @@
          ("H-x a" . sx-ask)
          ("H-x s" . sx-search)))
 
-(use-package exec-path-from-shell
-  :init (exec-path-from-shell-initialize))
-
 (use-package expand-region
   :commands 'er/expand-region
   :bind ("C-=" . er/expand-region))
@@ -26,11 +23,26 @@
 
 (use-package memoize)
 
-(use-package all-the-icons
-  :ensure t)
-;; (use-package doom-modeline
-;;   :ensure t
-;;   :init (setq doom-modeline-buffer-file-name-style 'relative-from-project)
-;;   :hook (after-init . doom-modeline-mode))
+(use-package all-the-icons)
+
+(use-package all-the-icons-dired
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+(use-package ivy
+  :diminish
+  :bind (("C-c C-r" . ivy-resume)
+         ("C-x B" . ivy-switch-buffer-other-window))
+  :custom
+  (ivy-count-format "(%d/%d) ")
+  (ivy-use-virtual-buffers t)
+  :config (ivy-mode))
+
+(use-package counsel)
+
+(use-package all-the-icons-ivy-rich
+  :init (all-the-icons-ivy-rich-mode 1))
+
+(use-package ivy-rich
+  :init (ivy-rich-mode 1))
 
 (provide 'usability)

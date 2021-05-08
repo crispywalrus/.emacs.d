@@ -1,6 +1,4 @@
-
-;; The next line may not be needed
-;; (set-default-font  "Source Code Pro for Powerline 13")
+;; setup as best as possible emacs ligature support
 
 ;; Fira code
 ;; This works when using emacs --daemon + emacsclient

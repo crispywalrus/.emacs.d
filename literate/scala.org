@@ -1,0 +1,40 @@
+* Scala programming configuration
+** Pull in required packages
+#BEGIN_SRC elisp
+(require 'coding-support)
+#END_SRC
+** enable lsp via metals
+#BEGIN_SRC elisp
+(require 'coding-support)
+#END_SRC
+** enable sbt-mode
+#BEGIN_SRC elisp
+(use-package sbt-mode
+  :init (setq sbt:prefer-nested-projects t)
+  :commands sbt-start sbt-command sbt-hydra
+  :config (substitute-key-definition
+           'minibuffer-complete-word
+           'self-insert-command
+           minibuffer-local-completion-map))
+#END_SRC
+** enable scala-mode
+#BEGIN_SRC elisp
+(use-package scala-mode
+  :config
+  (setq prettify-symbols-alist scala-prettify-symbols-alist)
+  :init
+  (add-hook 'scala-mode-hook 'company-mode)
+  :bind
+  ("C-c C-b" . sbt-hydra))
+#END_SRC
+** ammonite provides a repl to execute scala in ord-mode code blocks
+#BEGIN_SRC elisp
+(use-package ob-ammonite
+  :config
+  (setq ob-ammonite-prompt-string "@"))
+#END_SRC
+** allow other buffs to depend on this
+#BEGIN_SRC elisp
+(provide 'scala)
+#END_SRC
+
