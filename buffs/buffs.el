@@ -25,17 +25,17 @@
 
 ;;; Code:
 
-(require 'coding-support)
-(require 'usability)
-(require 'org-buffs)
-(require 'git-buffs)
-(require 'scala)
-;; (require 'common-lisp)
-;; (require 'haskell)
-(require 'markup)
-(require 'ocaml-reasonml)
-(use-package graphql-mode)
-;; (use-package rmsbolt)
+(defgroup buffs nil
+  "control buffs from custom rather than via editing the code"
+  :group 'buffs
+  :prefix "buffs:")
+
+(defcustom buffs:enabled-buffs '(coding-support usability org-buffs git-buffs scala markup)
+  "enabled buffs"
+  :type 'list
+  :group 'buffs)
+
+(mapcar 'require buffs:enabled-buffs )
 
 ;; do some additional random configuration
 (put 'dired-find-alternate-file 'disabled nil)

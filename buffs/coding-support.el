@@ -26,45 +26,39 @@
 ;;; Code:
 
 (use-package company
-  :init (add-hook 'after-init-hook 'global-company-mode))
+  :init (add-hook 'after-init-hook 'global-company-mode)
+  :hook (scala-mode . company-mode)
+  :config
+  (setq lsp-completion-provider :capf))
 
 (use-package lsp-mode
   :config (setq lsp-enable-snippet nil)
   (setq gc-cons-threshold 100000000)
   (setq read-process-output-max (* 1024 1024))
+  (setq lsp-prefer-flymake nil)
   :hook (scala-mode . lsp)
         (merlin-mode . lsp)
         (lsp-mode . lsp-lens-mode))
 
+(use-package lsp-metals)
+
 (use-package lsp-ui)
 
-;; Posframe is a pop-up tool that must be manually installed for dap-mode
-(use-package posframe
-  :init (defun crispy-posframe-arghandler (buffer-or-name arg-name value)
-          (let ((info '(:internal-border-width 3 :internal-border-color "dark red" :background-color "medium blue")))
-            (or (plist-get info arg-name) value)))
-  :config (setq posframe-arghandler #'crispy-posframe-arghandler))
+;; (defun crispy-posframe-arghandler (buffer-or-name arg-name value)
+;;   (let ((info '(:internal-border-width 3 :internal-border-color "dark red" :background-color "medium blue")))
+;;     (or (plist-get info arg-name) value)))
 
-(use-package ivy-posframe
-  :config
-  (setq ivy-posframe-display-functions-alist
-        '((swiper          . ivy-posframe-display-at-frame-center)
-          (complete-symbol . ivy-posframe-display-at-point)
-          (t               . ivy-posframe-display-at-window-center)))
-  (ivy-mode 1)
-  (ivy-posframe-mode 1))
+;; Posframe is a pop-up tool that must be manually installed for dap-mode
+(use-package posframe)
 
 (use-package dap-mode
   :hook
   (lsp-mode . dap-mode)
   (lsp-mode . dap-ui-mode))
 
-(use-package posframe)
-
 (use-package company-posframe
-
   :diminish
-  :config (company-posframe-mode 1))
+) ;;  :config (company-posframe-mode 1))
 
 (use-package smartparens
   :init
@@ -77,8 +71,9 @@
   :init
   (setq projectile-enable-caching t)
   :config
-  (setq projectile-completion-system 'ivy)
+  (setq projectile-completion-system 'ido)
   (projectile-mode +1)
+
   :bind-keymap (("s-p" . projectile-command-map)
                 ("C-c p" . projectile-command-map)))
 

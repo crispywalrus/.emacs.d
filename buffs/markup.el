@@ -11,4 +11,6 @@
 (use-package pandoc-mode
   :hook markdown-mode)
 
+(use-package yaml-mode)
+
 (provide 'markup)

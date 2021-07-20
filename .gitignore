@@ -33,3 +33,7 @@ nix-buffer
 org-journal.cache
 .dap-breakpoints
 eln-cache
+history
+places
+.org-id-locations
+org-roam.db

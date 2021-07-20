@@ -42,16 +42,26 @@
 
 (use-package org-roam
   :ensure t
+  :init
+  (setq org-roam-v2-ack t)
   :config
   (add-hook 'after-init-hook 'org-roam-mode)
-  (setq org-roam-directory (f-join org-directory "roam") ))
+  (setq
+   org-roam-directory (f-join org-directory "roam")
+   org-roam-dailies-directory (f-join org-roam-directory "daily")
+   org-roam-dailies-capture-templates
+     '(("d" "default" entry
+        "* %?"
+        :if-new (file+head "%<%Y-%m-%d>.org"
+                           "#+title: %<%Y-%m-%d>\n"))))
+  (org-roam-setup))
 
 (use-package org-elisp-help)
 
 (use-package org-projectile
   :config
   (setq org-projectile-projects-file (f-join org-directory "agenda" "projectile.org"))
-   (push (org-projectile-project-todo-entry) org-capture-templates)
+  (push (org-projectile-project-todo-entry) org-capture-templates)
   :bind (("C-c n p" . 'org-projectile-project-todo-completing-read)
          ("H-n" . 'org-projectile-project-todo-completing-read)))
 

@@ -18,7 +18,12 @@
   :init
   (add-hook 'scala-mode-hook 'company-mode)
   :bind
-  ("C-c C-b" . sbt-hydra))
+  ("C-c C-b" . sbt-hydra)
+  :interpreter
+  ("scala" . scala-mode))
+
+(use-package flycheck
+  :init (global-flycheck-mode))
 
 (use-package ob-ammonite
   :config
