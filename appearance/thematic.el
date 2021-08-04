@@ -1,4 +1,9 @@
-;; themes.el -*- lexical-binding: t -*-
+;;; thematic.el -- load up some thematic -*- lexical-binding: t -*-
+
+;;; Commentary:
+;; none of these are in bad taste
+
+;;; Code:
 
 (use-package nyx-theme)
 (use-package material-theme)
@@ -13,4 +18,5 @@
 ;;  :init (spaceline-all-the-icons-theme)
 ;;  )
 
-(provide 'themes)
+(provide 'thematic)
+;;; thematic.el ends here

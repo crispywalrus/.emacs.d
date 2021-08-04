@@ -4,8 +4,8 @@
 ;; Base configuration for OPAM
 
 (defun opam-shell-command-to-string (command)
-  "Similar to shell-command-to-string, but returns nil unless the process
-  returned 0, and ignores stderr (shell-command-to-string ignores return value)"
+  "The same as 'shell-command-to-string' except it doesn't ignore return value.
+returns nil unless the process returned 0, and ignores stderr."
   (let* ((return-value 0)
          (return-string
           (with-output-to-string
@@ -16,7 +16,7 @@
     (if (= return-value 0) return-string nil)))
 
 (defun opam-update-env (switch)
-  "Update the environment to follow current OPAM switch configuration"
+  "Update the environment to follow current OPAM switch configuration."
   (interactive
    (list
     (let ((default
@@ -36,8 +36,8 @@
 
 (opam-update-env nil)
 
-;; (defvar opam-share
-(setq opam-share
+(defvar opam-share
+;; (setq opam-share
   (let ((reply (opam-shell-command-to-string "opam config var share --safe")))
     (when reply (substring reply 0 -1))))
 
@@ -45,14 +45,17 @@
 ;; OPAM-installed tools automated detection and initialisation
 
 (defun opam-setup-tuareg ()
+  "Setup tuareg."
   (add-to-list 'load-path (concat opam-share "/tuareg") t)
   (load "tuareg-site-file"))
 
 (defun opam-setup-add-ocaml-hook (h)
+  "Setup add ocaml hook."
   (add-hook 'tuareg-mode-hook h t)
   (add-hook 'caml-mode-hook h t))
 
 (defun opam-setup-complete ()
+  "Signal setup is complete."
   (if (require 'company nil t)
     (opam-setup-add-ocaml-hook
       (lambda ()
@@ -61,6 +64,7 @@
     (require 'auto-complete nil t)))
 
 (defun opam-setup-ocp-indent ()
+  "Setup ocp indent."
   (opam-setup-complete)
   (autoload 'ocp-setup-indent "ocp-indent" "Improved indentation for Tuareg mode")
   (autoload 'ocp-indent-caml-mode-setup "ocp-indent" "Improved indentation for Caml mode")

@@ -1,7 +1,13 @@
 ;; org-buffs.el --- org additions and configuration -*- lexical-binding: t -*-
+;;; Commentary:
+;;;
+;;; This is an attempt at a usable org mode configuration.  Currently
+;;; this means some keyword config and few key bindings.  Then
+;;; additions to org-babel to use scala and sql.  Org-roam v2 has
+;;; replaced org-journal and a lot of my manual org file
+;;; editing.  Finally org-projectile rounds out the practical code.
 
-(defun crispy:troll-org-directory (dir) (f-expand dir org-directory))
-
+;;; Code:
 (use-package org
   :ensure t
   :init
@@ -25,6 +31,10 @@
          ("H-c" . org-capture)
          ("H-a" . org-agenda)))
 
+(defun crispy:dangle-org-directory (dir)
+    "Expand out dir in the org-directory tree."
+    (f-expand dir org-directory))
+
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . t)
@@ -47,8 +57,8 @@
   :config
   (add-hook 'after-init-hook 'org-roam-mode)
   (setq
-   org-roam-directory (f-join org-directory "roam")
-   org-roam-dailies-directory (f-join org-roam-directory "daily")
+   org-roam-directory (crispy:dangle-org-directory "roam")
+   org-roam-dailies-directory (crispy:dangle-org-directory "daily")
    org-roam-dailies-capture-templates
      '(("d" "default" entry
         "* %?"

@@ -1,6 +1,6 @@
 ;;; init.el --- emacs configuration -*- lexical-binding: t -*-
 
-;; Copyright © 2011 - 2020 Chris Vale
+;; Copyright © 2011 - 2021 Chris Vale
 ;; Author: Chris Vale <crispywalrus@gmail.com>
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -19,8 +19,6 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
-
-;; Configuration.
 
 ;;; Code:
 
@@ -52,6 +50,15 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+
+
+
+(use-package benchmark-init
+  :ensure t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
 ;; make use-package download all referenced but uninstalled
 ;; packages.
 (require 'use-package-ensure)
@@ -59,6 +66,14 @@
 
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
+
+;; I've broken out the more complex setup of my dev environment into
+;; local buffs. each buff respresents a particular area of emacs
+;; configured the way I like it.
+(add-to-list 'load-path (expand-file-name "buffs" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "appearance" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "staging" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "vendor" user-emacs-directory))
 
 ;; these are various elisp coding and data structure
 ;; libraries. they're not modes and often the modes and extensions I
@@ -72,6 +87,8 @@
 (use-package multiple-cursors)
 (use-package suggest)
 (use-package parsec)
+
+(f-mkdir (expand-file-name "staging" user-emacs-directory))
 
 ;; packages
 ;; my default customization
@@ -137,14 +154,7 @@
 ;; the default directory. That's not great for usability.
 (setq default-directory "~/")
 
-;; I've broken out the more complex setup of my dev environment into
-;; local buffs. each buff respresents a particular area of emacs
-;; configured the way I like it.
-(add-to-list 'load-path (expand-file-name "buffs" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "appearance" user-emacs-directory))
-(f-mkdir (expand-file-name "staging" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "staging" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "vendor" user-emacs-directory))
+(require 'mkpretty)
 
 ;; this is slightly custom as it allows ocamls user-setup via opam to work unmolested.
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
@@ -152,5 +162,5 @@
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
 
 ;; now that user-setup has loaded our ocaml support
-(require 'themes)
 (require 'buffs)
+;;; init.el ends here
