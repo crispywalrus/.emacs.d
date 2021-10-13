@@ -27,15 +27,15 @@
 
 (use-package company
   :init (add-hook 'after-init-hook 'global-company-mode)
-  :hook (scala-mode . company-mode)
-  :config
-  (setq lsp-completion-provider :capf))
+  :hook (scala-mode . company-mode))
+
+(use-package flycheck
+  :init (global-flycheck-mode))
 
 (use-package lsp-mode
   :config (setq lsp-enable-snippet nil)
   (setq gc-cons-threshold 100000000)
   (setq read-process-output-max (* 1024 1024))
-  (setq lsp-prefer-flymake nil)
   :hook (scala-mode . lsp)
         (merlin-mode . lsp)
         (lsp-mode . lsp-lens-mode))

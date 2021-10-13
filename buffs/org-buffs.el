@@ -47,8 +47,12 @@
 ;; Don't prompt before running code in org
 (setq org-confirm-babel-evaluate nil)
 
+(use-package ob-async
+  :config (setq ob-async-no-async-languages-alist '("ipython"))
+  )
+
 ;; Fix an incompatibility between the ob-async and ob-ipython packages
-(setq ob-async-no-async-languages-alist '("ipython"))
+
 
 (use-package org-roam
   :ensure t

@@ -35,8 +35,9 @@
 (require 'package)
 
 ;; configure package to use melpa, org, and melpa-stable
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
+                         
 
 ;; and finaglly initialize package manager
 (package-initialize)
@@ -50,14 +51,11 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-
-
-
-(use-package benchmark-init
-  :ensure t
-  :config
-  ;; To disable collection of benchmark data after init is done.
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+;; (use-package benchmark-init
+;;   :ensure t
+;;   :config
+;;   ;; To disable collection of benchmark data after init is done.
+;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 ;; make use-package download all referenced but uninstalled
 ;; packages.
@@ -76,8 +74,9 @@
 (add-to-list 'load-path (expand-file-name "vendor" user-emacs-directory))
 
 ;; these are various elisp coding and data structure
-;; libraries. they're not modes and often the modes and extensions I
-;; use rely on them.
+;; libraries. they're not user modes they're elisp
+;; enhancements. Sometimes the modes and extensions used rely on them,
+;; but I also use them for local elisp development.
 (use-package s)
 (use-package string-inflection
   :bind ("s-i" . string-inflection-all-cycle))

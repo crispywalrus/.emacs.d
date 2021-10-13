@@ -12,6 +12,7 @@
 (use-package apropospriate-theme)
 (use-package paganini-theme)
 (use-package all-the-icons)
+(use-package afternoon-theme)
 ;; (use-package spaceline)
 ;; (use-package spaceline-all-the-icons
 ;;  :after spaceline
