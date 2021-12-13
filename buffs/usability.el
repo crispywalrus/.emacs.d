@@ -10,9 +10,6 @@
          ("H-x a" . sx-ask)
          ("H-x s" . sx-search)))
 
-(use-package exec-path-from-shell
-  :init (exec-path-from-shell-initialize))
-
 (use-package expand-region
   :commands 'er/expand-region
   :bind ("C-=" . er/expand-region))
@@ -22,15 +19,11 @@
 (use-package subword
   :init (global-subword-mode t))
 
-(use-package popwin)
+(use-package popwin
+  :config (popwin-mode 1))
 
 (use-package memoize)
 
-(use-package all-the-icons
-  :ensure t)
-;; (use-package doom-modeline
-;;   :ensure t
-;;   :init (setq doom-modeline-buffer-file-name-style 'relative-from-project)
-;;   :hook (after-init . doom-modeline-mode))
+(use-package counsel)
 
 (provide 'usability)

@@ -1,7 +1,6 @@
 ;;; init.el --- emacs configuration -*- lexical-binding: t -*-
 
-;; Copyright © 2011 - 2019 Chris Vale
-;;
+;; Copyright © 2011 - 2021 Chris Vale
 ;; Author: Chris Vale <crispywalrus@gmail.com>
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -21,19 +20,24 @@
 
 ;;; Commentary:
 
-;; Configuration.
-
 ;;; Code:
+
+;; try to tune gc to get fast reliable startups
+(setq gc-cons-threshold 100000000)
+(add-hook 'after-init-hook (lambda ()
+                             (setq gc-cons-threshold 800000)))
+
+(setq read-process-output-max (* 1024 1024))
+
 
 
 ;; preable, require up the emacs built in package manager.
 (require 'package)
 
 ;; configure package to use melpa, org, and melpa-stable
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
+                         
 
 ;; and finaglly initialize package manager
 (package-initialize)
@@ -47,39 +51,109 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+;; (use-package benchmark-init
+;;   :ensure t
+;;   :config
+;;   ;; To disable collection of benchmark data after init is done.
+;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
 ;; make use-package download all referenced but uninstalled
 ;; packages.
+(require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
-;; buffs are my customization code for various programming language
-;; modes and other coding releated tasks
+(use-package exec-path-from-shell
+  :init (exec-path-from-shell-initialize))
+
+;; I've broken out the more complex setup of my dev environment into
+;; local buffs. each buff respresents a particular area of emacs
+;; configured the way I like it.
+(add-to-list 'load-path (expand-file-name "buffs" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "appearance" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "staging" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "vendor" user-emacs-directory))
+
+;; these are various elisp coding and data structure
+;; libraries. they're not user modes they're elisp
+;; enhancements. Sometimes the modes and extensions used rely on them,
+;; but I also use them for local elisp development.
 (use-package s)
 (use-package string-inflection
   :bind ("s-i" . string-inflection-all-cycle))
 (use-package dash)
-(use-package dash-functional)
 (use-package m-buffer)
 (use-package f)
 (use-package multiple-cursors)
 (use-package suggest)
 (use-package parsec)
 
+(f-mkdir (expand-file-name "staging" user-emacs-directory))
+
 ;; packages
 ;; my default customization
+
 ;; I use a .gitignored custom.el file so I can maintain different
 ;; configs per system. Loading fails if the file doesn't exist so we
 ;; touch it to make sure emacs always starts.
 (f-touch (expand-file-name "custom.el" user-emacs-directory))
 
-;; I've broken out the more complex setup of my dev environment into
-;; local buffs. each buff respresents a particular area of emacs
-;; configured the way I like it.
-(add-to-list 'load-path (expand-file-name "local" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "themes" user-emacs-directory))
+;; no tabs
+(setq-default indent-tabs-mode nil)
 
-(require 'code)
-(require 'buffs)
-(require 'themes)
+;; I feel a bit curmudgeonly about this but no to menus, no to
+;; scrollbars, no to toolbars, no to the scratch buffer message, no to
+;; the startup screen.
+(setq
+ inhibit-startup-screen t
+ initial-scratch-message nil
+ custom-file (expand-file-name "custom.el" user-emacs-directory)
+ load-prefer-newer t
+ debug-on-error nil)
+
+;; up abover we touched custom.el. we did this so that there was
+;; definately going to be a file. now we can load it in relative
+;; safety.
+(load custom-file)
+
+;; don't ask about narrow-to-regeion
+(put 'narrow-to-region 'disabled nil)
+
+;; configure our GUI appearance. no scrollbar or toolbars and set the
+;; font to Hack 12.
+(when (display-graphic-p)
+  (setq initial-frame-alist nil
+        default-frame-alist nil)
+  (set-frame-font "Hack-12" nil t)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (windmove-default-keybindings))
+;; end my defaults
+
+;; setup key bindings to allow for both super and hyper to have useful
+;; bindings. also paper over the differences between the defaults in
+;; the stock and railway cats distributions.
+(when (eq system-type 'darwin)
+  ;; mac osx, use ns-* settings to distiguish between the flavors of emacs available.
+  (if (boundp 'ns-use-native-fullscreen)
+      (progn
+        (setq ns-use-native-fullscreen t
+              ns-command-modifier 'meta
+              ns-option-modifier 'super
+              ns-right-option-modifier 'hyper)
+        (global-set-key (kbd "M-h") 'ns-do-hide-emacs))
+    (progn
+      (setq mac-command-modifier 'meta
+            mac-option-modifier 'super
+            mac-right-option-modifier 'hyper))
+    ()))
+
+(add-hook 'dired-load-hook (lambda () (require 'dired-x)))
+
+;; for some reason the mac version of emacs has decided to use / as
+;; the default directory. That's not great for usability.
+(setq default-directory "~/")
+
+(require 'mkpretty)
 
 ;; this is slightly custom as it allows ocamls user-setup via opam to work unmolested.
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
@@ -87,4 +161,5 @@
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
 
 ;; now that user-setup has loaded our ocaml support
-(require 'ocaml-reasonml)
+(require 'buffs)
+;;; init.el ends here

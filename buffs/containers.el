@@ -11,3 +11,5 @@
 (use-package docker-cli)
 
 (use-package docker-compose-mode)
+
+(provide 'containers)
