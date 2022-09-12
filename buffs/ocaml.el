@@ -1,6 +1,8 @@
-;; ocaml.el  -*- lexical-binding: t -*-
-;; emacs configuration and editing mode for ocalm programming. 
+;;; ocaml.el --- load the ocaml editing and support code  -*- lexical-binding: t -*-
+;;; Commentary:
+;;  configuration and editing mode for ocalm programming.
 
+;;; Code:
 (require 'coding-support)
 (require 'dune)
 (require 'dune-flymake)
@@ -10,4 +12,5 @@
              '("\\(?:\\`\\|/\\)dune-project\\(?:\\.inc\\)?\\'" . dune-mode))
 
 (provide 'ocaml)
+;;; ocaml.el ends here
 

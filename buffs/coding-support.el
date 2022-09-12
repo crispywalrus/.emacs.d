@@ -77,4 +77,7 @@
   :bind-keymap (("s-p" . projectile-command-map)
                 ("C-c p" . projectile-command-map)))
 
+(setq sentence-end-double-space nil)
+
 (provide 'coding-support)
+;;; coding-support.el ends here

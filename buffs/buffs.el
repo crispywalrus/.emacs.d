@@ -1,6 +1,6 @@
 ;;; buffs.el --- emacs configuration -*- lexical-binding: t -*-
 
-;; Copyright © 2011 - 2020 Chris Vale
+;; Copyright © 2011 - 2022 Chris Vale
 ;;
 ;; Author: Chris Vale <crispywalrus@gmail.com>
 
@@ -21,24 +21,25 @@
 
 ;;; Commentary:
 
-;; load various emacs extensions that make my life easier and more productive.
+;; load various Emacs extensions that make my life easier and more productive.
 
 ;;; Code:
 
 (defgroup buffs nil
-  "control buffs from custom rather than via editing the code"
+  "Control buffs from custom rather than via editing the code."
   :group 'buffs
   :prefix "buffs:")
 
-(defcustom buffs:enabled-buffs '(coding-support usability git-buffs scala markup)
-  "enabled buffs"
+(defcustom buffs:enabled-buffs '(coding-support usability git-buffs scala markup clojure)
+  "Enabled buffs list."
   :type 'list
   :group 'buffs)
 
-(mapcar 'require buffs:enabled-buffs )
+(mapc 'require buffs:enabled-buffs )
 
 ;; do some additional random configuration
 (put 'dired-find-alternate-file 'disabled nil)
 (global-prettify-symbols-mode)
 
 (provide 'buffs)
+;;; buffs.el ends here

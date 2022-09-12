@@ -44,9 +44,9 @@
   :interpreter
   ("scala" . scala-mode))
 
-(use-package ob-ammonite
-  :config
-  (setq ob-ammonite-prompt-string "@"))
+;; (use-package ob-ammonite
+;;   :config
+;;   (setq ob-ammonite-prompt-string "@"))
 
 (provide 'scala)
 ;; scala.el ends here

@@ -11,6 +11,10 @@
 (use-package pandoc-mode
   :hook markdown-mode)
 
-(use-package yaml-mode)
+(use-package yaml)
+(use-package yaml-pro
+  :hook yaml-mode)
+
+;; (use-package yaml-mode)
 
 (provide 'markup)

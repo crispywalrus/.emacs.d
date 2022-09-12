@@ -22,10 +22,10 @@
         '((sequence "TODO(t)" "READY(r)" "INPROGRESS(p)" "NEXT(n)" "BLOCKED(b)" "|" "CANCELED(c)" "DONE(d)"))
         org-todo-keyword-faces
         '(("TODO" . (:foreground "GoldenRod" :weight bold))
-          ("READY" . (:foreground "IndianRed1" :weight bold))   
+          ("READY" . (:foreground "IndianRed1" :weight bold))
           ("INPROGRESS" . (:foreground "OrangeRed" :weight bold))
-          ("NEXT" . (:foreground "deep pink" :weight bold)) 
-          ("BLOCKED" . (:foreground "coral" :weight bold)) 
+          ("NEXT" . (:foreground "deep pink" :weight bold))
+          ("BLOCKED" . (:foreground "coral" :weight bold))
           ("CANCELED" . (:foreground "LimeGreen" :weight bold))))
   :bind (("\C-cl" . org-store-link)
          ("\C-ca" . org-agenda)
@@ -35,7 +35,7 @@
          ("H-a" . org-agenda)))
 
 (defun crispy:dangle-org-directory (dir)
-    "Expand out dir in the org-directory tree."
+    "Expand out DIR in the org-directory tree."
     (f-expand dir org-directory))
 
 (org-babel-do-load-languages
@@ -56,22 +56,6 @@
 ;; Fix an incompatibility between the ob-async and ob-ipython packages
 
 
-(use-package org-roam
-  :ensure t
-  :init
-  (setq org-roam-v2-ack t)
-  :config
-  (add-hook 'after-init-hook 'org-roam-mode)
-  (setq
-   org-roam-directory (crispy:dangle-org-directory "roam")
-   org-roam-dailies-directory (crispy:dangle-org-directory "daily")
-   org-roam-dailies-capture-templates
-     '(("d" "default" entry
-        "* %?"
-        :if-new (file+head "%<%Y-%m-%d>.org"
-                           "#+title: %<%Y-%m-%d>\n"))))
-  (org-roam-setup))
-
 (use-package org-elisp-help)
 
 (use-package org-projectile
@@ -85,6 +69,22 @@
 
 (use-package org-chef)
 
-;; this is just stupid brilliant 
+;; this is just stupid brilliant
 (use-package plain-org-wiki)
+
+(use-package org-fancy-priorities
+  :hook
+  (org-mode . org-fancy-priorities-mode)
+  :config
+  (setq org-priority-highest 0
+        org-priority-default 2
+        org-priority-lowest 4)
+  (setq org-fancy-priorities-list '(
+                                    (?0 . "P0")
+                                    (?1 . "P1")
+                                    (?2 . "P2")
+                                    (?3 . "P3")
+                                    (?4 . "P4"))))
+
 (provide 'org-buffs)
+;;; org-buffs.el ends here.

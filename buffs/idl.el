@@ -11,5 +11,7 @@
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
   :bind-keymap (("\C-m" . newline-and-indent)))
 
+(use-package smithy-mode)
+
 (provide 'idl)
 

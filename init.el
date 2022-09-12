@@ -64,6 +64,7 @@
 
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
+(setenv "PATH" (concat "/Users/cvale2/.sdkman/candidates/java/current/bin:" (getenv "PATH")))
 
 ;; I've broken out the more complex setup of my dev environment into
 ;; local buffs. each buff respresents a particular area of emacs
@@ -153,11 +154,11 @@
 ;; the default directory. That's not great for usability.
 (setq default-directory "~/")
 
-(require 'mkpretty)
+; (require 'mkpretty)
 
 ;; this is slightly custom as it allows ocamls user-setup via opam to work unmolested.
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
-(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
+;; (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
 
 ;; now that user-setup has loaded our ocaml support

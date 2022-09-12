@@ -1,6 +1,5 @@
-;;; common-lisp.el --- emacs configuration -*- lexical-binding: t -*-
-
-;; Copyright © 2011 - 2020 Chris Vale
+;;; clojure.el --- packages and configuration for clojure development
+;; Copyright © 2022 Chris Vale
 ;;
 ;; Author: Chris Vale <crispywalrus@gmail.com>
 
@@ -21,26 +20,15 @@
 
 ;;; Commentary:
 
-;; Configuration.
+;; Developing in clojure, like any programming language is made easier
+;; by teaching Emacs about that langauge.  this is where that education
+;; is done.
 
 ;;; Code:
+(require 'coding-support)
 
-(use-package sly)
+(use-package cider)
 
-;; (use-package slime
-;;   :pin melpa-stable)
+(provide 'clojure)
+;;; clojure.el ends here
 
-;; (use-package slime-docker
-;;   :pin melpa-stable)
-
-;; ;; this assumes you've already run (ql:quickload "quicklisp-slime-helper")
-;; (if (not (file-exists-p "~/quicklisp/slime-helper.el"))
-;;     (ql:quickload "quicklisp-slime-helper"))
-
-;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
-
-;; Replace "sbcl" with the path to your implementation
-(setq inferior-lisp-program "sbcl")
-
-(provide 'common-lisp)
-;;; common-lisp.el ends here

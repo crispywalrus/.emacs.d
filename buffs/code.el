@@ -25,10 +25,13 @@
 
 ;;; Code:
 
+(require 'smartparens)
+(require 'subword)
+
 ;; reformat a buffer based on the current emacs mode. This is likely
 ;; not perfect, but it's closer than you might think
 (defun fix-format-buffer ()
-  "indent, untabify and remove trailing whitespace for a buffer"
+  "Indent, untabify and remove trailing whitespace for a buffer."
   (interactive)
   (save-mark-and-excursion
     (delete-trailing-whitespace)
@@ -55,8 +58,8 @@
 
 (require 'esh-mode)
 (defun eshell-here()
-  "Opens up a new shell in the directory associated with the
-current buffer's file. The eshell is renamed to match that
+  "Opens up a new shell in the directory associated with the current buffer's file.
+The eshell is renamed to match that
 directory to make multiple eshell windows easier."
   (interactive)
   (let*((parent(if(buffer-file-name)
@@ -75,3 +78,4 @@ directory to make multiple eshell windows easier."
 (global-set-key(kbd "C-!") 'crispy:eshell-here)
 
 (provide 'code)
+;;; code.el ends here

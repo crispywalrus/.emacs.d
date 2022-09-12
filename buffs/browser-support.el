@@ -1,6 +1,6 @@
 ;;; browser.el --- browser development support tools -*- lexical-binding: t -*-
 
-;; Copyright © 2011 - 2020 Chris Vale
+;; Copyright © 2011 - 2022 Chris Vale
 ;;
 ;; Author: Chris Vale <crispywalrus@gmail.com>
 
