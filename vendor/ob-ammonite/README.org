@@ -1,0 +1,46 @@
+#+startup: showall
+
+* ob-ammonite.el
+  org-babel for scala evaluation in [[https://github.com/zwild/ammonite-term-repl][ammonite-term-repl]].
+
+  [[https://melpa.org/#/ob-ammonite/][https://melpa.org/packages/ob-ammonite-badge.svg]]
+
+** Install
+   #+begin_src sh
+   brew install ammonite-repl
+   #+end_src
+
+   It is recommended installed by the [[https://github.com/melpa/melpa][MELPA]] package system.
+
+   You could install it by ~M-x~: with ~package-install~: ~ob-ammonite~.
+
+** Usage
+   #+begin_src org
+   ,#+begin_src amm :results org
+   sealed trait Maybe[+T]
+   final case object Empty extends Maybe[Nothing]
+   final case class Just[T](t: T) extends Maybe[T]
+   ,#+end_src
+
+   ,#+RESULTS:
+   ,#+BEGIN_SRC org
+   defined trait Maybe
+   defined object Empty
+   defined class Just
+   ,#+END_SRC
+   #+end_src
+
+** Config
+   If you edit you prompt in ~.ammonite/predef.sc~ with
+   #+begin_src scala
+   repl.prompt() = "scala> "
+   #+end_src
+
+   You should have this in your emacs config file.
+   #+begin_src emacs-lisp
+   (setq ob-ammonite-prompt-str "scala>")
+   #+end_src
+
+** Demo
+   With this [[https://github.com/melpa/melpa/pull/5999][discussion]], please replace the *scala* in *begin_src* block with *amm*
+   [[./demo.gif]]

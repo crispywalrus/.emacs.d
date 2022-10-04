@@ -25,6 +25,16 @@
 
 ;;; Code:
 
+(defgroup devel nil
+  "dev setup configuration"
+  :group 'buffs
+  :prefix "devel:")
+
+(defcustom devel:dev-tree-root (expand-file-name "~/Devel")
+  "the root of the local development directory tree"
+  :type 'file
+  :group 'devel)
+
 (use-package company
   :init (add-hook 'after-init-hook 'global-company-mode)
   :hook (scala-mode . company-mode))

@@ -9,7 +9,9 @@
 (use-package yaml-mode
   :init
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-  :bind-keymap (("\C-m" . newline-and-indent)))
+  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
+  :hook
+  (yaml-mode . (lambda () (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
 
 (use-package smithy-mode)
 

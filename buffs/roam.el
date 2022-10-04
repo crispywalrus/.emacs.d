@@ -38,7 +38,7 @@
   :config
   (add-hook 'after-init-hook 'org-roam-mode)
   (setq
-   org-roam-directory (crispy:dangle-org-directory "roam")
+   org-roam-directory (org-buffs:dangle-org-directory "roam")
    org-roam-dailies-directory (crispy:dangle-org-directory "daily")
    org-roam-dailies-capture-templates
      '(("d" "default" entry
@@ -53,7 +53,6 @@
 ;; (use-package vulpea)
 (use-package zettledesk)
 (use-package zettledesk-info)
-
 
 (provide 'roam)
 ;;; roam.el ends here

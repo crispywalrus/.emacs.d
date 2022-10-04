@@ -10,14 +10,37 @@
 ;;; Code:
 
 (require 'f)
+(require 'coding-support)
+
+(defgroup org-buffs nil
+  "Setup and configure `org-mode' and all loaded extensions."
+  :group 'buffs
+  :prefix "org-buffs:")
+
+(defcustom org-buffs:orgfiles-tree (expand-file-name "~/.org")
+  "The root of the `org-mode' file tree."
+  :type 'file
+  :group 'org-buffs)
+
+(defcustom org-buffs:agenda-dirs (list (f-join org-buffs:orgfiles-tree "agenda") (f-join devel:dev-tree-root "agenda"))
+  "A list of directories in which to file our `org-mode' agenda files."
+  :type '(list file)
+  :group 'org-buffs)
+
+(defcustom org-buffs:roam-dir (f-join org-buffs:orgfiles-tree "roam")
+  "The root of the `roam' database directory."
+  :type 'file
+  :group 'org-buffs)
 
 (use-package org
   :ensure t
   :init
   (setq org-log-done t
-        org-directory (expand-file-name "~/.org")
+        org-directory org-buffs:orgfiles-tree
         org-default-notes-file (f-join org-directory "notes.org")
-        org-agenda-files (list (f-join org-directory "agenda") (expand-file-name "~/Devel/notes"))
+        org-agenda-files org-buffs:agenda-dirs
+        org-src-fontify-natively t
+        org-confirm-babel-evaluate nil
         org-todo-keywords
         '((sequence "TODO(t)" "READY(r)" "INPROGRESS(p)" "NEXT(n)" "BLOCKED(b)" "|" "CANCELED(c)" "DONE(d)"))
         org-todo-keyword-faces
@@ -34,27 +57,28 @@
          ("H-c" . org-capture)
          ("H-a" . org-agenda)))
 
-(defun crispy:dangle-org-directory (dir)
-    "Expand out DIR in the org-directory tree."
-    (f-expand dir org-directory))
+(defun org-bufs:dangle-org-directory (dir)
+  "Expand and create, if needed, DIR in the org-directory tree."
+  (let (dangled-dir (f-expand dir org-directory))
+    (f-touch dangled-dir)
+    dangled-dir))
 
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . t)
+   (scala . t)
    (ocaml . t)
    (sql . t)))
 
-;; Syntax highlight in #+BEGIN_SRC blocks
-(setq org-src-fontify-natively t)
-
-;; Don't prompt before running code in org
-(setq org-confirm-babel-evaluate nil)
-
 (use-package ob-async
+  ;; Fix an incompatibility between the ob-async and ob-ipython packages
   :init (setq ob-async-no-async-languages-alist '("ipython")))
 
-;; Fix an incompatibility between the ob-async and ob-ipython packages
+(use-package org-superstar
+  :hook
+  (org-mode . (lambda () (org-superstar-mode 1))))
 
+(use-package org-kanban)
 
 (use-package org-elisp-help)
 
