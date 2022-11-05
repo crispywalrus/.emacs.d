@@ -87,6 +87,8 @@
 (use-package multiple-cursors)
 (use-package suggest)
 (use-package parsec)
+(use-package pfuture)
+(use-package async)
 
 (f-mkdir (expand-file-name "staging" user-emacs-directory))
 

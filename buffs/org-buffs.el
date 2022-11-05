@@ -68,11 +68,15 @@
  '((emacs-lisp . t)
    (scala . t)
    (ocaml . t)
-   (sql . t)))
+   (sql . t)
+   (mermaid . t)))
 
 (use-package ob-async
   ;; Fix an incompatibility between the ob-async and ob-ipython packages
   :init (setq ob-async-no-async-languages-alist '("ipython")))
+
+(use-package ob-mermaid
+  :init (setq ob-mermaid-cli-path "/opt/homebrew/bin/mmdc"))
 
 (use-package org-superstar
   :hook
