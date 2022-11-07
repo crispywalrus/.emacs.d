@@ -2,7 +2,7 @@
 #+DATE: 6/11/2022
 #+STARTUP: showeverything indent
 #+AUTHOR: Chris Vale
-#+PROPERTY: header-args :tangle "~/.emacs.org/init.el"
+#+PROPERTY: header-args :tangle "~/.emacs.d/init.el"
 * The literate Walrus Configuration
 ** Configuration
 #+begin_src emacs-lisp 
@@ -32,6 +32,10 @@
   :type 'directory
   :group 'org-buffs)
 #+end_src
+
+#+RESULTS:
+: orgmode:roam-dir
+
 ** Appearance and theming
 #+begin_src emacs-lisp
 (use-package all-the-icons)
@@ -40,6 +44,9 @@
 
 (nano-dark)
 #+end_src
+
+#+RESULTS:
+
 ** Ivy and extensions
 #+begin_src emacs-lisp
 (use-package ivy
@@ -88,6 +95,9 @@
 ;; needs additional configuration
 (use-package ivy-hydra)
 #+end_src
+
+#+RESULTS:
+
 ** Programming support
 #+begin_src
 ;; every language for which there's an lsp server is a language that
@@ -250,10 +260,6 @@
   (use-package org-roam-ui)
   (use-package org-roam-timestamps)
 
-  ;; (use-package vulpea)
-  (use-package zettledesk)
-  (use-package zettledesk-info)
-
   (setq diary-file (f-join org-directory "diary"))
 #+end_src
 ** Recipies
@@ -269,7 +275,7 @@
 process. It's not considered well suited to loading and configurating
 package but it is suitable for tweaks to emacs itself. In my case it
 contains setting to speed initialization
-#+begin_src emacs-list tangle: "~/.emacs.d/early-init.el"
+#+begin_src emacs-lisp tangle: "~/.emacs.d/early-init.el"
 ;; come as close as possible to disabling gc during startup
 (setq gc-cons-threshold most-positive-fixnum)
 

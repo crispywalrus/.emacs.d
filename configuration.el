@@ -209,6 +209,25 @@
   :bind (("C-c n p" . 'org-projectile-project-todo-completing-read)
          ("H-n" . 'org-projectile-project-todo-completing-read)))
 
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
+  :config
+  (add-hook 'after-init-hook 'org-roam-mode)
+  (setq
+   org-roam-directory (org-buffs:safe-expand-org-directory "roam")
+   org-roam-dailies-directory (crispy:safe-expand-org-directory "daily")
+   org-roam-dailies-capture-templates
+   '(("d" "default" entry
+      "* %?"
+      :if-new (file+head "%<%Y-%m-%d>.org"
+                         "#+title: %<%Y-%m-%d>\n"))))
+  (org-roam-setup))
+
+(use-package org-roam-ui)
+(use-package org-roam-timestamps)
+
 (setq diary-file (f-join org-directory "diary"))
 
 (use-package org-chef)
