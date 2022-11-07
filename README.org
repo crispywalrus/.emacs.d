@@ -1,6 +1,6 @@
 #+TITLE: The Literate Walrus Configuration
 #+DATE: 6/11/2022
-#+STARTUP: show2levels indent
+#+STARTUP: showeverything indent
 #+AUTHOR: Chris Vale
 #+PROPERTY: header-args :tangle "~/.emacs.org/init.el"
 * The literate Walrus Configuration
@@ -162,7 +162,7 @@
 #+end_src
 ** Org mode
 #+begin_src emacs-lisp
-  ;; org mode and it's customizations and extensions
+   ;; org mode and it's customizations and extensions
   (use-package org
     :init
     (setq org-log-done t
@@ -178,6 +178,11 @@
            ("H-c" . org-capture)
            ("H-a" . org-agenda)))
 
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (scala . t)))
+  
   (defun orgmode:safe-expand-org-directory (dir)
     "Expand (and create if needed) DIR in the org-directory tree."
     (let (dangled-dir (f-expand dir org-directory))
@@ -207,25 +212,49 @@
 #+end_src
 ** Org project management integration
 #+begin_src emacs-lisp
-(use-package org-kanban)
+  (use-package org-kanban)
 
-(use-package org-elisp-help)
+  (use-package org-elisp-help)
 
-(use-package org-projectile
-  :config
-  (setq org-projectile-projects-file (f-join org-directory "agenda" "projectile.org"))
-  (push (org-projectile-project-todo-entry) org-capture-templates)
-  :bind (("C-c n p" . 'org-projectile-project-todo-completing-read)
-         ("H-n" . 'org-projectile-project-todo-completing-read)))
-;; this is just stupid brilliant. allows us to maintain a local wiki
-;; using org-mode files.
-(use-package plain-org-wiki
-  :after org
-  :config (customize-set-variable 'plain-org-wiki-directory (f-join org-directory "wiki")))
+  (use-package org-projectile
+    :config
+    (setq org-projectile-projects-file (f-join org-directory "agenda" "projectile.org"))
+    (push (org-projectile-project-todo-entry) org-capture-templates)
+    :bind (("C-c n p" . 'org-projectile-project-todo-completing-read)
+           ("H-n" . 'org-projectile-project-todo-completing-read)))
+
+  ;; this is just stupid brilliant. allows us to maintain a local wiki
+  ;; using org-mode files.
+  (use-package plain-org-wiki
+    :after org
+    :config (customize-set-variable 'plain-org-wiki-directory (f-join org-directory "wiki")))
 #+end_src
 ** Notes and diary
 #+begin_src emacs-lisp
-(setq diary-file (f-join org-directory "diary"))
+  (use-package org-roam
+    :ensure t
+    :init
+    (setq org-roam-v2-ack t)
+    :config
+    (add-hook 'after-init-hook 'org-roam-mode)
+    (setq
+     org-roam-directory (org-buffs:safe-expand-org-directory "roam")
+     org-roam-dailies-directory (crispy:safe-expand-org-directory "daily")
+     org-roam-dailies-capture-templates
+     '(("d" "default" entry
+        "* %?"
+        :if-new (file+head "%<%Y-%m-%d>.org"
+                           "#+title: %<%Y-%m-%d>\n"))))
+    (org-roam-setup))
+
+  (use-package org-roam-ui)
+  (use-package org-roam-timestamps)
+
+  ;; (use-package vulpea)
+  (use-package zettledesk)
+  (use-package zettledesk-info)
+
+  (setq diary-file (f-join org-directory "diary"))
 #+end_src
 ** Recipies
 #+begin_src emacs-lisp
