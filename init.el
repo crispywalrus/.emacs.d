@@ -22,25 +22,17 @@
 
 ;;; Code:
 
-;; try to tune gc to get fast reliable startups
-(setq gc-cons-threshold 100000000)
-(add-hook 'after-init-hook (lambda ()
-                             (setq gc-cons-threshold 800000)))
-
-(setq read-process-output-max (* 1024 1024))
-
-
-
-;; preable, require up the emacs built in package manager.
+;; preable, use the built in package manager to bootstrap our package
+;; management which is based on use-package
 (require 'package)
 
-;; configure package to use melpa, org, and melpa-stable
+;; add melps and org to the package archives we use
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
-                         
 
 ;; and finaglly initialize package manager
 (package-initialize)
+
 
 ;; the rest of this uses use-package to manage loading and configuring
 ;; packagess. if use-package isn't installed go fetch and install
@@ -58,39 +50,30 @@
 ;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 ;; make use-package download all referenced but uninstalled
-;; packages.
+;; packages without human intervention.
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
 (use-package exec-path-from-shell
+  :ensure t
   :init (exec-path-from-shell-initialize))
-(setenv "PATH" (concat "/Users/cvale2/.sdkman/candidates/java/current/bin:" (getenv "PATH")))
 
-;; I've broken out the more complex setup of my dev environment into
-;; local buffs. each buff respresents a particular area of emacs
-;; configured the way I like it.
-(add-to-list 'load-path (expand-file-name "buffs" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "appearance" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "staging" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "vendor" user-emacs-directory))
+;; not sure why exec-path-from-shell doesn't play nice with sdkman
+(setenv "JAVA_HOME" (expand-file-name "~/.sdkman/candidates/java/current"))
 
 ;; these are various elisp coding and data structure
 ;; libraries. they're not user modes they're elisp
 ;; enhancements. Sometimes the modes and extensions used rely on them,
 ;; but I also use them for local elisp development.
-(use-package s)
+(use-package s)                         ; string functions
 (use-package string-inflection
   :bind ("s-i" . string-inflection-all-cycle))
-(use-package dash)
+(use-package dash)                      ; list management functions
 (use-package m-buffer)
-(use-package f)
+(use-package f)                         ; file functions
 (use-package multiple-cursors)
 (use-package suggest)
-(use-package parsec)
-(use-package pfuture)
-(use-package async)
-
-(f-mkdir (expand-file-name "staging" user-emacs-directory))
+(use-package parsec)                    ; parser combinators for elisp
 
 ;; packages
 ;; my default customization
@@ -121,16 +104,14 @@
 ;; don't ask about narrow-to-regeion
 (put 'narrow-to-region 'disabled nil)
 
-;; configure our GUI appearance. no scrollbar or toolbars and set the
-;; font to Hack 12.
+;; customize appearance. no scrollbar or toolbars
 (when (display-graphic-p)
   (setq initial-frame-alist nil
         default-frame-alist nil)
-  (set-frame-font "Hack-12" nil t)
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
   (windmove-default-keybindings))
-;; end my defaults
+
 
 ;; setup key bindings to allow for both super and hyper to have useful
 ;; bindings. also paper over the differences between the defaults in
@@ -148,7 +129,9 @@
       (setq mac-command-modifier 'meta
             mac-option-modifier 'super
             mac-right-option-modifier 'hyper))
-    ()))
+    ())
+;; temp fix for wierd dynamic fixup error
+  (customize-set-variable 'native-comp-driver-options '("-Wl,-w")))
 
 (add-hook 'dired-load-hook (lambda () (require 'dired-x)))
 
@@ -156,7 +139,9 @@
 ;; the default directory. That's not great for usability.
 (setq default-directory "~/")
 
-; (require 'mkpretty)
+(use-package magit
+  :init
+  (bind-key "s-g" 'magit-status))
 
-(require 'buffs)
+(load (expand-file-name "~/.emacs.d/configuration.el"))
 ;;; init.el ends here

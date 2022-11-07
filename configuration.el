@@ -1,11 +1,30 @@
-#+TITLE: The Literate Walrus Configuration
-#+DATE: 6/11/2022
-#+STARTUP: show2levels indent
-#+AUTHOR: Chris Vale
-#+PROPERTY: header-args :tangle "~/.emacs.org/init.el"
-* The literate Walrus Configuration
-** Configuration
-#+begin_src emacs-lisp 
+;;; configuration.el --- emacs configuration for programming -*- lexical-binding: t -*-
+
+;; Copyright © 2022 Chris Vale
+;;
+;; Author: Chris Vale <crispywalrus@gmail.com>
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+
+;; load various Emacs extensions that make coding easier and more productive for me.
+
+;;; Code:
+
 (defgroup programming nil
   "Configurable settings for my programming needs."
   :group 'programming
@@ -31,17 +50,15 @@
   "The root of the `roam' database directory."
   :type 'directory
   :group 'org-buffs)
-#+end_src
-** Appearance and theming
-#+begin_src emacs-lisp
+
+;; theme and appearance
 (use-package all-the-icons)
 
 (use-package nano-theme)
 
 (nano-dark)
-#+end_src
-** Ivy and extensions
-#+begin_src emacs-lisp
+
+;; completions
 (use-package ivy
   :defer 0.1
   :diminish
@@ -87,9 +104,8 @@
 
 ;; needs additional configuration
 (use-package ivy-hydra)
-#+end_src
-** Programming support
-#+begin_src
+;; completions ends here.
+
 ;; every language for which there's an lsp server is a language that
 ;; emacs can be used as an IDE.
 (use-package lsp-mode
@@ -113,9 +129,7 @@
 ;; we've got lsp-mode and we've got ivy, lets let them play together
 (use-package lsp-ivy
   :commands lsp-ivy-workspace-symbol)
-#+end_src
-** Utilities that go beyond coding support
-#+begin_src
+
 ;; automatic brace/parens/quotes matching
 (use-package smartparens
   :init
@@ -135,10 +149,7 @@
 ;; do some additional random configuration
 (put 'dired-find-alternate-file 'disabled nil)
 (global-prettify-symbols-mode)
-#+end_src
-** Specific languages support
-*** Scala
-#+begin_src
+
 ;; programing languages support. lets make emacs into the best IDE
 ;; available by hooking up langague modes (and lsp)
 ;; language one, scala
@@ -159,54 +170,34 @@
   :config (setq prettify-symbols-alist scala-prettify-symbols-alist)
   :bind ("C-c C-b" . sbt-hydra)
   :interpreter ("scala" . scala-mode))
-#+end_src
-** Org mode
-#+begin_src emacs-lisp
-  ;; org mode and it's customizations and extensions
-  (use-package org
-    :init
-    (setq org-log-done t
-          org-directory orgmode:orgfiles-tree
-          org-default-notes-file (f-join org-directory "notes.org")
-          org-agenda-files orgmode:agenda-dirs
-          org-src-fontify-natively t
-          org-confirm-babel-evaluate nil)
-    :bind (("\C-cl" . org-store-link)
-           ("\C-ca" . org-agenda)
-           ("\C-cc" . org-capture)
-           ("H-l" . org-store-link)
-           ("H-c" . org-capture)
-           ("H-a" . org-agenda)))
 
-  (defun orgmode:safe-expand-org-directory (dir)
-    "Expand (and create if needed) DIR in the org-directory tree."
-    (let (dangled-dir (f-expand dir org-directory))
-      (f-touch dangled-dir)
-      dangled-dir))
+;; org mode and it's customizations and extensions
+(use-package org
+  :init
+  (setq org-log-done t
+        org-directory orgmode:orgfiles-tree
+        org-default-notes-file (f-join org-directory "notes.org")
+        org-agenda-files orgmode:agenda-dirs
+        org-src-fontify-natively t
+        org-confirm-babel-evaluate nil)
+  :bind (("\C-cl" . org-store-link)
+         ("\C-ca" . org-agenda)
+         ("\C-cc" . org-capture)
+         ("H-l" . org-store-link)
+         ("H-c" . org-capture)
+         ("H-a" . org-agenda)))
 
-  (use-package org-superstar
-    :hook
-    (org-mode . (lambda () (org-superstar-mode 1))))
+(defun orgmode:safe-expand-org-directory (dir)
+  "Expand (and create if needed) DIR in the org-directory tree."
+  (let (dangled-dir (f-expand dir org-directory))
+    (f-touch dangled-dir)
+    dangled-dir))
 
-  (use-package org-fancy-priorities
-    :hook
-    (org-mode . org-fancy-priorities-mode)
-    :config
-    ;; why is teh default priority 2? because 1 is house-on-fire and 0
-    ;; is dunno. 
-    (setq org-priority-highest 0
-          org-priority-default 2
-          org-priority-lowest 4)
-    (setq org-fancy-priorities-list '((?0 . "P0")
-                                      (?1 . "P1")
-                                      (?2 . "P2")
-                                      (?3 . "P3")
-                                      (?4 . "P4"))))
+(use-package org-superstar
+  :hook
+  (org-mode . (lambda () (org-superstar-mode 1))))
 
-
-#+end_src
-** Org project management integration
-#+begin_src emacs-lisp
+;; project managements
 (use-package org-kanban)
 
 (use-package org-elisp-help)
@@ -217,37 +208,30 @@
   (push (org-projectile-project-todo-entry) org-capture-templates)
   :bind (("C-c n p" . 'org-projectile-project-todo-completing-read)
          ("H-n" . 'org-projectile-project-todo-completing-read)))
+
+(setq diary-file (f-join org-directory "diary"))
+
+(use-package org-chef)
+
 ;; this is just stupid brilliant. allows us to maintain a local wiki
 ;; using org-mode files.
 (use-package plain-org-wiki
   :after org
   :config (customize-set-variable 'plain-org-wiki-directory (f-join org-directory "wiki")))
-#+end_src
-** Notes and diary
-#+begin_src emacs-lisp
-(setq diary-file (f-join org-directory "diary"))
-#+end_src
-** Recipies
-#+begin_src emacs-lisp
-(use-package org-chef)
-#+end_src
-** Early Init
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle "~/.emacs.d/early-init.el"
-:END:
 
-[[file:early-init.el][early-init.el]] runs very early in the emacs initialization
-process. It's not considered well suited to loading and configurating
-package but it is suitable for tweaks to emacs itself. In my case it
-contains setting to speed initialization
-#+begin_src emacs-list tangle: "~/.emacs.d/early-init.el"
-;; come as close as possible to disabling gc during startup
-(setq gc-cons-threshold most-positive-fixnum)
+(use-package org-fancy-priorities
+  :hook
+  (org-mode . org-fancy-priorities-mode)
+  :config
+  ;; why is teh default priority 2? because 1 is house-on-fire and 0
+  ;; is dunno. 
+  (setq org-priority-highest 0
+        org-priority-default 2
+        org-priority-lowest 4)
+  (setq org-fancy-priorities-list '((?0 . "P0")
+                                    (?1 . "P1")
+                                    (?2 . "P2")
+                                    (?3 . "P3")
+                                    (?4 . "P4"))))
 
-;; Re-enable gc with a sensible limit (8Mb) after init process has ended
-(add-hook 'after-init-hook
-          #'(lambda () (setq gc-cons-threshold (* 8 1024 1024))))
-#+end_src
-
-
-
+;;; configuration.el ends here
