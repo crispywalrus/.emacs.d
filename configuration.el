@@ -44,12 +44,12 @@
   (list (f-join orgmode:orgfiles-tree "agenda"))
   "A list of directories where our `org-mode' agenda files can be."
   :type '(list file)
-  :group 'org-buffs)
+  :group 'orgmode)
 
 (defcustom orgmode:roam-dir (f-join orgmode:orgfiles-tree "roam")
   "The root of the `roam' database directory."
   :type 'directory
-  :group 'org-buffs)
+  :group 'orgmode)
 
 ;; theme and appearance
 (use-package all-the-icons)
@@ -189,8 +189,8 @@
 
 (defun orgmode:safe-expand-org-directory (dir)
   "Expand (and create if needed) DIR in the org-directory tree."
-  (let (dangled-dir (f-expand dir org-directory))
-    (f-touch dangled-dir)
+  (let ((dangled-dir (f-expand dir org-directory)))
+    (f-mkdir-full-path dangled-dir)
     dangled-dir))
 
 (use-package org-superstar
@@ -214,19 +214,27 @@
   :init
   (setq org-roam-v2-ack t)
   :config
-  (add-hook 'after-init-hook 'org-roam-mode)
-  (setq
-   org-roam-directory (org-buffs:safe-expand-org-directory "roam")
-   org-roam-dailies-directory (crispy:safe-expand-org-directory "daily")
-   org-roam-dailies-capture-templates
-   '(("d" "default" entry
-      "* %?"
-      :if-new (file+head "%<%Y-%m-%d>.org"
-                         "#+title: %<%Y-%m-%d>\n"))))
+  (setq org-roam-directory (orgmode:safe-expand-org-directory "roam")
+        org-roam-dailies-directory (orgmode:safe-expand-org-directory "daily"))
+  ;;  org-roam-dailies-capture-templates
+  ;;  '(("d" "default" entry
+  ;;     "* %?"
+  ;;     :if-new (file+head "%<%Y-%m-%d>.org"
+  ;;                        "#+title: %<%Y-%m-%d>\n"))))
+  ;; :hook (after-init 'org-roam-mode)
   (org-roam-setup))
 
 (use-package org-roam-ui)
 (use-package org-roam-timestamps)
+
+(use-package zetteldesk
+  :after roam
+  :init (zetteldesk-mode))
+
+(use-package zetteldesk-kb
+  :init (customize-set-variable 'zetteldesk-kb-map-prefix (kbd "C-c z")))
+
+(use-package zetteldesk-info)
 
 (setq diary-file (f-join org-directory "diary"))
 

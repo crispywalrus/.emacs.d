@@ -25,12 +25,12 @@
   (list (f-join orgmode:orgfiles-tree "agenda"))
   "A list of directories where our `org-mode' agenda files can be."
   :type '(list file)
-  :group 'org-buffs)
+  :group 'orgmode)
 
 (defcustom orgmode:roam-dir (f-join orgmode:orgfiles-tree "roam")
   "The root of the `roam' database directory."
   :type 'directory
-  :group 'org-buffs)
+  :group 'orgmode)
 #+end_src
 
 #+RESULTS:
@@ -196,7 +196,7 @@
   (defun orgmode:safe-expand-org-directory (dir)
     "Expand (and create if needed) DIR in the org-directory tree."
     (let (dangled-dir (f-expand dir org-directory))
-      (f-touch dangled-dir)
+      (f-mkdir-full-path dangled-dir)
       dangled-dir))
 
   (use-package org-superstar
@@ -251,7 +251,7 @@
      org-roam-directory (org-buffs:safe-expand-org-directory "roam")
      org-roam-dailies-directory (crispy:safe-expand-org-directory "daily")
      org-roam-dailies-capture-templates
-     '(("d" "default" entry
+     '(("d" "denfault" entry
         "* %?"
         :if-new (file+head "%<%Y-%m-%d>.org"
                            "#+title: %<%Y-%m-%d>\n"))))
@@ -259,6 +259,15 @@
 
   (use-package org-roam-ui)
   (use-package org-roam-timestamps)
+
+  (use-package zetteldesk
+      :config (setq zetteldesk-kb-hydra-prefix (kbd "C-c z"))
+      :init (zetteldesk-mode))
+
+  (use-package zettledesk-kb
+    :init (customize-set-variable 'zetteldesk-kb-map-prefix (kbd "C-c z")))
+  
+  (use-package zetteldesk-info)
 
   (setq diary-file (f-join org-directory "diary"))
 #+end_src
