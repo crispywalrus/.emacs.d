@@ -63,14 +63,6 @@
     (f-touch dangled-dir)
     dangled-dir))
 
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((emacs-lisp . t)
-   (scala . t)
-   (ocaml . t)
-   (sql . t)
-   (mermaid . t)))
-
 (use-package ob-async
   ;; Fix an incompatibility between the ob-async and ob-ipython packages
   :init (setq ob-async-no-async-languages-alist '("ipython")))
@@ -78,9 +70,21 @@
 (use-package ob-mermaid
   :init (setq ob-mermaid-cli-path "/opt/homebrew/bin/mmdc"))
 
-(use-package org-superstar
-  :hook
-  (org-mode . (lambda () (org-superstar-mode 1))))
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+;;   (amm . t)
+   (ocaml . t)
+   (sql . t)
+   (mermaid . t)
+   (clojure . t)))
+
+;; (use-package org-superstar
+;;   :hook
+;;   (org-mode . (lambda () (org-superstar-mode 1))))
+
+(use-package org-modern)
+(use-package svg-tag-mode)
 
 (use-package org-kanban)
 
@@ -114,5 +118,6 @@
                                     (?3 . "P3")
                                     (?4 . "P4"))))
 
+(print "loaded org-buffs")
 (provide 'org-buffs)
 ;;; org-buffs.el ends here.
