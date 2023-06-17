@@ -25,6 +25,21 @@
 
 ;;; Code:
 
+;; these are various elisp coding and data structure
+;; libraries. they're not user modes they're elisp
+;; enhancements. Sometimes the modes and extensions used rely on them,
+;; but I also use them for local elisp development.
+(use-package s)                         ; string functions
+(use-package string-inflection
+  :bind ("s-i" . string-inflection-all-cycle))
+(use-package dash)                      ; list management functions
+(use-package m-buffer)
+(use-package f)                         ; file functions
+;; (use-package multiple-cursors)
+(use-package suggest)
+(use-package parsec)                    ; parser combinators for elisp
+
+;; custom groups and values
 (defgroup programming nil
   "Configurable settings for my programming needs."
   :group 'programming
@@ -52,15 +67,85 @@
   :group 'orgmode)
 
 ;; theme and appearance
+(use-package exec-path-from-shell
+  :ensure t
+  :init (exec-path-from-shell-initialize))
+
+;; packages
+;; my default customization
+;; not sure why exec-path-from-shell doesn't play nice with sdkman
+(setenv "JAVA_HOME" (expand-file-name "~/.sdkman/candidates/java/current"))
+
+(use-package magit
+  :init
+  (bind-key "s-g" 'magit-status))
+
+
+;; I use a .gitignored custom.el file so I can maintain different
+;; configs per system. Loading fails if the file doesn't exist so we
+;; touch it to make sure emacs always starts.
+(f-touch (expand-file-name "custom.el" user-emacs-directory))
+
+;; no tabs
+(setq-default indent-tabs-mode nil)
+
+;; I feel a bit curmudgeonly about this but no to menus, no to
+;; scrollbars, no to toolbars, no to the scratch buffer message, no to
+;; the startup screen.
+(setq
+ inhibit-startup-screen t
+ initial-scratch-message nil
+ custom-file (expand-file-name "custom.el" user-emacs-directory)
+ load-prefer-newer t
+ debug-on-error nil)
+
+;; up abover we touched custom.el. we did this so that there was
+;; definately going to be a file. now we can load it in relative
+;; safety.
+(load custom-file)
+
+;; don't ask about narrow-to-regeion
+(put 'narrow-to-region 'disabled nil)
+
+;; customize appearance. no scrollbar or toolbars
+(when (display-graphic-p)
+  (setq initial-frame-alist nil
+        default-frame-alist nil)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (windmove-default-keybindings))
+
+
+;; setup key bindings to allow for both super and hyper to have useful
+;; bindings. also paper over the differences between the defaults in
+;; the stock and railway cats distributions.
+(when (eq system-type 'darwin)
+  ;; mac osx, use ns-* settings to distiguish between the flavors of emacs available.
+  (if (boundp 'ns-use-native-fullscreen)
+      (progn
+        (setq ns-use-native-fullscreen t
+              ns-command-modifier 'meta
+              ns-option-modifier 'super
+              ns-right-option-modifier 'hyper)
+        (global-set-key (kbd "M-h") 'ns-do-hide-emacs))
+    (progn
+      (setq mac-command-modifier 'meta
+            mac-option-modifier 'super
+            mac-right-option-modifier 'hyper))
+    ()))
+
 (use-package all-the-icons)
 
 (use-package nano-theme)
 
 (nano-dark)
 
+(use-package diminish)
+
 ;; completions
+(use-package company)
+
 (use-package ivy
-  :defer 0.1
   :diminish
   :bind (("C-c C-r" . ivy-resume)
          ("C-x B" . ivy-switch-buffer-other-window))
@@ -73,19 +158,9 @@
   :after ivy
   :init (all-the-icons-ivy-setup))
 
-(use-package ivy-rich
-  ;; :after ivy
-  ;; :custom
-  ;; (ivy-virtual-abbreviate 'full
-  ;;                         ivy-rich-switch-buffer-align-virtual-buffer t
-  ;;                         ivy-rich-path-style 'abbrev)
-  ;; :config
-  ;; (ivy-set-display-transformer 'ivy-switch-buffer
-  ;;                              'ivy-rich-switch-buffer-transformer)
-  )
-
 (use-package counsel
   :after ivy
+  :diminish
   :config (counsel-mode))
 
 (use-package swiper
@@ -97,24 +172,41 @@
   :init
   (which-key-mode))
 
-(use-package company-posframe
+;; Posframe is a pop-up tool that must be manually installed for dap-mode
+(use-package posframe)
+
+(use-package which-key-posframe
+  :after (which-key posframe)
+  :config
+  (which-key-posframe-mode))
+
+;; lets make ivy draw the completions not in the minibuffer but in a posframe
+(use-package ivy-posframe
+  :after posframe
   :diminish
-) ;;  :config (company-posframe-mode 1))
+  :init
+  (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
+  (ivy-posframe-mode 1))
 
+(use-package all-the-icons-ivy-rich
+  :init
+  (all-the-icons-ivy-rich-mode 1))
 
-;; needs additional configuration
-(use-package ivy-hydra)
-;; completions ends here.
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
+
+(use-package all-the-icons-dired
+  :hook
+  (dired-mode all-the-icons-dired))
 
 ;; every language for which there's an lsp server is a language that
 ;; emacs can be used as an IDE.
 (use-package lsp-mode
+  :ensure t
   :init
   (setq lsp-keymap-prefix "C-c l")
   :commands lsp)
-
-;; Posframe is a pop-up tool that must be manually installed for dap-mode
-(use-package posframe)
 
 ;; dap-mode provides debugger support for lsp-mode buffers
 (use-package dap-mode
@@ -140,9 +232,10 @@
 
 ;; projectile is the the moby project management packages!
 (use-package projectile
-  :init (setq projectile-enable-caching t)
-  :config (setq projectile-completion-system 'ido)
-          (projectile-mode +1)
+  :init
+  (setq projectile-enable-caching t)
+  (setq projectile-completion-system 'ido)
+  (projectile-mode +1)
   :bind-keymap (("s-p" . projectile-command-map)
                 ("C-c p" . projectile-command-map)))
 
@@ -171,15 +264,31 @@
   :bind ("C-c C-b" . sbt-hydra)
   :interpreter ("scala" . scala-mode))
 
+(use-package go-mode
+  :init (add-hook 'go-mode-hook #'lsp-deferred))
+
+(use-package bazel)
+
+;; highlighting for some markup langauges
+(use-package smithy-mode)
+(use-package markdown-mode)
+
 ;; org mode and it's customizations and extensions
+(defun orgmode:safe-expand-org-directory (dir)
+  "Expand (and create if needed) DIR in the org-directory tree."
+  (let ((dangled-dir (f-expand dir org-directory)))
+    (f-mkdir-full-path dangled-dir)
+    dangled-dir))
+
 (use-package org
-  :init
+  :ensure t
+  :config
   (setq org-log-done t
         org-directory orgmode:orgfiles-tree
-        org-default-notes-file (f-join org-directory "notes.org")
-        org-agenda-files orgmode:agenda-dirs
+        org-default-notes-file (f-join org-directory "agenda" "notes.org")
         org-src-fontify-natively t
-        org-confirm-babel-evaluate nil)
+        org-confirm-babel-evaluate nil
+        org-agenda-files orgmode:agenda-dirs)
   :bind (("\C-cl" . org-store-link)
          ("\C-ca" . org-agenda)
          ("\C-cc" . org-capture)
@@ -187,78 +296,56 @@
          ("H-c" . org-capture)
          ("H-a" . org-agenda)))
 
-(defun orgmode:safe-expand-org-directory (dir)
-  "Expand (and create if needed) DIR in the org-directory tree."
-  (let ((dangled-dir (f-expand dir org-directory)))
-    (f-mkdir-full-path dangled-dir)
-    dangled-dir))
+(use-package org-bulletproof)
 
 (use-package org-superstar
-  :hook
-  (org-mode . (lambda () (org-superstar-mode 1))))
+  :after org
+  :ensure t
+  :hook org
+  :custom (org-superstar-remove-leading-stars t))
 
 ;; project managements
 (use-package org-kanban)
 
-(use-package org-elisp-help)
+(use-package org-elisp-help
+  :after org
+  :ensure t)
 
 (use-package org-projectile
+  :after org
   :config
-  (setq org-projectile-projects-file (f-join org-directory "agenda" "projectile.org"))
-  (push (org-projectile-project-todo-entry) org-capture-templates)
+  (org-projectile-per-project)
+  (setq org-projectile-per-project-filepath "TODO.org"
+        org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
   :bind (("C-c n p" . 'org-projectile-project-todo-completing-read)
          ("H-n" . 'org-projectile-project-todo-completing-read)))
 
-(use-package org-roam
-  :ensure t
-  :init
-  (setq org-roam-v2-ack t)
-  :config
-  (setq org-roam-directory (orgmode:safe-expand-org-directory "roam")
-        org-roam-dailies-directory (orgmode:safe-expand-org-directory "daily"))
-  ;;  org-roam-dailies-capture-templates
-  ;;  '(("d" "default" entry
-  ;;     "* %?"
-  ;;     :if-new (file+head "%<%Y-%m-%d>.org"
-  ;;                        "#+title: %<%Y-%m-%d>\n"))))
-  ;; :hook (after-init 'org-roam-mode)
-  (org-roam-setup))
-
-(use-package org-roam-ui)
-(use-package org-roam-timestamps)
-
-(use-package zetteldesk
-  :after roam
-  :init (zetteldesk-mode))
-
-(use-package zetteldesk-kb
-  :init (customize-set-variable 'zetteldesk-kb-map-prefix (kbd "C-c z")))
-
-(use-package zetteldesk-info)
-
 (setq diary-file (f-join org-directory "diary"))
-
-(use-package org-chef)
 
 ;; this is just stupid brilliant. allows us to maintain a local wiki
 ;; using org-mode files.
 (use-package plain-org-wiki
-  :after org
+  :after org-mode
   :config (customize-set-variable 'plain-org-wiki-directory (f-join org-directory "wiki")))
 
 (use-package org-fancy-priorities
   :hook
   (org-mode . org-fancy-priorities-mode)
   :config
-  ;; why is teh default priority 2? because 1 is house-on-fire and 0
-  ;; is dunno. 
+  ;; why is teh default priority 2? because 0 is house-on-fire and 4
+  ;; is not ever going to be dealt with.
   (setq org-priority-highest 0
         org-priority-default 2
-        org-priority-lowest 4)
-  (setq org-fancy-priorities-list '((?0 . "P0")
+        org-priority-lowest 4
+        org-fancy-priorities-list '((?0 . "P0")
                                     (?1 . "P1")
                                     (?2 . "P2")
                                     (?3 . "P3")
-                                    (?4 . "P4"))))
+                                    (?4 . "P4"))
+        org-priority-faces '((?0 :foreground "DarkRed" :background "LightPink")
+                             (?1 :foreground "DarkOrange4" :background "LightGoldenrod")
+                             (?2 :foreground "gray20" :background "gray")
+                             (?3 :foreground "gray20" :background "gray")
+                             (?4 :foreground "gray20" :background "gray"))))
 
 ;;; configuration.el ends here

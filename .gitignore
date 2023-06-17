@@ -9,3 +9,13 @@ eln-cache
 projectile-bookmarks.eld
 .dap-breakpoints
 .lsp-session-v1
+.org-id-locations
+org-roam.db
+projectile.cache
+eshell
+treesitter
+.cask
+opam-user-setup.el
+bookmarks
+TODO.org
+Project.org
