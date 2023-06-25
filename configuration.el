@@ -61,10 +61,10 @@
   :type '(list file)
   :group 'orgmode)
 
-(defcustom orgmode:roam-dir (f-join orgmode:orgfiles-tree "roam")
-  "The root of the `roam' database directory."
-  :type 'directory
-  :group 'orgmode)
+(defcustom native-project nil
+  "If non-nil use native project.el for project tracking"
+  :type 'string
+  :group 'programming)
 
 ;; theme and appearance
 (use-package exec-path-from-shell
@@ -145,28 +145,37 @@
 ;; completions
 (use-package company)
 
-(use-package ivy
-  :diminish
-  :bind (("C-c C-r" . ivy-resume)
-         ("C-x B" . ivy-switch-buffer-other-window))
+(use-package all-the-icons)
+
+(use-package marginalia
   :custom
-  (ivy-count-format "(%d/%d) ")
-  (ivy-use-virtual-buffers t)
-  :config (ivy-mode))
+  (marginalia-max-relative-age 0)
+  (marginalia-align 'right)
+  :init
+  (marginalia-mode))
 
-(use-package all-the-icons-ivy
-  :after ivy
-  :init (all-the-icons-ivy-setup))
+(use-package all-the-icons-completion
+  :after (marginalia all-the-icons)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :init
+  (all-the-icons-completion-mode))
 
-(use-package counsel
-  :after ivy
-  :diminish
-  :config (counsel-mode))
+(use-package vertico
+  :custom
+  (vertico-count 8)                    ; Number of candidates to display
+  (vertico-resize t)
+  (vertico-cycle nil) ; Go from last to first candidate and first to last (cycle)?
+  :config
+  (vertico-mode))
 
-(use-package swiper
-  :after ivy
-  :bind (("C-s" . swiper)
-         ("C-r" . swiper)))
+(use-package vertico-posframe
+  :ensure t
+  :after (posframe vertico)
+  :init
+  (vertico-posframe-mode 1))
+
+(use-package consult
+  :hook (completion-list-mode . consult-preview-at-point-mode))
 
 (use-package which-key
   :init
@@ -179,22 +188,6 @@
   :after (which-key posframe)
   :config
   (which-key-posframe-mode))
-
-;; lets make ivy draw the completions not in the minibuffer but in a posframe
-(use-package ivy-posframe
-  :after posframe
-  :diminish
-  :init
-  (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
-  (ivy-posframe-mode 1))
-
-(use-package all-the-icons-ivy-rich
-  :init
-  (all-the-icons-ivy-rich-mode 1))
-
-(use-package ivy-rich
-  :init
-  (ivy-rich-mode 1))
 
 (use-package all-the-icons-dired
   :hook
@@ -218,10 +211,6 @@
 (use-package lsp-ui
   :commands lsp-ui-mode)
 
-;; we've got lsp-mode and we've got ivy, lets let them play together
-(use-package lsp-ivy
-  :commands lsp-ivy-workspace-symbol)
-
 ;; automatic brace/parens/quotes matching
 (use-package smartparens
   :init
@@ -230,14 +219,23 @@
   (smartparens-global-mode t)
   (show-smartparens-global-mode t))
 
-;; projectile is the the moby project management packages!
-(use-package projectile
-  :init
-  (setq projectile-enable-caching t)
-  (setq projectile-completion-system 'ido)
-  (projectile-mode +1)
-  :bind-keymap (("s-p" . projectile-command-map)
-                ("C-c p" . projectile-command-map)))
+;; project management
+(defun enable-projectile ()
+  "Enable projectile for project management."
+  
+  (use-package projectile
+    :init
+    (setq projectile-enable-caching t)
+    (setq projectile-completion-system 'ido)
+    (projectile-mode +1)
+    :bind-keymap (("s-p" . projectile-command-map)
+                  ("C-c p" . projectile-command-map))))
+
+(use-package edit-indirect)
+
+(if native-project
+    (enable-project)
+  (enable-projectile))
 
 ;; do some additional random configuration
 (put 'dired-find-alternate-file 'disabled nil)
@@ -264,9 +262,26 @@
   :bind ("C-c C-b" . sbt-hydra)
   :interpreter ("scala" . scala-mode))
 
+;; language two, go
 (use-package go-mode
   :init (add-hook 'go-mode-hook #'lsp-deferred))
 
+;; langauge three, zig
+(use-package zig-mode
+  :init (add-hook 'zig-mode #'lsp-deferred))
+
+;; langauge four; rust
+(use-package rust-mode
+  :init (add-hook 'rust-mode #'lsp-deferred))
+
+(use-package graphql-mode)
+
+(use-package json-mode
+  :after graphql-mode)
+
+;; building is an important part of programming but I don't really
+;; think bazel deserves it's reputation, unless that reputation is for
+;; difficult construction and fragile to maintain builds
 (use-package bazel)
 
 ;; highlighting for some markup langauges
@@ -306,6 +321,10 @@
 
 ;; project managements
 (use-package org-kanban)
+
+(use-package ob-go)
+(use-package ob-rust)
+(use-package ob-graphql)
 
 (use-package org-elisp-help
   :after org
