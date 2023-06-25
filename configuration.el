@@ -1,6 +1,6 @@
-;;; configuration.el --- emacs configuration for programming -*- lexical-binding: t -*-
+;;; configuration.el --- emacs configuration -*- lexical-binding: t -*-
 
-;; Copyright © 2022 Chris Vale
+;; Copyright ©  2022 Chris Vale
 ;;
 ;; Author: Chris Vale <crispywalrus@gmail.com>
 
@@ -21,65 +21,99 @@
 
 ;;; Commentary:
 
-;; load various Emacs extensions that make coding easier and more productive for me.
+;; load various Emacs extensions that make my life easier and more productive.
 
 ;;; Code:
 
-;; these are various elisp coding and data structure
-;; libraries. they're not user modes they're elisp
-;; enhancements. Sometimes the modes and extensions used rely on them,
-;; but I also use them for local elisp development.
-(use-package s)                         ; string functions
-(use-package string-inflection
-  :bind ("s-i" . string-inflection-all-cycle))
-(use-package dash)                      ; list management functions
-(use-package m-buffer)
-(use-package f)                         ; file functions
-;; (use-package multiple-cursors)
-(use-package suggest)
-(use-package parsec)                    ; parser combinators for elisp
+;; configure our GUI appearance. no scrollbar or toolbars and set the
+;; font to Hack 12.
 
-;; custom groups and values
-(defgroup programming nil
-  "Configurable settings for my programming needs."
-  :group 'programming
-  :prefix "programming:")
-
-(defgroup orgmode nil
-  "Configurable settings for my programming needs."
-  :group 'orgmode
-  :prefix "programming:")
-
-(defcustom orgmode:orgfiles-tree (expand-file-name "~/.org")
-  "The root of the `org-mode' file tree."
-  :type 'file
-  :group 'orgmode)
-
-(defcustom orgmode:agenda-dirs
-  (list (f-join orgmode:orgfiles-tree "agenda"))
-  "A list of directories where our `org-mode' agenda files can be."
-  :type '(list file)
-  :group 'orgmode)
+(defgroup configuration nil
+  "Customization switches for configuration.el.")
 
 (defcustom native-project nil
   "If non-nil use native project.el for project tracking"
   :type 'string
-  :group 'programming)
+  :group 'configuration)
 
-;; theme and appearance
-(use-package exec-path-from-shell
+(when (display-graphic-p)
+  (setq initial-frame-alist nil
+        default-frame-alist nil)
+  (set-frame-font "Hack-12" nil t)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (windmove-default-keybindings))
+
+;; setup key bindings to allow for both super and hyper to have useful
+;; bindings from darwin running device. also paper over the
+;; differences between the way keys are named in emace-plus and
+;; railwaycats distributions.
+(when (eq system-type 'darwin)
+  ;; mac osx, use ns-* settings to distiguish between the flavors of
+  ;; emacs available. if we're on darwin use ns-use-native-fullscreen
+  ;; to determine if we're using emacs-plus or railwaycats
+  (if (boundp 'ns-use-native-fullscreen)
+      ;; emacs-plus
+      (progn
+        (setq ns-use-native-fullscreen t
+              ns-command-modifier 'meta
+              ns-option-modifier 'super
+              ns-right-option-modifier 'hyper)
+        (global-set-key (kbd "M-h") 'ns-do-hide-emacs))
+      ;; else railwaycats
+      (setq mac-command-modifier 'meta
+            mac-option-modifier 'super
+            ;;            mac-right-option-modifier 'hyper))
+            mac-right-option-modifier 'hyper)
+    ()))
+
+;; make use-package download all referenced but uninstalled
+;; packages.
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
+
+;; magit is so important we load it first
+(use-package magit
   :ensure t
+  :commands magit-status magit-blame
+  :init
+  (setq magit-auto-revert-mode nil
+        magit-last-seen-setup-instructions "1.4.0")
+  :bind (("s-g" . magit-status)
+         ("s-b" . magit-blame)))
+
+
+(use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
+
+(setenv "JAVA_HOME" "/Users/cvale2/.sdkman/candidates/java/current")
+(setenv "PATH" (concat "/Users/cvale2/.sdkman/candidates/java/current/bin:" (getenv "PATH")))
+
+;; for code we can't just use from a package manager we'll check it
+;; into the vendor tree and manage it by hand.
+(add-to-list 'load-path (expand-file-name "vendor" user-emacs-directory))
+
+;; these are various elisp coding and data structure
+;; libraries. they're not user modes they're elisp
+;; enhancements. Sometimes the modes and extensions used rely on them,
+;; but I also use them for local elisp development. Since these are
+;; just coding tools they tend to not need any configuration.
+(use-package s)
+(use-package string-inflection
+  :bind ("s-i" . string-inflection-all-cycle))
+(use-package dash)
+(use-package m-buffer)
+(use-package f)
+;; (use-package multiple-cursors
+;;   :ensure t)
+(use-package suggest)
+(use-package parsec)
+(use-package pfuture)
+(use-package async)
+(use-package memoize)
 
 ;; packages
 ;; my default customization
-;; not sure why exec-path-from-shell doesn't play nice with sdkman
-(setenv "JAVA_HOME" (expand-file-name "~/.sdkman/candidates/java/current"))
-
-(use-package magit
-  :init
-  (bind-key "s-g" 'magit-status))
-
 
 ;; I use a .gitignored custom.el file so I can maintain different
 ;; configs per system. Loading fails if the file doesn't exist so we
@@ -107,50 +141,44 @@
 ;; don't ask about narrow-to-regeion
 (put 'narrow-to-region 'disabled nil)
 
-;; customize appearance. no scrollbar or toolbars
-(when (display-graphic-p)
-  (setq initial-frame-alist nil
-        default-frame-alist nil)
-  (scroll-bar-mode -1)
-  (tool-bar-mode -1)
-  (windmove-default-keybindings))
+(add-hook 'dired-load-hook (lambda () (require 'dired-x)))
 
-
-;; setup key bindings to allow for both super and hyper to have useful
-;; bindings. also paper over the differences between the defaults in
-;; the stock and railway cats distributions.
-(when (eq system-type 'darwin)
-  ;; mac osx, use ns-* settings to distiguish between the flavors of emacs available.
-  (if (boundp 'ns-use-native-fullscreen)
-      (progn
-        (setq ns-use-native-fullscreen t
-              ns-command-modifier 'meta
-              ns-option-modifier 'super
-              ns-right-option-modifier 'hyper)
-        (global-set-key (kbd "M-h") 'ns-do-hide-emacs))
-    (progn
-      (setq mac-command-modifier 'meta
-            mac-option-modifier 'super
-            mac-right-option-modifier 'hyper))
-    ()))
-
-(use-package all-the-icons)
+;; for some reason the mac version of emacs has decided to use / as
+;; the default directory. That's not great for usability.
+(setq default-directory "~/")
 
 (use-package nano-theme)
 
-(nano-dark)
+(use-package all-the-icons
+  :if (display-graphic-p))
 
-(use-package diminish)
+(use-package all-the-icons-dired
+  :after all-the-icons
+  :hook (dired-mode . all-the-icons-dired-mode)
+  :config (setq all-the-icons-dired-monochrome nil))
 
-;; completions
-(use-package company)
+;; completion
+(use-package hydra)
 
-(use-package all-the-icons)
+(use-package vertico
+  :init (vertico-mode))
+
+(use-package vertico-posframe
+  :init (vertico-posframe-mode 1))
+
+(use-package consult
+  :after vertico
+  :init
+  ;; Use `consult-completion-in-region' if Vertico is enabled.
+  ;; Otherwise use the default `completion--in-region' function.
+  (setq completion-in-region-function
+        (lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+                 args))))
 
 (use-package marginalia
-  :custom
-  (marginalia-max-relative-age 0)
-  (marginalia-align 'right)
   :init
   (marginalia-mode))
 
@@ -160,203 +188,132 @@
   :init
   (all-the-icons-completion-mode))
 
-(use-package vertico
-  :custom
-  (vertico-count 8)                    ; Number of candidates to display
-  (vertico-resize t)
-  (vertico-cycle nil) ; Go from last to first candidate and first to last (cycle)?
-  :config
-  (vertico-mode))
+;; general programing IDE
+(use-package diminish)
 
-(use-package vertico-posframe
-  :ensure t
-  :after (posframe vertico)
-  :init
-  (vertico-posframe-mode 1))
+(use-package smartparens)
 
-(use-package consult
-  :hook (completion-list-mode . consult-preview-at-point-mode))
+(require 'smartparens-config)
 
-(use-package which-key
-  :init
-  (which-key-mode))
+(use-package lsp-mode
+  :config (setq lsp-enable-snippet nil)
+  (setq gc-cons-threshold 100000000)
+  (setq read-process-output-max (* 1024 1024))
+  :hook (merlin-mode . lsp)
+        (lsp-mode . lsp-lens-mode)
+        (scala-mode . lsp)
+        (go-mode . lsp)
+        (rust-mode . lsp))
+
+(use-package lsp-ui)
+
+(use-package consult-lsp)
+
+;; for some reason this still needs to be added by hand
+(use-package lsp-metals)
 
 ;; Posframe is a pop-up tool that must be manually installed for dap-mode
 (use-package posframe)
 
-(use-package which-key-posframe
-  :after (which-key posframe)
-  :config
-  (which-key-posframe-mode))
-
-(use-package all-the-icons-dired
-  :hook
-  (dired-mode all-the-icons-dired))
-
-;; every language for which there's an lsp server is a language that
-;; emacs can be used as an IDE.
-(use-package lsp-mode
-  :ensure t
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :commands lsp)
-
-;; dap-mode provides debugger support for lsp-mode buffers
 (use-package dap-mode
-  :after posframe
-  :hook
-  (lsp-mode . dap-mode)
-  (lsp-mode . dap-ui-mode))
+  :hook (lsp-mode . dap-mode)
+        (lsp-mode . dap-ui-mode))
 
-(use-package lsp-ui
-  :commands lsp-ui-mode)
-
-;; automatic brace/parens/quotes matching
-(use-package smartparens
-  :init
-  (require 'smartparens-config)
-  :config
-  (smartparens-global-mode t)
-  (show-smartparens-global-mode t))
-
-;; project management
-(defun enable-projectile ()
-  "Enable projectile for project management."
-  
-  (use-package projectile
-    :init
-    (setq projectile-enable-caching t)
-    (setq projectile-completion-system 'ido)
-    (projectile-mode +1)
-    :bind-keymap (("s-p" . projectile-command-map)
-                  ("C-c p" . projectile-command-map))))
-
-(use-package edit-indirect)
-
-(if native-project
-    (enable-project)
-  (enable-projectile))
-
-;; do some additional random configuration
-(put 'dired-find-alternate-file 'disabled nil)
-(global-prettify-symbols-mode)
-
-;; programing languages support. lets make emacs into the best IDE
-;; available by hooking up langague modes (and lsp)
-;; language one, scala
-(use-package lsp-metals
-  :after scala-mode
-  :init (add-hook 'scala-mode-hook #'lsp-mode))
-
-(use-package sbt-mode
-  :init (setq sbt:prefer-nested-projects t)
-  :commands sbt-start sbt-command sbt-hydra
-  ;; allow for usage of space in the minibuffer
-  :config (substitute-key-definition
-           'minibuffer-complete-word
-           'self-insert-command
-           minibuffer-local-completion-map))
-
-(use-package scala-mode
-  :config (setq prettify-symbols-alist scala-prettify-symbols-alist)
-  :bind ("C-c C-b" . sbt-hydra)
-  :interpreter ("scala" . scala-mode))
-
-;; language two, go
 (use-package go-mode
-  :init (add-hook 'go-mode-hook #'lsp-deferred))
+  :hook (before-save . gofmt-before-save))
 
-;; langauge three, zig
-(use-package zig-mode
-  :init (add-hook 'zig-mode #'lsp-deferred))
-
-;; langauge four; rust
 (use-package rust-mode
-  :init (add-hook 'rust-mode #'lsp-deferred))
+  :init
+  (setq rust-format-on-save t))
+
+(use-package cargo-mode
+  :hook
+  (rust-mode . cargo-minor-mode))
+
+(use-package zig-mode)
 
 (use-package graphql-mode)
 
 (use-package json-mode
   :after graphql-mode)
 
-;; building is an important part of programming but I don't really
-;; think bazel deserves it's reputation, unless that reputation is for
-;; difficult construction and fragile to maintain builds
-(use-package bazel)
+(use-package sbt-mode
+  :init (setq sbt:prefer-nested-projects t)
+  :commands sbt-start sbt-command sbt-hydra
+  :config (substitute-key-definition
+           'minibuffer-complete-word
+           'self-insert-command
+           minibuffer-local-completion-map))
 
-;; highlighting for some markup langauges
+(use-package company
+  :diminish company-mode)
+
+(use-package scala-mode
+  :config
+  (require 'scala-mode-prettify-symbols)
+  (setq prettify-symbols-alist scala-prettify-symbols-alist)
+  :hook (scala-mode . company-mode)
+        (scala-mode . smartparens-mode)
+        (scala-mode . subword-mode)
+  :diminish smartparens-mode
+  :bind
+  ("C-c C-b" . sbt-hydra)
+  :interpreter
+  ("scala" . scala-mode))
+
+;; project management
+(defun enable-projectile ()
+    "Enable projectile for project management"
+  (use-package projectile
+    :init
+    (setq projectile-enable-caching t)
+    :config
+    (setq projectile-completion-system 'ido)
+    (projectile-mode +1)
+    :bind-keymap (("s-p" . projectile-command-map)
+                  ("C-c p" . projectile-command-map))))
+(if native-project
+    (enable-project)
+  (enable-projectile))
+  
+(use-package edit-indirect)
+
 (use-package smithy-mode)
+
+;; mermaid is a package for laying out graphs in markdown and other
+;; documents. It's rendered in github docs so that makes it a useful
+;; package.
+(use-package mermaid-mode)
+
 (use-package markdown-mode)
 
-;; org mode and it's customizations and extensions
-(defun orgmode:safe-expand-org-directory (dir)
-  "Expand (and create if needed) DIR in the org-directory tree."
-  (let ((dangled-dir (f-expand dir org-directory)))
-    (f-mkdir-full-path dangled-dir)
-    dangled-dir))
+(use-package yaml-mode)
+
+(with-eval-after-load 'sql
+  ;; sql-mode pretty much requires your psql to be uncustomised from stock settings
+  (add-to-list 'sql-postgres-options "--no-psqlrc"))
 
 (use-package org
   :ensure t
   :config
-  (setq org-log-done t
-        org-directory orgmode:orgfiles-tree
-        org-default-notes-file (f-join org-directory "agenda" "notes.org")
-        org-src-fontify-natively t
-        org-confirm-babel-evaluate nil
-        org-agenda-files orgmode:agenda-dirs)
-  :bind (("\C-cl" . org-store-link)
-         ("\C-ca" . org-agenda)
-         ("\C-cc" . org-capture)
-         ("H-l" . org-store-link)
-         ("H-c" . org-capture)
-         ("H-a" . org-agenda)))
-
-(use-package org-bulletproof)
-
-(use-package org-superstar
-  :after org
-  :ensure t
-  :hook org
-  :custom (org-superstar-remove-leading-stars t))
-
-;; project managements
-(use-package org-kanban)
-
-(use-package ob-go)
-(use-package ob-rust)
-(use-package ob-graphql)
-
-(use-package org-elisp-help
-  :after org
-  :ensure t)
-
-(use-package org-projectile
-  :after org
-  :config
-  (org-projectile-per-project)
-  (setq org-projectile-per-project-filepath "TODO.org"
-        org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
-  :bind (("C-c n p" . 'org-projectile-project-todo-completing-read)
-         ("H-n" . 'org-projectile-project-todo-completing-read)))
-
-(setq diary-file (f-join org-directory "diary"))
-
-;; this is just stupid brilliant. allows us to maintain a local wiki
-;; using org-mode files.
-(use-package plain-org-wiki
-  :after org-mode
-  :config (customize-set-variable 'plain-org-wiki-directory (f-join org-directory "wiki")))
+  (setq org-directory (expand-file-name "~/.org")
+        org-default-notes-file (concat org-directory "/notes.org"))
+  :bind (("C-c l" . org-store-link)
+         ("C-c c" . org-capture)
+         ("C-c a" . org-agenda)
+         ("C-c b" . org-iswitchb)
+         ("C-c C-w" . org-refile)
+         ("C-c j" . org-clock-goto)
+         ("C-c C-x C-i" . org-clock-in)
+         ("C-c C-x C-o" . org-clock-out)))
 
 (use-package org-fancy-priorities
-  :hook
-  (org-mode . org-fancy-priorities-mode)
-  :config
-  ;; why is teh default priority 2? because 0 is house-on-fire and 4
-  ;; is not ever going to be dealt with.
+  :init
   (setq org-priority-highest 0
         org-priority-default 2
         org-priority-lowest 4
-        org-fancy-priorities-list '((?0 . "P0")
+        org-fancy-priorities-list '(
+                                    (?0 . "P0")
                                     (?1 . "P1")
                                     (?2 . "P2")
                                     (?3 . "P3")
@@ -366,5 +323,25 @@
                              (?2 :foreground "gray20" :background "gray")
                              (?3 :foreground "gray20" :background "gray")
                              (?4 :foreground "gray20" :background "gray"))))
+
+(use-package org-kanban)
+
+(use-package ob-go)
+(use-package ob-rust)
+(use-package ob-graphql)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((go . t)
+   (rust . t)
+   (graphql . t)
+   (shell . t)
+   (emacs-lisp . t)))
+
+(use-package jinx)
+
+(use-package sly)
+
+(use-package cider)
 
 ;;; configuration.el ends here
