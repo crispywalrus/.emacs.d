@@ -1,8 +1,6 @@
-#+TITLE: Emacs Configuration
 #+DATE: 6/11/2022
 #+STARTUP: showeverything indent
 #+AUTHOR: Chris Vale
-#+PROPERTY: header-args :tangle "~/.emacs.d/init.el"
 * My Really Awesome Emacs config
 
 I've rewritten this to no longer try literate coding. It should work, it really should, but it doesn't

@@ -28,12 +28,17 @@
 ;; configure our GUI appearance. no scrollbar or toolbars and set the
 ;; font to Hack 12.
 
-(defgroup configuration nil
+(defgroup crispy nil
   "Customization switches for configuration.el.")
 
-(defcustom native-project nil
+(defcustom crispy:native-project t
   "If non-nil use native project.el for project tracking"
   :type 'string
+  :group 'configuration)
+
+(defcustom crispy:ensure-packages nil
+  "If non-nil enable use-package ensure for all packages."
+  :type 'boolean
   :group 'configuration)
 
 (when (display-graphic-p)
@@ -70,11 +75,10 @@
 ;; make use-package download all referenced but uninstalled
 ;; packages.
 (require 'use-package-ensure)
-(setq use-package-always-ensure t)
+(setq use-package-always-ensure crispy:ensure-packages)
 
 ;; magit is so important we load it first
 (use-package magit
-  :ensure t
   :commands magit-status magit-blame
   :init
   (setq magit-auto-revert-mode nil
@@ -147,7 +151,8 @@
 ;; the default directory. That's not great for usability.
 (setq default-directory "~/")
 
-(use-package nano-theme)
+;; themes and other graphical/typographical extensions.
+;; (use-package nano-theme)
 
 (use-package all-the-icons
   :if (display-graphic-p))
@@ -157,7 +162,9 @@
   :hook (dired-mode . all-the-icons-dired-mode)
   :config (setq all-the-icons-dired-monochrome nil))
 
-;; completion
+(use-package haki-theme)
+
+;; completion stuff
 (use-package hydra)
 
 (use-package vertico
@@ -272,7 +279,11 @@
     (projectile-mode +1)
     :bind-keymap (("s-p" . projectile-command-map)
                   ("C-c p" . projectile-command-map))))
-(if native-project
+
+(defun enable-project ()
+  (require 'project))
+
+(if crispy:native-project
     (enable-project)
   (enable-projectile))
   
@@ -294,7 +305,6 @@
   (add-to-list 'sql-postgres-options "--no-psqlrc"))
 
 (use-package org
-  :ensure t
   :config
   (setq org-directory (expand-file-name "~/.org")
         org-default-notes-file (concat org-directory "/notes.org"))
