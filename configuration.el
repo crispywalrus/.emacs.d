@@ -29,14 +29,15 @@
 ;; font to Hack 12.
 
 (defgroup crispy nil
-  "Customization switches for configuration.el.")
+  "Customization switches for configuration.el."
+  :prefix "crispy:")
 
 (defcustom crispy:native-project t
-  "If non-nil use native project.el for project tracking"
+  "If non-nil use project.el otherwise use projectile."
   :type 'string
   :group 'configuration)
 
-(defcustom crispy:ensure-packages nil
+(defcustom crispy:ensure-packages t
   "If non-nil enable use-package ensure for all packages."
   :type 'boolean
   :group 'configuration)
@@ -74,10 +75,10 @@
 
 ;; make use-package download all referenced but uninstalled
 ;; packages.
-(require 'use-package-ensure)
-(setq use-package-always-ensure crispy:ensure-packages)
+(use-package use-package-ensure
+  :init
+  (setq use-package-always-ensure crispy:ensure-packages))
 
-;; magit is so important we load it first
 (use-package magit
   :commands magit-status magit-blame
   :init
@@ -85,7 +86,6 @@
         magit-last-seen-setup-instructions "1.4.0")
   :bind (("s-g" . magit-status)
          ("s-b" . magit-blame)))
-
 
 (use-package exec-path-from-shell
   :init (exec-path-from-shell-initialize))
@@ -154,6 +154,9 @@
 ;; themes and other graphical/typographical extensions.
 ;; (use-package nano-theme)
 
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
 (use-package all-the-icons
   :if (display-graphic-p))
 
@@ -163,6 +166,8 @@
   :config (setq all-the-icons-dired-monochrome nil))
 
 (use-package haki-theme)
+
+(use-package wildcharm-theme)
 
 ;; completion stuff
 (use-package hydra)
@@ -195,28 +200,38 @@
   :init
   (all-the-icons-completion-mode))
 
+;; spell checking
+(use-package jinx)
+
 ;; general programing IDE
 (use-package diminish)
 
-(use-package smartparens)
+(use-package smartparens
+  :diminish smartparens-mode
+  :init
+  (require 'smartparens-config))
 
-(require 'smartparens-config)
+(use-package which-key
+  :init
+  (which-key-mode))
 
 (use-package lsp-mode
+  :commands (lsp lsp-deferred)
   :config (setq lsp-enable-snippet nil)
   (setq gc-cons-threshold 100000000)
   (setq read-process-output-max (* 1024 1024))
-  :hook (merlin-mode . lsp)
+  :hook (merlin-mode . lsp-deferred)
         (lsp-mode . lsp-lens-mode)
-        (scala-mode . lsp)
-        (go-mode . lsp)
-        (rust-mode . lsp))
+        (scala-mode . lsp-deferred)
+        (go-mode . lsp-deferred)
+        (rust-mode . lsp-deferred))
 
 (use-package lsp-ui)
 
 (use-package consult-lsp)
 
-;; for some reason this still needs to be added by hand
+;; Scala's lsp server. For some reason this still needs to be added by
+;; hand.
 (use-package lsp-metals)
 
 ;; Posframe is a pop-up tool that must be manually installed for dap-mode
@@ -226,9 +241,17 @@
   :hook (lsp-mode . dap-mode)
         (lsp-mode . dap-ui-mode))
 
+;; various golang related features
+;; base feature
 (use-package go-mode
   :hook (before-save . gofmt-before-save))
 
+;; struct tag editing
+(use-package go-tag)
+
+;; end golang features
+
+;; various rust language features
 (use-package rust-mode
   :init
   (setq rust-format-on-save t))
@@ -236,6 +259,7 @@
 (use-package cargo-mode
   :hook
   (rust-mode . cargo-minor-mode))
+;; end rust features
 
 (use-package zig-mode)
 
@@ -268,17 +292,36 @@
   :interpreter
   ("scala" . scala-mode))
 
+(use-package sly)
+
+(use-package cider)
+
 ;; project management
 (defun enable-projectile ()
-    "Enable projectile for project management"
-  (use-package projectile
-    :init
-    (setq projectile-enable-caching t)
-    :config
-    (setq projectile-completion-system 'ido)
-    (projectile-mode +1)
-    :bind-keymap (("s-p" . projectile-command-map)
-                  ("C-c p" . projectile-command-map))))
+  "Enable projectile for project management"
+  (progn
+    (use-package projectile
+      :init
+      (setq projectile-enable-caching t)
+      :config
+      (setq projectile-completion-system 'ido)
+      (projectile-mode +1)
+      :bind-keymap (("s-p" . projectile-command-map)
+                    ("C-c p" . projectile-command-map)))
+    (use-package go-projectile
+      :config
+      (go-projectile-tools-add-path)
+      (setq go-projectile-tools
+            '((gocode    . "github.com/mdempsky/gocode")
+              (golint    . "golang.org/x/lint/golint")
+              (godef     . "github.com/rogpeppe/godef")
+              (errcheck  . "github.com/kisielk/errcheck")
+              (godoc     . "golang.org/x/tools/cmd/godoc")
+              (gogetdoc  . "github.com/zmb3/gogetdoc")
+              (goimports . "golang.org/x/tools/cmd/goimports")
+              (gorename  . "golang.org/x/tools/cmd/gorename")
+              (gomvpkg   . "golang.org/x/tools/cmd/gomvpkg")
+              (guru      . "golang.org/x/tools/cmd/guru"))))))
 
 (defun enable-project ()
   (require 'project))
@@ -347,11 +390,4 @@
    (graphql . t)
    (shell . t)
    (emacs-lisp . t)))
-
-(use-package jinx)
-
-(use-package sly)
-
-(use-package cider)
-
 ;;; configuration.el ends here

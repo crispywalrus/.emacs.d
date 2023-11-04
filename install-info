@@ -1,0 +1,7 @@
+#!/bin/bash 
+
+for i in /opt/homebrew/Cellar/emacs-plus\@30/30.0.50/share/info/emacs/*.info;
+do
+    install-info --info-dir=/opt/homebrew/Cellar/emacs-plus\@30/30.0.50/share/info/emacs $i ;
+done
+

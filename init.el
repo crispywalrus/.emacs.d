@@ -33,21 +33,6 @@
 ;; and finaglly initialize package manager
 (package-initialize)
 
-
-;; the rest of this uses use-package to manage loading and configuring
-;; packagess. if use-package isn't installed go fetch and install
-;; it. this is super easy because our just configured package manager
-;; can fetch use package for us.
-(when
-    (not package-archive-contents)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-;; make use-package download all referenced but uninstalled
-;; packages without human intervention.
-(require 'use-package-ensure)
-(setq use-package-always-ensure t)
-
 ;; for some reason the mac version of emacs has decided to use / as
 ;; the default directory. That's not great for usability.
 (setq default-directory "~/")
