@@ -28,20 +28,6 @@
 ;; configure our GUI appearance. no scrollbar or toolbars and set the
 ;; font to Hack 12.
 
-(defgroup crispy nil
-  "Customization switches for configuration.el."
-  :prefix "crispy:")
-
-(defcustom crispy:native-project t
-  "If non-nil use project.el otherwise use projectile."
-  :type 'string
-  :group 'configuration)
-
-(defcustom crispy:ensure-packages t
-  "If non-nil enable use-package ensure for all packages."
-  :type 'boolean
-  :group 'configuration)
-
 (when (display-graphic-p)
   (setq initial-frame-alist nil
         default-frame-alist nil)
@@ -76,14 +62,14 @@
 ;; make use-package download all referenced but uninstalled
 ;; packages.
 (use-package use-package-ensure
-  :init
-  (setq use-package-always-ensure crispy:ensure-packages))
+  :config
+  (setq use-package-always-ensure t))
 
 (use-package magit
   :commands magit-status magit-blame
   :init
-  (setq magit-auto-revert-mode nil
-        magit-last-seen-setup-instructions "1.4.0")
+  (setq magit-auto-revert-mode nil)
+;;        magit-last-seen-setup-instructions "1.4.0")
   :bind (("s-g" . magit-status)
          ("s-b" . magit-blame)))
 
@@ -230,6 +216,15 @@
 
 (use-package consult-lsp)
 
+(use-package flycheck
+  :init
+  (global-flycheck-mode))
+
+(use-package flycheck-posframe
+  :ensure t
+  :after flycheck
+  :hook (flycheck-mode))
+
 ;; Scala's lsp server. For some reason this still needs to be added by
 ;; hand.
 (use-package lsp-metals)
@@ -244,11 +239,10 @@
 ;; various golang related features
 ;; base feature
 (use-package go-mode
-  :hook (before-save . gofmt-before-save))
+  :hook (go-mode . subword-mode))
 
 ;; struct tag editing
 (use-package go-tag)
-
 ;; end golang features
 
 ;; various rust language features
@@ -294,42 +288,31 @@
 
 (use-package sly)
 
-(use-package cider)
-
 ;; project management
-(defun enable-projectile ()
-  "Enable projectile for project management"
-  (progn
-    (use-package projectile
-      :init
-      (setq projectile-enable-caching t)
-      :config
-      (setq projectile-completion-system 'ido)
-      (projectile-mode +1)
-      :bind-keymap (("s-p" . projectile-command-map)
-                    ("C-c p" . projectile-command-map)))
-    (use-package go-projectile
-      :config
-      (go-projectile-tools-add-path)
-      (setq go-projectile-tools
-            '((gocode    . "github.com/mdempsky/gocode")
-              (golint    . "golang.org/x/lint/golint")
-              (godef     . "github.com/rogpeppe/godef")
-              (errcheck  . "github.com/kisielk/errcheck")
-              (godoc     . "golang.org/x/tools/cmd/godoc")
-              (gogetdoc  . "github.com/zmb3/gogetdoc")
-              (goimports . "golang.org/x/tools/cmd/goimports")
-              (gorename  . "golang.org/x/tools/cmd/gorename")
-              (gomvpkg   . "golang.org/x/tools/cmd/gomvpkg")
-              (guru      . "golang.org/x/tools/cmd/guru"))))))
+(use-package projectile
+  :init
+  (setq projectile-enable-caching t)
+  :config
+  (setq projectile-completion-system 'ido)
+  (projectile-mode +1)
+  :bind-keymap (("s-p" . projectile-command-map)
+                ("C-c p" . projectile-command-map)))
 
-(defun enable-project ()
-  (require 'project))
+(use-package go-projectile
+  :config
+  (go-projectile-tools-add-path)
+  (setq go-projectile-tools
+        '((gocode    . "github.com/mdempsky/gocode")
+          (golint    . "golang.org/x/lint/golint")
+          (godef     . "github.com/rogpeppe/godef")
+          (errcheck  . "github.com/kisielk/errcheck")
+          (godoc     . "golang.org/x/tools/cmd/godoc")
+          (gogetdoc  . "github.com/zmb3/gogetdoc")
+          (goimports . "golang.org/x/tools/cmd/goimports")
+          (gorename  . "golang.org/x/tools/cmd/gorename")
+          (gomvpkg   . "golang.org/x/tools/cmd/gomvpkg")
+          (guru      . "golang.org/x/tools/cmd/guru"))))
 
-(if crispy:native-project
-    (enable-project)
-  (enable-projectile))
-  
 (use-package edit-indirect)
 
 (use-package smithy-mode)
