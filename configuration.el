@@ -25,26 +25,9 @@
 
 ;;; Code:
 
-;; configure our GUI appearance. no scrollbar or toolbars and set the
-;; font to Hack 12.
-
-(defgroup crispy nil
-  "Customization switches for configuration.el.")
-
-(defcustom crispy:native-project t
-  "If non-nil use native project.el for project tracking"
-  :type 'string
-  :group 'configuration)
-
-(defcustom crispy:ensure-packages nil
-  "If non-nil enable use-package ensure for all packages."
-  :type 'boolean
-  :group 'configuration)
-
 (when (display-graphic-p)
   (setq initial-frame-alist nil
         default-frame-alist nil)
-  (set-frame-font "Hack-12" nil t)
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
   (windmove-default-keybindings))
@@ -72,11 +55,6 @@
             mac-right-option-modifier 'hyper)
     ()))
 
-;; make use-package download all referenced but uninstalled
-;; packages.
-(require 'use-package-ensure)
-(setq use-package-always-ensure crispy:ensure-packages)
-
 ;; magit is so important we load it first
 (use-package magit
   :commands magit-status magit-blame
@@ -88,10 +66,22 @@
 
 
 (use-package exec-path-from-shell
-  :init (exec-path-from-shell-initialize))
+  :init (exec-path-from-shell-initialize)
+  :config
+  (exec-path-from-shell-copy-env "PATH")
+  (exec-path-from-shell-copy-env "GOPROXY")
+  (exec-path-from-shell-copy-env "GOPRIVATE")
+  (exec-path-from-shell-copy-env "GOPATH")
+  (exec-path-from-shell-copy-env "TESTCONTAINERS_RYUK_DISABLED")
+  (setenv "JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION" "true"))
 
-(setenv "JAVA_HOME" "/Users/cvale2/.sdkman/candidates/java/current")
-(setenv "PATH" (concat "/Users/cvale2/.sdkman/candidates/java/current/bin:" (getenv "PATH")))
+;; (setenv "GOPROXY" "https://repo1.uhc.com/artifactory/api/go/golang-virtual/")
+;; (setenv "GOPRIVATE" "github.com/optum-digital-rewards/*")
+(setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "~/go/bin")))
+(setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "~/go/bin") ":" "/opt/homebrew/opt/postgresql@16/bin"))
+(setenv "GOEXPERIMENT" "aliastypeparams")
+
+
 
 ;; for code we can't just use from a package manager we'll check it
 ;; into the vendor tree and manage it by hand.
@@ -108,13 +98,13 @@
 (use-package dash)
 (use-package m-buffer)
 (use-package f)
-;; (use-package multiple-cursors
-;;   :ensure t)
+(use-package multiple-cursors)
 (use-package suggest)
 (use-package parsec)
 (use-package pfuture)
 (use-package async)
 (use-package memoize)
+(use-package transducers)
 
 ;; packages
 ;; my default customization
@@ -127,9 +117,7 @@
 ;; no tabs
 (setq-default indent-tabs-mode nil)
 
-;; I feel a bit curmudgeonly about this but no to menus, no to
-;; scrollbars, no to toolbars, no to the scratch buffer message, no to
-;; the startup screen.
+;; no to the scratch buffer message, no to the startup screen.
 (setq
  inhibit-startup-screen t
  initial-scratch-message nil
@@ -147,12 +135,12 @@
 
 (add-hook 'dired-load-hook (lambda () (require 'dired-x)))
 
+(add-hook 'prog-mode-hook #'subword-mode)
+
+
 ;; for some reason the mac version of emacs has decided to use / as
 ;; the default directory. That's not great for usability.
 (setq default-directory "~/")
-
-;; themes and other graphical/typographical extensions.
-;; (use-package nano-theme)
 
 (use-package all-the-icons
   :if (display-graphic-p))
@@ -168,7 +156,9 @@
 (use-package hydra)
 
 (use-package vertico
-  :init (vertico-mode))
+  :init (vertico-mode)
+  :bind (:map vertico-map
+              ("TAB" . #'minibuffer-complete)))
 
 (use-package vertico-posframe
   :init (vertico-posframe-mode 1))
@@ -195,16 +185,17 @@
   :init
   (all-the-icons-completion-mode))
 
-;; general programing IDE
 (use-package diminish)
 
-(use-package smartparens)
-
-(require 'smartparens-config)
+;; general programing IDE
+(use-package smartparens
+  :ensure smartparens
+  :hook (go-mode elisp-mode)
+  :config
+  (require 'smartparens-config))
 
 (use-package lsp-mode
   :config (setq lsp-enable-snippet nil)
-  (setq gc-cons-threshold 100000000)
   (setq read-process-output-max (* 1024 1024))
   :hook (merlin-mode . lsp)
         (lsp-mode . lsp-lens-mode)
@@ -216,9 +207,6 @@
 
 (use-package consult-lsp)
 
-;; for some reason this still needs to be added by hand
-(use-package lsp-metals)
-
 ;; Posframe is a pop-up tool that must be manually installed for dap-mode
 (use-package posframe)
 
@@ -226,7 +214,7 @@
   :hook (lsp-mode . dap-mode)
         (lsp-mode . dap-ui-mode))
 
-(use-package go-mode
+(use-package go-ts-mode
   :hook (before-save . gofmt-before-save))
 
 (use-package rust-mode
@@ -243,6 +231,8 @@
 
 (use-package json-mode
   :after graphql-mode)
+
+(use-package lsp-metals)
 
 (use-package sbt-mode
   :init (setq sbt:prefer-nested-projects t)
@@ -269,24 +259,10 @@
   ("scala" . scala-mode))
 
 ;; project management
-(defun enable-projectile ()
-    "Enable projectile for project management"
-  (use-package projectile
-    :init
-    (setq projectile-enable-caching t)
-    :config
-    (setq projectile-completion-system 'ido)
-    (projectile-mode +1)
-    :bind-keymap (("s-p" . projectile-command-map)
-                  ("C-c p" . projectile-command-map))))
+(use-package project
+  :config
+  (setq project-mode-line t))
 
-(defun enable-project ()
-  (require 'project))
-
-(if crispy:native-project
-    (enable-project)
-  (enable-projectile))
-  
 (use-package edit-indirect)
 
 (use-package smithy-mode)
@@ -306,7 +282,7 @@
 
 (use-package org
   :config
-  (setq org-directory (expand-file-name "~/.org")
+  (setq org-directory (expand-file-name "~/Devel/org")
         org-default-notes-file (concat org-directory "/notes.org"))
   :bind (("C-c l" . org-store-link)
          ("C-c c" . org-capture)
@@ -348,10 +324,20 @@
    (shell . t)
    (emacs-lisp . t)))
 
-(use-package jinx)
+(use-package jinx
+  :init
+  (add-to-list 'vertico-multiform-categories
+               '(jinx grid vertico-grid-annotate . 20))
+  (vertico-multiform-mode 1))
 
-(use-package sly)
+(use-package copilot-chat
+  :after (request shell-maker)
+  :config
+  (require 'copilot-chat-shell-maker)
+  (push '(shell-maker . copilot-chat-shell-maker-init) copilot-chat--frontend-list)
+  (copilot-chat-shell-maker-init))
 
-(use-package cider)
+;; (use-package copilot
+;;   :hook ((go-mode . copilot-mode)))
 
 ;;; configuration.el ends here
