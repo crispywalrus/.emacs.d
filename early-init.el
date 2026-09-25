@@ -25,8 +25,8 @@
 ;; come as close as possible to disabling gc during startup
 (setq gc-cons-threshold most-positive-fixnum)
 
-;; Re-enable gc with a sensible limit (8Mb) after init process has ended
+;; Re-enable gc with a sensible limit (128Mb) after init process has ended
 (add-hook 'after-init-hook
-          #'(lambda () (setq gc-cons-threshold (* 8 1024 1024))))
+          #'(lambda () (setq gc-cons-threshold (* 128 1024 1024))))
 
 ;;; early-init.el ends here

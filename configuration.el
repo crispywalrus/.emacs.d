@@ -1,6 +1,6 @@
 ;;; configuration.el --- emacs configuration -*- lexical-binding: t -*-
 
-;; Copyright ©  2022 Chris Vale
+;; Copyright ©  1997-2023 Chris Vale
 ;;
 ;; Author: Chris Vale <crispywalrus@gmail.com>
 
@@ -27,24 +27,11 @@
 
 ;; configure our GUI appearance. no scrollbar or toolbars and set the
 ;; font to Hack 12.
-
-(defgroup crispy nil
-  "Customization switches for configuration.el.")
-
-(defcustom crispy:native-project t
-  "If non-nil use native project.el for project tracking"
-  :type 'string
-  :group 'configuration)
-
-(defcustom crispy:ensure-packages nil
-  "If non-nil enable use-package ensure for all packages."
-  :type 'boolean
-  :group 'configuration)
-
 (when (display-graphic-p)
   (setq initial-frame-alist nil
         default-frame-alist nil)
-  (set-frame-font "Hack-12" nil t)
+  ;;  (set-frame-font "Hack-12" nil t)
+  (set-frame-font "Iosevka Comfy 13" nil t)
   (scroll-bar-mode -1)
   (tool-bar-mode -1)
   (windmove-default-keybindings))
@@ -75,23 +62,27 @@
 ;; make use-package download all referenced but uninstalled
 ;; packages.
 (require 'use-package-ensure)
-(setq use-package-always-ensure crispy:ensure-packages)
+(setq use-package-always-ensure t)
 
 ;; magit is so important we load it first
 (use-package magit
+  :ensure t
   :commands magit-status magit-blame
   :init
-  (setq magit-auto-revert-mode nil
-        magit-last-seen-setup-instructions "1.4.0")
+  (setq magit-auto-revert-mode nil)
   :bind (("s-g" . magit-status)
          ("s-b" . magit-blame)))
 
 
 (use-package exec-path-from-shell
-  :init (exec-path-from-shell-initialize))
+  :init
+  (exec-path-from-shell-copy-env "JAVA_HOME")
+  (exec-path-from-shell-copy-env "GOPATH")
+  (exec-path-from-shell-copy-env "SDKMAN_DIR")
+  (exec-path-from-shell-initialize))
 
-(setenv "JAVA_HOME" "/Users/cvale2/.sdkman/candidates/java/current")
-(setenv "PATH" (concat "/Users/cvale2/.sdkman/candidates/java/current/bin:" (getenv "PATH")))
+(if (not (getenv "GOPATH"))
+         (setenv "GOPATH" (expand-file-name "~/go")))
 
 ;; for code we can't just use from a package manager we'll check it
 ;; into the vendor tree and manage it by hand.
@@ -108,20 +99,21 @@
 (use-package dash)
 (use-package m-buffer)
 (use-package f)
-;; (use-package multiple-cursors
-;;   :ensure t)
 (use-package suggest)
 (use-package parsec)
 (use-package pfuture)
 (use-package async)
 (use-package memoize)
+(use-package uuidgen)
+(use-package iso-date)
 
 ;; packages
 ;; my default customization
 
 ;; I use a .gitignored custom.el file so I can maintain different
-;; configs per system. Loading fails if the file doesn't exist so we
-;; touch it to make sure emacs always starts.
+;; configurations on different systems. Unfortunately loading a
+;; non-existent file will fail so this uses touch to make sure it
+;; always exists.
 (f-touch (expand-file-name "custom.el" user-emacs-directory))
 
 ;; no tabs
@@ -145,13 +137,20 @@
 ;; don't ask about narrow-to-regeion
 (put 'narrow-to-region 'disabled nil)
 
-(add-hook 'dired-load-hook (lambda () (require 'dired-x)))
+(with-eval-after-load 'dired
+  (require 'dired-x))
+
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 
 ;; for some reason the mac version of emacs has decided to use / as
 ;; the default directory. That's not great for usability.
 (setq default-directory "~/")
 
-;; themes and other graphical/typographical extensions.
+(use-package use-package-hydra
+  :ensure t)
+
 ;; (use-package nano-theme)
 
 (use-package all-the-icons
@@ -162,16 +161,50 @@
   :hook (dired-mode . all-the-icons-dired-mode)
   :config (setq all-the-icons-dired-monochrome nil))
 
-(use-package haki-theme)
-
-;; completion stuff
-(use-package hydra)
+;; completion
+(use-package hydra
+  :ensure t
+  :after (use-package-hydra dap-mode)
+  :config
+  (require 'dap-mode)
+  (require 'dap-ui)
+  :init
+  (add-hook 'dap-stopped-hook
+          (lambda (arg) (call-interactively #'hydra-go/body)))
+  :hydra (hydra-go (:color pink :hint nil :foreign-keys run)
+  "
+   _n_: Next       _c_: Continue _g_: goroutines      _i_: break log
+   _s_: Step in    _o_: Step out _k_: break condition _h_: break hit condition
+   _Q_: Disconnect _q_: quit     _l_: locals
+   "
+	     ("n" dap-next)
+	     ("c" dap-continue)
+	     ("s" dap-step-in)
+	     ("o" dap-step-out)
+	     ("g" dap-ui-sessions)
+	     ("l" dap-ui-locals)
+	     ("e" dap-eval-thing-at-point)
+	     ("h" dap-breakpoint-hit-condition)
+	     ("k" dap-breakpoint-condition)
+	     ("i" dap-breakpoint-log-message)
+	     ("q" nil "quit" :color blue)
+	     ("Q" dap-disconnect :color red)))
 
 (use-package vertico
   :init (vertico-mode))
 
 (use-package vertico-posframe
   :init (vertico-posframe-mode 1))
+
+(use-package prescient)
+
+(use-package vertico-prescient
+  :init
+  (vertico-prescient-mode))
+
+(use-package savehist
+  :init
+  (savehist-mode))
 
 (use-package consult
   :after vertico
@@ -186,6 +219,8 @@
                  args))))
 
 (use-package marginalia
+  :bind (:map minibuffer-local-map
+              ("M-A" . marginalia-cycle))
   :init
   (marginalia-mode))
 
@@ -195,10 +230,21 @@
   :init
   (all-the-icons-completion-mode))
 
-;; general programing IDE
+;; general programming IDE settings
 (use-package diminish)
 
-(use-package smartparens)
+(use-package ligature
+  :config
+  (ligature-set-ligatures 'prog-mode '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->" "<---->" "<!--"
+                                       "<==" "<===" "<=" "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
+                                       "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "===" "!=="
+                                       ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:" "<******>" "++" "+++"))
+  ;; Enables ligature checks globally in all buffers.
+  (global-ligature-mode t))
+
+(use-package smartparens
+  :init
+  (smartparens-global-mode))
 
 (require 'smartparens-config)
 
@@ -210,24 +256,47 @@
         (lsp-mode . lsp-lens-mode)
         (scala-mode . lsp)
         (go-mode . lsp)
-        (rust-mode . lsp))
+        (rust-mode . lsp)
+        (zig-mode . lsp)
+        (tuareg-mode . lsp))
 
 (use-package lsp-ui)
+
+(use-package flycheck
+  :init
+  (global-flycheck-mode))
+
+(use-package flycheck-posframe
+  :ensure t
+  :after flycheck
+  :hook (flycheck-mode))
 
 (use-package consult-lsp)
 
 ;; for some reason this still needs to be added by hand
-(use-package lsp-metals)
+(use-package lsp-metals
+  :after lsp-mode)
 
-;; Posframe is a pop-up tool that must be manually installed for dap-mode
-(use-package posframe)
+;; posframe is a pop-up tool that must be manually installed for dap-mode
+(use-package posframe
+  :ensure t)
 
 (use-package dap-mode
-  :hook (lsp-mode . dap-mode)
-        (lsp-mode . dap-ui-mode))
+  :config
+  (dap-mode 1)
+  (tooltip-mode 1)
+  (setq dap-print-io t)
+  (require 'dap-hydra)
+  (require 'dap-dlv-go)
+  (use-package dap-ui
+    :ensure nil
+    :config
+    (dap-ui-mode 1)
+    (dap-ui-controls-mode 1)))
 
 (use-package go-mode
-  :hook (before-save . gofmt-before-save))
+  :hook (before-save . gofmt-before-save)
+        (go-mode . subword-mode))
 
 (use-package rust-mode
   :init
@@ -236,6 +305,23 @@
 (use-package cargo-mode
   :hook
   (rust-mode . cargo-minor-mode))
+
+(use-package tuareg
+  :config
+  (add-to-list 'load-path (expand-file-name "~/.opam/default/share/emacs/site-lisp")))
+
+(use-package ocamlformat
+  :custom
+  (ocamlformat-enable 'enable-outside-detected-project)
+  (ocamlformat-command
+   (concat
+    (file-name-as-directory
+     (substring (shell-command-to-string "opam config var bin --switch=ocamlformat --safe") 0 -1))
+    "ocamlformat"))
+  :hook (before-save . ocamlformat-before-save))
+
+(require 'utop)
+(require 'ocp-indent)
 
 (use-package zig-mode)
 
@@ -268,31 +354,25 @@
   :interpreter
   ("scala" . scala-mode))
 
-;; project management
-(defun enable-projectile ()
-    "Enable projectile for project management"
-  (use-package projectile
-    :init
-    (setq projectile-enable-caching t)
-    :config
-    (setq projectile-completion-system 'ido)
-    (projectile-mode +1)
-    :bind-keymap (("s-p" . projectile-command-map)
-                  ("C-c p" . projectile-command-map))))
+(use-package projectile
+  :init
+  (setq projectile-enable-caching t)
+  :config
+  (setq projectile-completion-system 'ido)
+  (projectile-mode +1)
+  :bind-keymap (("s-p" . projectile-command-map)
+                ("C-c p" . projectile-command-map)))
 
-(defun enable-project ()
-  (require 'project))
+(use-package bazel
+  :commands bazel-build bazel-run bazel-test bazel-coverage
+  :mode ("\\.star\\'" . bazel-starlark-mode))
 
-(if crispy:native-project
-    (enable-project)
-  (enable-projectile))
-  
 (use-package edit-indirect)
 
 (use-package smithy-mode)
 
 ;; mermaid is a package for laying out graphs in markdown and other
-;; documents. It's rendered in github docs so that makes it a useful
+;; documents. It's rendered in GitHub docs so that makes it a useful
 ;; package.
 (use-package mermaid-mode)
 
@@ -305,9 +385,13 @@
   (add-to-list 'sql-postgres-options "--no-psqlrc"))
 
 (use-package org
+  :defer 30
+  :ensure t
   :config
   (setq org-directory (expand-file-name "~/.org")
-        org-default-notes-file (concat org-directory "/notes.org"))
+        org-default-notes-file (concat org-directory "/notes.org")
+        org-todo-keywords '((sequence "TODO" "IN PROCESS" "|" "DONE" "BLOCKED" "ABANDONED"))
+        org-log-done 'time)
   :bind (("C-c l" . org-store-link)
          ("C-c c" . org-capture)
          ("C-c a" . org-agenda)
@@ -339,19 +423,41 @@
 (use-package ob-go)
 (use-package ob-rust)
 (use-package ob-graphql)
+(use-package ob-mermaid)
+(use-package ob-sql-mode)
+(use-package ob-git-permalink)
 
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((go . t)
-   (rust . t)
    (graphql . t)
    (shell . t)
+   (sql . t)
+   (python . t)
    (emacs-lisp . t)))
 
-(use-package jinx)
+;;(use-package org-aws-iam-role)
 
-(use-package sly)
+(use-package jinx
+  :init (global-jinx-mode))
 
-(use-package cider)
+(use-package ibuffer
+  :hook (ibuffer-mode . ibuffer-auto-mode)
+  :defer t)
+
+(use-package re-builder
+  :defer t)
+
+(use-package bookmark
+  :ensure nil
+  :defer t)
+
+(use-package moody
+  :config
+  (moody-replace-mode-line-front-space)
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-vc-mode))
+
+(use-package gptel)
 
 ;;; configuration.el ends here
