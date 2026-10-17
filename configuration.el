@@ -190,9 +190,6 @@
 (use-package vertico
   :init (vertico-mode))
 
-(use-package vertico-posframe
-  :init (vertico-posframe-mode 1))
-
 (use-package prescient)
 
 (use-package vertico-prescient
@@ -388,10 +385,13 @@
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
 
-(use-package gptel
+(use-package gptel)
+
+(use-package ob-gptel
+  :vc (:url "https://github.com/jwiegley/ob-gptel")
   :ensure t
+  :after gptel
   :config
-  ;; Register your local Ollama instance as a backend provider
   (setq gptel-backend 
         (gptel-make-openai "oMLX"
           :host "localhost:8000"
@@ -402,9 +402,17 @@
 
 ;; Enable inline completion using the fast 1.5B base model
 (use-package gptel-autocomplete
-  :ensure t
-  :hook (prog-mode . gptel-autocomplete-mode)
+  :vc (:url "https://github.com/JDNdeveloper/gptel-autocomplete")
+  :after gptel
+  :demand t
+  :bind (:map gptel-autocomplete-mode-map
+              ("C-<tab>" . gptel-accept-completion)
+              ("M-<tab>" . gptel-accept-word))
   :config
   (setq gptel-autocomplete-model "qwen3-coder:1.5b-base"))
+
+(use-package trust-manager
+  :config
+  (trust-manager-mode 1))
 
 ;;; configuration.el ends here
