@@ -73,7 +73,6 @@
   :bind (("s-g" . magit-status)
          ("s-b" . magit-blame)))
 
-
 (use-package exec-path-from-shell
   :init
   (exec-path-from-shell-copy-env "JAVA_HOME")
@@ -151,8 +150,6 @@
 (use-package use-package-hydra
   :ensure t)
 
-;; (use-package nano-theme)
-
 (use-package all-the-icons
   :if (display-graphic-p))
 
@@ -192,9 +189,6 @@
 
 (use-package vertico
   :init (vertico-mode))
-
-(use-package vertico-posframe
-  :init (vertico-posframe-mode 1))
 
 (use-package prescient)
 
@@ -287,72 +281,17 @@
   (tooltip-mode 1)
   (setq dap-print-io t)
   (require 'dap-hydra)
-  (require 'dap-dlv-go)
   (use-package dap-ui
     :ensure nil
     :config
     (dap-ui-mode 1)
     (dap-ui-controls-mode 1)))
 
-(use-package go-mode
-  :hook (before-save . gofmt-before-save)
-        (go-mode . subword-mode))
-
-(use-package rust-mode
-  :init
-  (setq rust-format-on-save t))
-
-(use-package cargo-mode
-  :hook
-  (rust-mode . cargo-minor-mode))
-
-(use-package tuareg
-  :config
-  (add-to-list 'load-path (expand-file-name "~/.opam/default/share/emacs/site-lisp")))
-
-(use-package ocamlformat
-  :custom
-  (ocamlformat-enable 'enable-outside-detected-project)
-  (ocamlformat-command
-   (concat
-    (file-name-as-directory
-     (substring (shell-command-to-string "opam config var bin --switch=ocamlformat --safe") 0 -1))
-    "ocamlformat"))
-  :hook (before-save . ocamlformat-before-save))
-
-(require 'utop)
-(require 'ocp-indent)
-
-(use-package zig-mode)
-
-(use-package graphql-mode)
-
 (use-package json-mode
   :after graphql-mode)
 
-(use-package sbt-mode
-  :init (setq sbt:prefer-nested-projects t)
-  :commands sbt-start sbt-command sbt-hydra
-  :config (substitute-key-definition
-           'minibuffer-complete-word
-           'self-insert-command
-           minibuffer-local-completion-map))
-
 (use-package company
   :diminish company-mode)
-
-(use-package scala-mode
-  :config
-  (require 'scala-mode-prettify-symbols)
-  (setq prettify-symbols-alist scala-prettify-symbols-alist)
-  :hook (scala-mode . company-mode)
-        (scala-mode . smartparens-mode)
-        (scala-mode . subword-mode)
-  :diminish smartparens-mode
-  :bind
-  ("C-c C-b" . sbt-hydra)
-  :interpreter
-  ("scala" . scala-mode))
 
 (use-package projectile
   :init
@@ -363,13 +302,7 @@
   :bind-keymap (("s-p" . projectile-command-map)
                 ("C-c p" . projectile-command-map)))
 
-(use-package bazel
-  :commands bazel-build bazel-run bazel-test bazel-coverage
-  :mode ("\\.star\\'" . bazel-starlark-mode))
-
 (use-package edit-indirect)
-
-(use-package smithy-mode)
 
 ;; mermaid is a package for laying out graphs in markdown and other
 ;; documents. It's rendered in GitHub docs so that makes it a useful
@@ -420,8 +353,6 @@
 
 (use-package org-kanban)
 
-(use-package ob-go)
-(use-package ob-rust)
 (use-package ob-graphql)
 (use-package ob-mermaid)
 (use-package ob-sql-mode)
@@ -429,14 +360,10 @@
 
 (org-babel-do-load-languages
  'org-babel-load-languages
- '((go . t)
-   (graphql . t)
+ '((graphql . t)
    (shell . t)
    (sql . t)
-   (python . t)
    (emacs-lisp . t)))
-
-;;(use-package org-aws-iam-role)
 
 (use-package jinx
   :init (global-jinx-mode))
@@ -459,5 +386,33 @@
   (moody-replace-vc-mode))
 
 (use-package gptel)
+
+(use-package ob-gptel
+  :vc (:url "https://github.com/jwiegley/ob-gptel")
+  :ensure t
+  :after gptel
+  :config
+  (setq gptel-backend 
+        (gptel-make-openai "oMLX"
+          :host "localhost:8000"
+          :protocol "http"
+          :stream t
+          :key "oMLX"                         ; oMLX ignores this locally or uses your set API key
+          :models '(qwen3-coder:1.5b-base qwen3-coder-next:latest))))
+
+;; Enable inline completion using the fast 1.5B base model
+(use-package gptel-autocomplete
+  :vc (:url "https://github.com/JDNdeveloper/gptel-autocomplete")
+  :after gptel
+  :demand t
+  :bind (:map gptel-autocomplete-mode-map
+              ("C-<tab>" . gptel-accept-completion)
+              ("M-<tab>" . gptel-accept-word))
+  :config
+  (setq gptel-autocomplete-model "qwen3-coder:1.5b-base"))
+
+(use-package trust-manager
+  :config
+  (trust-manager-mode 1))
 
 ;;; configuration.el ends here
